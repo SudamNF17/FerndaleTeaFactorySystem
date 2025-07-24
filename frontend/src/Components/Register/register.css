@@ -1,0 +1,141 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: url('../../assets/tea-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.register-page {
+  display: flex;
+  height: 100vh;
+  backdrop-filter: blur(5px);
+}
+
+.register-left {
+  flex: 1;
+  color: white;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.register-left:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.register-left h1 {
+  font-size: 32px;
+  margin: 20px 0 10px;
+}
+
+.register-left p {
+  font-size: 16px;
+  max-width: 300px;
+}
+
+.register-logo {
+  width: 180px;
+  height: auto;
+  transition: transform 0.3s;
+}
+
+.register-logo:hover {
+  transform: scale(1.1);
+}
+
+.register-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-card {
+  background: #ffffffee;
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.register-card:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  transform: translateY(-5px);
+}
+
+.register-card h2 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.register-form .form-group {
+  margin-bottom: 15px;
+}
+
+.register-form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.register-form input:focus {
+  border-color: #4caf50;
+  outline: none;
+  box-shadow: 0 0 5px #81c784;
+}
+
+.register-form input:hover {
+  border-color: #66bb6a;
+}
+
+.register-btn {
+  width: 100%;
+  background-color: #388e3c;
+  color: white;
+  padding: 12px;
+  border: none;
+  font-size: 16px;
+  margin-top: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s ease;
+}
+
+.register-btn:hover {
+  background-color: #2e7d32;
+  transform: translateY(-2px);
+}
+
+.login-link {
+  margin-top: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.login-link a {
+  color: #388e3c;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+  color: #2e7d32;
+}
