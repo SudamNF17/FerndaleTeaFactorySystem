@@ -1,0 +1,21 @@
+.home-ui {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  list-style: none;
+  padding: 20px;
+  background-color: #1e293b; /* slate-800 */
+  margin: 0;
+}
+
+.home-li h1 {
+  font-size: 1.25rem;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.home-li h1:hover {
+  transform: scale(1.05);
+  color: #38bdf8; /* sky-400 */
+}
