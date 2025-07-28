@@ -1,20 +1,19 @@
-import React from 'react'
-import './nav.css'
-import {Link} from "react-router-dom"
+import React from "react";
+import { Link } from "react-router-dom";
+import "./nav.css"; // import CSS file
 
-function Nav() {
+const NavigationBar = () => {
   return (
-    <div>
-        <ul className="home-ui">
-            <li className="home-li">
-                <Link to="/mainhome" className="active home-a">
-                <h1>home</h1>
-                </Link>
-            </li>
-            
-        </ul>
-    </div>
-  )
-}
+    <nav className="nav-bar">
+      <ul className="nav-list">
+        <li><Link to="/employees">Manage Employees</Link></li>
+        <li><Link to="/stock">Inventory Tea Stock</Link></li>
+        <li><Link to="/sales">Sales</Link></li>
+        <li><Link to="/inventory">supply Tea leavves</Link></li>
+        <li><Link to="/sales">Orders</Link></li>
+      </ul>
+    </nav>
+  );
+};
 
-export default Nav
+export default NavigationBar;
