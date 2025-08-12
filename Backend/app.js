@@ -4,12 +4,14 @@ const cors = require("cors");
 
 // Import your routes
 const userRoutes = require("./Routes/UserRoutes");
+const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes")
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json()); // for parsing application/json
+
 
 // MongoDB Connection (Cloud Mongo URI or Localhost)
 mongoose.connect("mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.net/teafactory", {
@@ -21,6 +23,7 @@ mongoose.connect("mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.
 
 // Routes
 app.use("/api/users", userRoutes); // All user/login/register routes
+app.use("/api/delivery-vans", deliveryVanRoutes)
 
 // Start the server
 const PORT = 5000;
