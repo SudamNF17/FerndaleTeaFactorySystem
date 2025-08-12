@@ -28,7 +28,7 @@ function Login() {
       if (role === "HRManager") {
         navigate("/hr-dashboard");
       } else if (role === "Supplier") {
-        navigate("/supplier-dashboard");
+        navigate("/Supplier-dashboard");
       } else if (role === "Wholesaler") {
         navigate("/wholesaler-dashboard");
       } else {

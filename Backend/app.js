@@ -25,6 +25,21 @@ mongoose.connect("mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.
 app.use("/api/users", userRoutes); // All user/login/register routes
 app.use("/api/delivery-vans", deliveryVanRoutes)
 
+// Root route for testing in Postman
+app.get("/", (req, res) => {
+  res.send("API is running 🚀");
+});
+
+// Root route for testing in Postman
+app.get("/", (req, res) => {
+  res.send("API is running 🚀");
+});
+
+// Root route for testing in Postman
+app.get("/", (req, res) => {
+  res.send("API is running 🚀");
+});
+
 // Start the server
 const PORT = 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
