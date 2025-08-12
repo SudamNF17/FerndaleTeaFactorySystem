@@ -1,0 +1,113 @@
+
+
+.delivery-container {
+  background-color: white;  /* white background */
+  padding: 20px;
+  border-radius: 8px;
+  /* optional: add min height so it covers full page height */
+  min-height: 100vh;
+  box-sizing: border-box;
+  /* optional: add some shadow to separate from background image */
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+
+.delivery-container h2,
+.delivery-container h3 {
+  text-align: center;
+  color: #2c3e50;
+}
+
+.delivery-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.delivery-container table th,
+.delivery-container table td {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.delivery-container table th {
+  background-color: #3498db;
+  color: white;
+}
+
+.delivery-container table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.delivery-container table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.delivery-container button {
+  padding: 6px 12px;
+  margin: 2px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 13px;
+  transition: background-color 0.3s ease;
+}
+
+.delivery-container button:hover {
+  background-color: #2980b9;
+}
+
+.delivery-container form {
+  background: #f7f7f7;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+.delivery-container form div {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.delivery-container form label {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.delivery-container form input[type="text"],
+.delivery-container form input[type="number"],
+.delivery-container form input[type="email"],
+.delivery-container form select,
+.delivery-container form textarea {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.delivery-container form textarea {
+  min-height: 60px;
+}
+
+.delivery-container form button[type="submit"],
+.delivery-container form button[type="button"] {
+  width: 120px;
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .delivery-container table,
+  .delivery-container form {
+    font-size: 12px;
+  }
+
+  .delivery-container form div {
+    flex-direction: column;
+  }
+}
