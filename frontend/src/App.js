@@ -9,8 +9,11 @@ import SupplierDashboard from "./Components/Dashboards/SupplierDashboard";
 import WholesalerDashboard from "./Components/Dashboards/WholesalerDashboard"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import Delivery from "./Components/Delivery/Delivery";
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 import Supplier from "./Components/Supplier/Supplier";
@@ -30,9 +33,13 @@ function App() {
           <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <Route path="/delivery-vans" element={<Delivery />} />
           
 
+=======
+          <Route path="/supplier" element={<Supplier />} />
+>>>>>>> Stashed changes
 =======
           <Route path="/supplier" element={<Supplier />} />
 >>>>>>> Stashed changes
