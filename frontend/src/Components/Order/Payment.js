@@ -1,4 +1,4 @@
-// src/Payment.jsx
+// src/Payment.jsx  (use .js if you prefer)
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'ol/ol.css';
@@ -15,52 +15,55 @@ import { Icon, Style } from 'ol/style.js';
 
 export default function Payment() {
   const navigate = useNavigate();
+
+  // ---- Read persisted data (do NOT modify cart here) ----
+  const cart = useMemo(() => {
+    try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
+  }, []);
+
+  const totalsFromLS = useMemo(() => {
+    try { return JSON.parse(localStorage.getItem('totals') || '{}'); } catch { return {}; }
+  }, []);
+
+  // Fallback totals if LS doesn't have them yet
+  const totals = useMemo(() => {
+    if (totalsFromLS && typeof totalsFromLS.total === 'number') return totalsFromLS;
+    const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+    const shipping = subtotal > 0 ? 50 : 0;
+    const total = subtotal + shipping;
+    return { subtotal, shipping, total };
+  }, [cart, totalsFromLS]);
+
+  // Restore user + location if present
+  const [user, setUser] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('user')) || { name: '', email: '', address: '' }; }
+    catch { return { name: '', email: '', address: '' }; }
+  });
+  const [markerCoord, setMarkerCoord] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('location') || 'null'); } catch { return null; }
+  }); // [lon, lat]
+
+  // ---- Map setup ----
   const mapEl = useRef(null);
   const mapRef = useRef(null);
   const vectorSourceRef = useRef(new VectorSource());
   const vectorLayerRef = useRef(new VectorLayer({ source: vectorSourceRef.current }));
-  const [markerCoord, setMarkerCoord] = useState(null); // [lon, lat] in EPSG:4326
-
-  const cart = useMemo(() => {
-    try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
-  }, []);
-  const totals = useMemo(() => {
-    try { return JSON.parse(localStorage.getItem('totals') || '{}'); } catch { return {}; }
-  }, []);
-
-  // Basic user form state
-  const [user, setUser] = useState({ name: '', email: '', address: '' });
 
   useEffect(() => {
     if (!mapEl.current) return;
 
-    // Default center (Colombo, Sri Lanka) – adjust if you like
-    const defaultCenter = fromLonLat([79.8612, 6.9271]);
-
+    const defaultCenter = fromLonLat([79.8612, 6.9271]); // Colombo
     const map = new Map({
       target: mapEl.current,
-      layers: [
-        new TileLayer({ source: new OSM() }),
-        vectorLayerRef.current
-      ],
-      view: new View({
-        center: defaultCenter,
-        zoom: 12,
-      }),
+      layers: [new TileLayer({ source: new OSM() }), vectorLayerRef.current],
+      view: new View({ center: defaultCenter, zoom: 12 }),
       controls: [],
     });
 
-    // Handle click to add/move marker
-    map.on('click', (evt) => {
-      const coord = evt.coordinate; // EPSG:3857
-      // Clear previous marker
-      vectorSourceRef.current.clear();
-
-      // Create new marker feature
-      const feature = new Feature({
-        geometry: new Point(coord)
-      });
-
+    // If we already have a saved pin, restore it
+    if (markerCoord && Array.isArray(markerCoord) && markerCoord.length === 2) {
+      const coord3857 = fromLonLat(markerCoord);
+      const feature = new Feature({ geometry: new Point(coord3857) });
       feature.setStyle(new Style({
         image: new Icon({
           src: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
@@ -68,22 +71,38 @@ export default function Payment() {
           scale: 0.08
         })
       }));
-
       vectorSourceRef.current.addFeature(feature);
+      map.getView().setCenter(coord3857);
+      map.getView().setZoom(14);
+    }
 
-      // Save lon/lat
+    // Click to drop/move pin
+    map.on('click', (evt) => {
+      const coord = evt.coordinate; // EPSG:3857
+      vectorSourceRef.current.clear();
+      const feature = new Feature({ geometry: new Point(coord) });
+      feature.setStyle(new Style({
+        image: new Icon({
+          src: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+          anchor: [0.5, 1],
+          scale: 0.08
+        })
+      }));
+      vectorSourceRef.current.addFeature(feature);
       const [lon, lat] = toLonLat(coord);
       setMarkerCoord([lon, lat]);
     });
 
     mapRef.current = map;
+    return () => map.setTarget(null);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return () => {
-      map.setTarget(null);
-    };
-  }, []);
-
-  const handlePay = () => {
+  // ---- Actions ----
+const handlePay = async () => {
+  if (cart.length === 0) {
+    alert('Your cart is empty. Please add items first.');
+    return;
+  }
   if (!user.name || !user.email || !user.address) {
     alert('Please fill in your name, email, and address.');
     return;
@@ -93,16 +112,59 @@ export default function Payment() {
     return;
   }
 
-  // Save payment info for the bill
-  localStorage.setItem('user', JSON.stringify(user));
-  localStorage.setItem('location', JSON.stringify(markerCoord));
+  // Prepare order data for backend
+  const orderData = {
+    buyer: {
+      name: user.name,
+      email: user.email,
+      phone: user.phone || "N/A", // in case phone is not collected yet
+      address: user.address,
+    },
+    cart: cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      qty: item.qty,
+    })),
+    totals: totals,
+    deliveryLocation: {
+  lat: markerCoord[1],
+  lng: markerCoord[0],
+},
+ // { lat, lng }
+  };
 
-  navigate('/bill');
+  try {
+    const res = await fetch("http://localhost:5000/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+  const savedOrder = data.order;
+  navigate(`/bill/${savedOrder._id}`);   // ✅ send order ID in the URL
+}
+else {
+      alert("❌ Failed to place order: " + data.message);
+    }
+  } catch (err) {
+    alert("❌ Error placing order: " + err.message);
+  }
 };
 
 
-  const goBackToCart = () => {
-    navigate('/cart');
+  const handleUpdateCart = () => {
+    // Save any current inputs so they’re still there when you come back
+    localStorage.setItem('user', JSON.stringify(user));
+    if (markerCoord) localStorage.setItem('location', JSON.stringify(markerCoord));
+
+    // Safest way back to the previous page (usually the Cart):
+    navigate(-1);
+    // If you prefer a fixed route instead, use:
+    // navigate('/');
   };
 
   return (
@@ -119,7 +181,7 @@ export default function Payment() {
         <section className="products-section">
           <h2>Order Summary</h2>
           {cart.length === 0 ? (
-            <p>Your cart is empty. <button className="clear-cart-btn" onClick={goBackToCart}>Update Cart</button></p>
+            <p>Your cart is empty. <button className="clear-cart-btn" onClick={() => navigate('/')}>Back to Shop</button></p>
           ) : (
             <>
               <div className="cart-items" style={{ maxHeight: 250 }}>
@@ -175,6 +237,20 @@ export default function Payment() {
                 placeholder="Your name"
               />
             </label>
+
+          <label style={{ display: 'block', marginBottom: 8 }}>
+            Phone
+            <input
+              type="text"
+              value={user.phone || ""}
+              onChange={e => setUser({ ...user, phone: e.target.value })}
+              className="input"
+              placeholder="Your phone number"
+            />
+          </label>
+
+
+
             <label style={{ display: 'block', marginBottom: 8 }}>
               Email
               <input
@@ -200,7 +276,7 @@ export default function Payment() {
           <button className="checkout-btn" onClick={handlePay}>
             Pay
           </button>
-          <button className="clear-cart-btn" onClick={goBackToCart} style={{ marginTop: 8 }}>
+          <button className="clear-cart-btn" onClick={handleUpdateCart} style={{ marginTop: 8 }}>
             Update Cart
           </button>
         </section>

@@ -28,7 +28,7 @@ function App() {
           <Route path="/supplier" element={<Supplier />} />
           <Route path="/cart" element={<Cart />} />
            <Route path="/payment" element={<Payment />} />
-           <Route path="/bill" element={<Bill />} />
+            <Route path="/bill/:id" element={<Bill />} />
         </Routes>
       </React.Fragment>
     </div>

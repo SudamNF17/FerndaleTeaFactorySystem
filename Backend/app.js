@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 // Import your routes
+const orderRoutes = require("./Routes/OrderRoutes");
 const userRoutes = require("./Routes/UserRoutes");
 const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes")
 
@@ -24,6 +25,7 @@ mongoose.connect("mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.
 // Routes
 app.use("/api/users", userRoutes); // All user/login/register routes
 app.use("/api/delivery-vans", deliveryVanRoutes)
+app.use("/api/orders", orderRoutes);
 
 // Root route for testing in Postman
 app.get("/", (req, res) => {
