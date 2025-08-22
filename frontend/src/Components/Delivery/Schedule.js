@@ -1,52 +1,69 @@
-import React, { useEffect, useMemo, useState } from "react";
+// Components/Delivery/Schedule.jsx
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import "./schedule.css";
+import { Bar, Pie } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
+import "./schedule.css";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const API_URL = "http://localhost:5000/api/schedules";
+const VAN_URL = "http://localhost:5000/api/delivery-vans";
 
 export default function Schedule() {
-  const userName = localStorage.getItem("userName");
   const navigate = useNavigate();
-  const handleLogout = () => { localStorage.clear(); navigate("/login"); };
+  const userName = localStorage.getItem("userName");
 
   const [items, setItems] = useState([]);
+  const [vans, setVans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
 
-  // filters
+  const [view, setView] = useState("table"); // 'table' | 'calendar'
   const [vanFilter, setVanFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [wholesalerFilter, setWholesalerFilter] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
-  // form
-  const initial = {
+  const initialForm = {
+    order_id: "",
     schedule_id: "",
+    wholesaler_name: "",
+    quantity: "",
     van_number: "",
     driver_name: "",
     pickup_location: "",
     dropoff_location: "",
+    expected_date: "",
     start_time: "",
     end_time: "",
-    status: "Scheduled",
-    notes: "",
+    status: "Pending",
+    notes: ""
   };
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState(initialForm);
   const [editingId, setEditingId] = useState(null);
 
+  // Fetch schedules & vans
   const fetchAll = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(API_URL);
-      setItems(res.data);
+      const [resSchedules, resVans] = await Promise.all([
+        axios.get(API_URL),
+        axios.get(VAN_URL)
+      ]);
+      setItems(resSchedules.data);
+      setVans(resVans.data);
     } catch (e) {
-      setErr("Failed to load schedules");
+      setErr("Failed to load schedules or vans");
     } finally {
       setLoading(false);
     }
@@ -62,31 +79,36 @@ export default function Schedule() {
       const payload = {
         ...form,
         schedule_id: Number(form.schedule_id),
-        start_time: new Date(form.start_time).toISOString(),
-        end_time: new Date(form.end_time).toISOString(),
+        quantity: Number(form.quantity),
+        expected_date: new Date(form.expected_date).toISOString(),
+        start_time: form.start_time ? new Date(form.start_time).toISOString() : null,
+        end_time: form.end_time ? new Date(form.end_time).toISOString() : null
       };
       if (editingId) {
         await axios.put(`${API_URL}/${editingId}`, payload);
       } else {
         await axios.post(API_URL, payload);
       }
-      setForm(initial);
+      setForm(initialForm);
       setEditingId(null);
       fetchAll();
     } catch (e) {
-      if (e.response?.status === 409) alert(e.response.data.message);
-      else alert(e.response?.data?.message || "Save failed");
+      alert(e.response?.data?.message || "Save failed");
     }
   };
 
   const onEdit = (it) => {
     setEditingId(it._id);
     setForm({
+      order_id: it.order_id,
       schedule_id: it.schedule_id,
+      wholesaler_name: it.wholesaler_name,
+      quantity: it.quantity,
       van_number: it.van_number,
       driver_name: it.driver_name,
       pickup_location: it.pickup_location,
       dropoff_location: it.dropoff_location,
+      expected_date: it.expected_date ? it.expected_date.substring(0,10) : "",
       start_time: it.start_time ? it.start_time.substring(0,16) : "",
       end_time: it.end_time ? it.end_time.substring(0,16) : "",
       status: it.status,
@@ -97,76 +119,82 @@ export default function Schedule() {
 
   const onDelete = async (id) => {
     if (!window.confirm("Delete this schedule?")) return;
-    try {
-      await axios.delete(`${API_URL}/${id}`);
-      fetchAll();
-    } catch {
-      alert("Delete failed");
-    }
+    await axios.delete(`${API_URL}/${id}`);
+    fetchAll();
   };
 
   const updateStatus = async (id, status) => {
-    try {
-      await axios.patch(`${API_URL}/${id}/status`, { status });
-      fetchAll();
-    } catch {
-      alert("Status update failed");
-    }
+    await axios.patch(`${API_URL}/${id}/status`, { status });
+    fetchAll();
   };
 
-  // filtering client-side
   const filtered = useMemo(() => {
     return items.filter(it => {
       const okVan = vanFilter ? it.van_number.toLowerCase().includes(vanFilter.toLowerCase()) : true;
-      const t = new Date(it.start_time).getTime();
+      const okStatus = statusFilter ? it.status === statusFilter : true;
+      const okWholesaler = wholesalerFilter ? it.wholesaler_name.toLowerCase().includes(wholesalerFilter.toLowerCase()) : true;
+      const t = new Date(it.expected_date).getTime();
       const okFrom = dateFrom ? t >= new Date(dateFrom).getTime() : true;
       const okTo = dateTo ? t <= new Date(dateTo).getTime() : true;
-      return okVan && okFrom && okTo;
+      return okVan && okStatus && okWholesaler && okFrom && okTo;
     });
-  }, [items, vanFilter, dateFrom, dateTo]);
+  }, [items, vanFilter, statusFilter, wholesalerFilter, dateFrom, dateTo]);
 
-  // overdue detection
-  const now = Date.now();
-  const isOverdue = (it) => new Date(it.end_time).getTime() < now && !['Completed','Canceled'].includes(it.status);
+  const isOverdue = (it) => new Date(it.expected_date).getTime() < Date.now() && !['Completed','Canceled'].includes(it.status);
 
   const generatePDF = () => {
     const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.text("Delivery Schedules Report", 14, 22);
-    doc.setFontSize(11);
-    doc.setTextColor(100);
-
-    const head = [[
-      "Schedule ID","Van","Driver","Pickup","Drop-off","Start","End","Status"
-    ]];
-
+    doc.text("Delivery Report", 14, 22);
+    const head = [["OrderID","Van","Driver","Wholesaler","Qty","Pickup","Dropoff","Expected","Status"]];
     const body = filtered.map(it => [
-      it.schedule_id,
-      it.van_number,
-      it.driver_name,
-      it.pickup_location,
-      it.dropoff_location,
-      new Date(it.start_time).toLocaleString(),
-      new Date(it.end_time).toLocaleString(),
-      it.status,
+      it.order_id, it.van_number, it.driver_name, it.wholesaler_name, it.quantity,
+      it.pickup_location, it.dropoff_location,
+      new Date(it.expected_date).toLocaleDateString(), it.status
     ]);
-
     autoTable(doc, { startY: 30, head, body });
-    doc.save("delivery_schedules_report.pdf");
+    doc.save("delivery_report.pdf");
   };
 
+  const exportExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(filtered.map(it => ({
+      OrderID: it.order_id, Van: it.van_number, Driver: it.driver_name,
+      Wholesaler: it.wholesaler_name, Quantity: it.quantity,
+      Pickup: it.pickup_location, Dropoff: it.dropoff_location,
+      Expected: it.expected_date ? it.expected_date.substring(0,10) : "",
+      Status: it.status
+    })));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "DeliveryReport");
+    XLSX.writeFile(wb, "delivery_report.xlsx");
+  };
+
+  // Calendar events
   const calendarEvents = filtered.map(it => ({
     id: it._id,
     title: `${it.van_number} • ${it.driver_name}`,
-    start: it.start_time,
-    end: it.end_time,
+    start: it.start_time || it.expected_date,
+    end: it.end_time || it.expected_date,
     color: it.status === 'Completed' ? '#2ecc71'
-         : it.status === 'In Progress' ? '#f1c40f'
-         : isOverdue(it) ? '#e74c3c'
-         : undefined
+          : it.status === 'In Transit' ? '#f1c40f'
+          : isOverdue(it) ? '#e74c3c' : undefined
   }));
 
-  const [view, setView] = useState("table"); // 'table' | 'calendar'
+  // Live analytics
+  const statusCounts = filtered.reduce((acc, it) => {
+    acc[it.status] = (acc[it.status] || 0) + 1;
+    return acc;
+  }, {});
+  const pieData = {
+    labels: Object.keys(statusCounts),
+    datasets: [{ data: Object.values(statusCounts), backgroundColor: ["#f1c40f","#2ecc71","#e74c3c","#3498db","#9b59b6","#e67e22"] }]
+  };
+
+  const vansUsage = {};
+  filtered.forEach(it => { vansUsage[it.van_number] = (vansUsage[it.van_number]||0)+1; });
+  const barData = {
+    labels: Object.keys(vansUsage),
+    datasets: [{ label: "Deliveries per Van", data: Object.values(vansUsage), backgroundColor:"#3498db" }]
+  };
 
   if (loading) return <p>Loading schedules...</p>;
   if (err) return <p>{err}</p>;
@@ -175,165 +203,134 @@ export default function Schedule() {
     <div className="schedule-container">
       <div className="dashboard-header">
         <h2>Welcome Manager, {userName}</h2>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
+        <button className="logout-button" onClick={()=>{localStorage.clear(); navigate("/login");}}>Logout</button>
       </div>
 
       <div style={{ padding: "20px" }}>
-      <button
-        className="back-button"
-        onClick={() => navigate("/deliveryDashboard")}
-      >
-        ← Back to Dashboard
-      </button>
+        <button className="back-button" onClick={()=>navigate("/deliveryDashboard")}>← Back to Dashboard</button>
       </div>
-
-
-
 
       <h2>Delivery Schedule Management</h2>
 
-      {/* Filters + actions */}
+      {/* Filters */}
       <div className="toolbar">
-        <div className="filters">
-          <input
-            type="text"
-            placeholder="Search by van number"
-            value={vanFilter}
-            onChange={(e) => setVanFilter(e.target.value)}
-          />
-          <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} />
-          <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} />
-          <button onClick={() => { setVanFilter(""); setDateFrom(""); setDateTo(""); }}>Clear</button>
-        </div>
-        <div className="actions">
-          <button onClick={() => setView(view === "table" ? "calendar" : "table")}>
-            {view === "table" ? "Calendar View" : "Table View"}
-          </button>
-          <button onClick={generatePDF}>Generate PDF</button>
-        </div>
+        <input placeholder="Van" value={vanFilter} onChange={e=>setVanFilter(e.target.value)} />
+        <input placeholder="Wholesaler" value={wholesalerFilter} onChange={e=>setWholesalerFilter(e.target.value)} />
+        <select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
+          <option value="">All Status</option>
+          {['Pending','Scheduled','Dispatched','In Transit','Completed','Canceled'].map(s=>(
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+        <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} />
+        <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} />
+        <button onClick={()=>{setVanFilter(""); setWholesalerFilter(""); setStatusFilter(""); setDateFrom(""); setDateTo("");}}>Clear</button>
       </div>
 
-      {view === "calendar" ? (
-        <div className="calendar-wrap">
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="timeGridWeek"
-            headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            }}
-            events={calendarEvents}
-            height="auto"
-          />
-        </div>
+      <div className="actions">
+        <button onClick={()=>setView(view==="table"?"calendar":"table")}>{view==="table"?"Calendar View":"Table View"}</button>
+        <button onClick={generatePDF}>Export PDF 📄</button>
+        <button onClick={exportExcel}>Export Excel 📊</button>
+      </div>
+
+      {view==="calendar" ? (
+        <FullCalendar
+          plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin]}
+          initialView="timeGridWeek"
+          headerToolbar={{ left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' }}
+          events={calendarEvents}
+          height="auto"
+        />
       ) : (
         <div className="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Sch. ID</th>
-                <th>Van</th>
-                <th>Driver</th>
-                <th>Pickup</th>
-                <th>Drop-off</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Status</th>
-                <th>Quick</th>
-                <th>Actions</th>
+                <th>Schedule ID</th><th>OrderID</th><th>Van</th><th>Driver</th><th>Wholesaler</th><th>Qty</th>
+                <th>Pickup</th><th>Dropoff</th><th>Expected</th><th>Status</th><th>Timeline</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map(it => (
-                <tr key={it._id} className={isOverdue(it) ? "overdue" : ""}>
+              {filtered.map(it=>(
+                <tr key={it._id} className={isOverdue(it)?"overdue":""}>
                   <td>{it.schedule_id}</td>
+                  <td>{it.order_id}</td>
                   <td>{it.van_number}</td>
                   <td>{it.driver_name}</td>
+                  <td>{it.wholesaler_name}</td>
+                  <td>{it.quantity}</td>
                   <td>{it.pickup_location}</td>
                   <td>{it.dropoff_location}</td>
-                  <td>{new Date(it.start_time).toLocaleString()}</td>
-                  <td>{new Date(it.end_time).toLocaleString()}</td>
-                  <td><span className={`status ${it.status.replace(" ","-").toLowerCase()}`}>{it.status}</span></td>
-                  <td className="quick">
-                    <button className="status-btn in-progress" onClick={()=>updateStatus(it._id,'In Progress')}>In Progress</button>
-                    <button className="status-btn completed" onClick={()=>updateStatus(it._id,'Completed')}>Done</button>
+                  <td>{new Date(it.expected_date).toLocaleDateString()}</td>
+                  <td>{it.status}</td>
+                  <td>
+                    {it.history.map(h=>(<div key={h.timestamp}>{h.status} @ {new Date(h.timestamp).toLocaleString()}</div>))}
                   </td>
                   <td>
-                    <button className="action-btn edit" onClick={()=>onEdit(it)}>Edit</button>
-                    <button className="action-btn danger"
-                     onClick={()=>onDelete(it._id)}>Delete</button>
+                    <button onClick={()=>updateStatus(it._id,'Dispatched')}>Dispatch</button>
+                    <button onClick={()=>updateStatus(it._id,'In Transit')}>In Transit</button>
+                    <button onClick={()=>updateStatus(it._id,'Completed')}>Done</button>
+                    <button onClick={()=>onEdit(it)}>Edit</button>
+                    <button onClick={()=>onDelete(it._id)}>Delete</button>
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && (
-                <tr><td colSpan="10" style={{textAlign:'center'}}>No schedules</td></tr>
-              )}
+              {filtered.length===0 && <tr><td colSpan="11">No schedules found</td></tr>}
             </tbody>
           </table>
         </div>
       )}
 
-      <h3>{editingId ? "Edit Schedule" : "Add New Schedule"}</h3>
-      <form onSubmit={onSubmit} className="schedule-form">
-        <div>
-          <label>Schedule ID</label>
-          <input type="number" name="schedule_id" value={form.schedule_id} onChange={onChange} required />
-        </div>
-        <div>
-          <label>Van Number</label>
-          <input type="text" name="van_number" value={form.van_number} onChange={onChange} required />
-        </div>
-        <div>
-          <label>Driver Name</label>
-          <input type="text" name="driver_name" value={form.driver_name} onChange={onChange} required />
-        </div>
-        <div>
-          <label>Pickup Location</label>
-          <input type="text" name="pickup_location" value={form.pickup_location} onChange={onChange} required />
-        </div>
-        <div>
-          <label>Drop-off Location</label>
-          <input type="text" name="dropoff_location" value={form.dropoff_location} onChange={onChange} required />
-        </div>
-        <div>
-          <label>Start Time</label>
-          <input type="datetime-local" name="start_time" value={form.start_time} onChange={onChange} required />
-        </div>
-        <div>
-          <label>End Time</label>
-          <input type="datetime-local" name="end_time" value={form.end_time} onChange={onChange} required />
-        </div>
-        <div>
-          <label>Status</label>
-          <select name="status" value={form.status} onChange={onChange}>
-            <option>Scheduled</option>
-            <option>In Progress</option>
-            <option>Completed</option>
-            <option>Canceled</option>
+      {/* Form */}
+      <div className="form-container">
+        <h3>{editingId?"Edit Delivery":"New Delivery"}</h3>
+        <form onSubmit={onSubmit}>
+          <input
+  name="schedule_id"
+  value={form.schedule_id}
+  placeholder="Auto-generatedSheduleId"
+  readOnly
+/>
+          <input
+  name="order_id"
+  placeholder="Order ID (from report)"
+  value={form.order_id}
+  onChange={onChange}
+  required
+/>
+          <input name="wholesaler_name" placeholder="Wholesaler" value={form.wholesaler_name} onChange={onChange} required />
+          <input name="quantity" type="number" placeholder="Quantity" value={form.quantity} onChange={onChange} required />
+          <select name="van_number" value={form.van_number} onChange={onChange} required>
+            <option value="">Select Van</option>
+            {vans.filter(v=>v.availability_status==="Available").map(v=>(
+              <option key={v._id} value={v.van_number}>{v.van_number} ({v.name})</option>
+            ))}
           </select>
-        </div>
-        <div>
-          <label>Notes</label>
-          <textarea name="notes" rows={3} value={form.notes} onChange={onChange} />
-        </div>
+          <input name="driver_name" placeholder="Driver" value={form.driver_name} onChange={onChange} required />
+          <input name="pickup_location" placeholder="Pickup Location" value={form.pickup_location} onChange={onChange} required />
+          <input name="dropoff_location" placeholder="Dropoff Location" value={form.dropoff_location} onChange={onChange} required />
+          <input name="expected_date" type="date" placeholder="Expected Date" value={form.expected_date} onChange={onChange} required />
+          <input name="start_time" type="datetime-local" placeholder="Start Time" value={form.start_time} onChange={onChange} />
+          <input name="end_time" type="datetime-local" placeholder="End Time" value={form.end_time} onChange={onChange} />
+          <select name="status" value={form.status} onChange={onChange}>
+            {['Pending','Scheduled','Dispatched','In Transit','Completed','Canceled'].map(s=>(<option key={s} value={s}>{s}</option>))}
+          </select>
+          <textarea name="notes" placeholder="Notes" value={form.notes} onChange={onChange}></textarea>
+          <button type="submit">{editingId?"Update":"Create"}</button>
+          {editingId && <button type="button" onClick={()=>{setEditingId(null); setForm(initialForm)}}>Cancel</button>}
+        </form>
+      </div>
 
-        <div className="form-actions">
-          <button type="submit">{editingId ? "Update" : "Add"}</button>
-          {editingId && (
-            <button type="button" className="secondary"
-              onClick={()=>{ setForm(initial); setEditingId(null); }}>
-              Cancel
-            </button>
-          )}
-        </div>
-      </form>
-      <button
-            className="back-to-top"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-             ↑
-        </button>
+      {/* Live Charts */}
+      <div className="charts">
+        <h3>Status Distribution</h3>
+        <Pie data={pieData} />
+        <h3>Van Usage</h3>
+        <Bar data={barData} />
+      </div>
+
+      {/* Scroll to top */}
+      <button className="scroll-top" onClick={()=>window.scrollTo({top:0, behavior:"smooth"})}>↑ Top</button>
     </div>
   );
 }
