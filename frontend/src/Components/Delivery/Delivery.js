@@ -4,7 +4,6 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import './delivery.css';
 import { useNavigate } from "react-router-dom";
-import Nav from "../Nav/Nav";
 
 
 const API_URL = "http://localhost:5000/api/delivery-vans"; // change if needed
@@ -169,7 +168,23 @@ function Delivery() {
         <h2>Welcome HR Manager, {userName}</h2>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
         </div>
-        <Nav />
+        <div style={{ padding: "20px" }}>
+      <button
+        className="back-button"
+        onClick={() => navigate("/deliveryDashboard")}
+      >
+        ← Back to Dashboard
+      </button>
+      </div>
+        <div className="dashboard-buttons">
+          <div
+            className="fancy-button"
+            onClick={() => navigate("/schedule")}
+          >
+        <h3>🚚 Delivery Schedule</h3>
+        <p>Click here to manage schedules!</p>
+          </div>
+        </div>
       <h2>Delivery Vans List</h2>
 
       <button onClick={generatePDF} style={{ marginBottom: "10px" }}>
@@ -307,6 +322,13 @@ function Delivery() {
           </button>
         )}
       </form>
+
+      <button
+            className="back-to-top"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+             ↑
+        </button>
     </div>
   );
 }

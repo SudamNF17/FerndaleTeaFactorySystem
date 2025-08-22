@@ -29,3 +29,8 @@
 }
 
 
+.nav-list li a.active-link {
+  background-color: #2980b9; /* blue highlight for active page */
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
