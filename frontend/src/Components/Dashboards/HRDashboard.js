@@ -17,7 +17,7 @@ const HRDashboard = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h2>Welcome HR Manager, {userName}</h2>
+        <h2>Welcome Manager, {userName}</h2>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
 
