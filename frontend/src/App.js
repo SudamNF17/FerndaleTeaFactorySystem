@@ -9,6 +9,8 @@ import SupplierDashboard from "./Components/Dashboards/SupplierDashboard";
 import WholesalerDashboard from "./Components/Dashboards/WholesalerDashboard";
 import Delivery from "./Components/Delivery/Delivery";
 import Supplier from "./Components/Supplier/Supplier";
+import EmployeeDashboard from "./Components/Employee/Dashboard";
+
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
           <Route path="/delivery-vans" element={<Delivery />} />
           <Route path="/supplier" element={<Supplier />} />
+          <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+          
         </Routes>
       </React.Fragment>
     </div>
