@@ -1,4 +1,4 @@
-// src/Payment.jsx  (use .js if you prefer)
+// src/Payment.jsx
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'ol/ol.css';
@@ -16,7 +16,7 @@ import { Icon, Style } from 'ol/style.js';
 export default function Payment() {
   const navigate = useNavigate();
 
-  // ---- Read persisted data (do NOT modify cart here) ----
+  // ---- Read persisted data ----
   const cart = useMemo(() => {
     try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
   }, []);
@@ -25,7 +25,6 @@ export default function Payment() {
     try { return JSON.parse(localStorage.getItem('totals') || '{}'); } catch { return {}; }
   }, []);
 
-  // Fallback totals if LS doesn't have them yet
   const totals = useMemo(() => {
     if (totalsFromLS && typeof totalsFromLS.total === 'number') return totalsFromLS;
     const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
@@ -36,8 +35,8 @@ export default function Payment() {
 
   // Restore user + location if present
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('user')) || { name: '', email: '', address: '' }; }
-    catch { return { name: '', email: '', address: '' }; }
+    try { return JSON.parse(localStorage.getItem('user')) || { name: '', email: '', address: '', phone: '' }; }
+    catch { return { name: '', email: '', address: '', phone: '' }; }
   });
   const [markerCoord, setMarkerCoord] = useState(() => {
     try { return JSON.parse(localStorage.getItem('location') || 'null'); } catch { return null; }
@@ -45,7 +44,6 @@ export default function Payment() {
 
   // ---- Map setup ----
   const mapEl = useRef(null);
-  const mapRef = useRef(null);
   const vectorSourceRef = useRef(new VectorSource());
   const vectorLayerRef = useRef(new VectorLayer({ source: vectorSourceRef.current }));
 
@@ -77,9 +75,11 @@ export default function Payment() {
     }
 
     // Click to drop/move pin
-    map.on('click', (evt) => {
+    map.on('click', async (evt) => {
       const coord = evt.coordinate; // EPSG:3857
       vectorSourceRef.current.clear();
+
+      // drop marker
       const feature = new Feature({ geometry: new Point(coord) });
       feature.setStyle(new Style({
         image: new Icon({
@@ -89,88 +89,108 @@ export default function Payment() {
         })
       }));
       vectorSourceRef.current.addFeature(feature);
+
       const [lon, lat] = toLonLat(coord);
       setMarkerCoord([lon, lat]);
+
+      // Reverse geocoding
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+        );
+        const data = await res.json();
+        if (data && data.display_name) {
+          setUser(prev => ({ ...prev, address: data.display_name }));
+        }
+      } catch (err) {
+        console.error("Reverse geocoding failed:", err);
+      }
     });
 
-    mapRef.current = map;
     return () => map.setTarget(null);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ---- Actions ----
-const handlePay = async () => {
-  if (cart.length === 0) {
-    alert('Your cart is empty. Please add items first.');
-    return;
-  }
-  if (!user.name || !user.email || !user.address) {
-    alert('Please fill in your name, email, and address.');
-    return;
-  }
-  if (!markerCoord) {
-    alert('Please pin your delivery location on the map.');
-    return;
-  }
-
-  // Prepare order data for backend
-  const orderData = {
-    buyer: {
-      name: user.name,
-      email: user.email,
-      phone: user.phone || "N/A", // in case phone is not collected yet
-      address: user.address,
-    },
-    cart: cart.map(item => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      qty: item.qty,
-    })),
-    totals: totals,
-    deliveryLocation: {
-  lat: markerCoord[1],
-  lng: markerCoord[0],
-},
- // { lat, lng }
-  };
-
-  try {
-    const res = await fetch("http://localhost:5000/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderData),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-  const savedOrder = data.order;
-  navigate(`/bill/${savedOrder._id}`);   // ✅ send order ID in the URL
-}
-else {
-      alert("❌ Failed to place order: " + data.message);
+  // ---- Validation + Actions ----
+  const handlePay = async () => {
+    if (cart.length === 0) {
+      alert('Your cart is empty. Please add items first.');
+      return;
     }
-  } catch (err) {
-    alert("❌ Error placing order: " + err.message);
-  }
-};
 
+    // validation
+    if (!user.name.trim()) {
+      alert("Please enter your name.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+    if (!emailRegex.test(user.email)) {
+      alert("Please enter a valid email (must contain '@' and end with '.com').");
+      return;
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(user.phone || "")) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
+    if (!user.address.trim()) {
+      alert("Please provide your delivery address.");
+      return;
+    }
+
+    // order payload
+    const orderData = {
+      buyer: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+      },
+      cart: cart.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        qty: item.qty,
+      })),
+      totals: totals,
+      deliveryLocation: markerCoord
+        ? { lat: markerCoord[1], lng: markerCoord[0] }
+        : null,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        const savedOrder = data.order;
+        navigate(`/bill/${savedOrder._id}`);
+      } else {
+        alert("❌ Failed to place order: " + data.message);
+      }
+    } catch (err) {
+      alert("❌ Error placing order: " + err.message);
+    }
+  };
 
   const handleUpdateCart = () => {
-    // Save any current inputs so they’re still there when you come back
     localStorage.setItem('user', JSON.stringify(user));
     if (markerCoord) localStorage.setItem('location', JSON.stringify(markerCoord));
-
-    // Safest way back to the previous page (usually the Cart):
     navigate(-1);
-    // If you prefer a fixed route instead, use:
-    // navigate('/');
   };
 
+  // ---- UI ----
   return (
     <div className="cart-app">
       <header className="app-header">
-        <h1>Payment</h1>
+        <h1>Order</h1>
         <div className="cart-indicator">
           <span>{cart.reduce((t, i) => t + (i.qty || 0), 0)} items</span>
         </div>
@@ -216,8 +236,8 @@ else {
               />
               <p style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
                 {markerCoord
-                  ? <>Pinned at <strong>Lat:</strong> {markerCoord[1].toFixed(5)}, <strong>Lon:</strong> {markerCoord[0].toFixed(5)}</>
-                  : 'Click on the map to drop your delivery pin.'}
+                  ? <>📍 {user.address || "Fetching address..."}</>
+                  : 'Click on the map to drop your delivery pin, or type your address manually.'}
               </p>
             </>
           )}
@@ -238,18 +258,16 @@ else {
               />
             </label>
 
-          <label style={{ display: 'block', marginBottom: 8 }}>
-            Phone
-            <input
-              type="text"
-              value={user.phone || ""}
-              onChange={e => setUser({ ...user, phone: e.target.value })}
-              className="input"
-              placeholder="Your phone number"
-            />
-          </label>
-
-
+            <label style={{ display: 'block', marginBottom: 8 }}>
+              Phone
+              <input
+                type="text"
+                value={user.phone || ""}
+                onChange={e => setUser({ ...user, phone: e.target.value })}
+                className="input"
+                placeholder="10-digit phone number"
+              />
+            </label>
 
             <label style={{ display: 'block', marginBottom: 8 }}>
               Email
@@ -261,6 +279,7 @@ else {
                 placeholder="you@example.com"
               />
             </label>
+
             <label style={{ display: 'block', marginBottom: 8 }}>
               Address
               <textarea
@@ -274,7 +293,7 @@ else {
           </div>
 
           <button className="checkout-btn" onClick={handlePay}>
-            Pay
+            Set Order
           </button>
           <button className="clear-cart-btn" onClick={handleUpdateCart} style={{ marginTop: 8 }}>
             Update Cart

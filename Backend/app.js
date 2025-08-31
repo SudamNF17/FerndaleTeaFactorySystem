@@ -5,7 +5,7 @@ const cors = require("cors");
 // Import your routes
 const orderRoutes = require("./Routes/OrderRoutes");
 const userRoutes = require("./Routes/UserRoutes");
-const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes")
+const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes");
 
 const app = express();
 
@@ -13,8 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // for parsing application/json
 
-
-// MongoDB Connection (Cloud Mongo URI or Localhost)
+// MongoDB Connection
 mongoose.connect("mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.net/teafactory", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -23,19 +22,9 @@ mongoose.connect("mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.
 .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // Routes
-app.use("/api/users", userRoutes); // All user/login/register routes
-app.use("/api/delivery-vans", deliveryVanRoutes)
+app.use("/api/users", userRoutes); 
+app.use("/api/delivery-vans", deliveryVanRoutes);
 app.use("/api/orders", orderRoutes);
-
-// Root route for testing in Postman
-app.get("/", (req, res) => {
-  res.send("API is running 🚀");
-});
-
-// Root route for testing in Postman
-app.get("/", (req, res) => {
-  res.send("API is running 🚀");
-});
 
 // Root route for testing in Postman
 app.get("/", (req, res) => {

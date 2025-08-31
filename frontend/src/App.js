@@ -12,6 +12,8 @@ import Supplier from "./Components/Supplier/Supplier";
 import Cart from "./Components/Order/Cart";
 import Payment from "./Components/Order/Payment";
 import Bill from "./Components/Order/Bill";
+import Orderdashboard from "./Components/Order/Orderdashboard";
+
 
 function App() {
   return (
@@ -29,6 +31,9 @@ function App() {
           <Route path="/cart" element={<Cart />} />
            <Route path="/payment" element={<Payment />} />
             <Route path="/bill/:id" element={<Bill />} />
+            <Route path="/Orderdashboard" element={<Orderdashboard />} />
+
+            
         </Routes>
       </React.Fragment>
     </div>
