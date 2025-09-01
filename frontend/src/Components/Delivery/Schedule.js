@@ -27,7 +27,7 @@ export default function Schedule() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
 
-  const [view, setView] = useState("table"); // 'table' | 'calendar'
+  const [view, setView] = useState("table"); 
   const [vanFilter, setVanFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [wholesalerFilter, setWholesalerFilter] = useState("");
@@ -103,6 +103,7 @@ export default function Schedule() {
       order_id: it.order_id,
       schedule_id: it.schedule_id,
       wholesaler_name: it.wholesaler_name,
+      wholesaler_phone: it.wholesaler_phone || "",
       quantity: it.quantity,
       van_number: it.van_number,
       driver_name: it.driver_name,
@@ -143,41 +144,64 @@ export default function Schedule() {
   const isOverdue = (it) => new Date(it.expected_date).getTime() < Date.now() && !['Completed','Canceled'].includes(it.status);
 
   const generatePDF = () => {
-    const doc = new jsPDF();
-    doc.text("Delivery Report", 14, 22);
-    const head = [["OrderID","Van","Driver","Wholesaler","Qty","Pickup","Dropoff","Expected","Status"]];
-    const body = filtered.map(it => [
-      it.order_id, it.van_number, it.driver_name, it.wholesaler_name, it.quantity,
-      it.pickup_location, it.dropoff_location,
-      new Date(it.expected_date).toLocaleDateString(), it.status
-    ]);
-    autoTable(doc, { startY: 30, head, body });
-    doc.save("delivery_report.pdf");
-  };
+  const doc = new jsPDF();
+  doc.text("Delivery Report", 14, 22);
+
+  // Add Wholesaler Phone column
+  const head = [["OrderID","Van","Driver","Wholesaler","Phone","Qty","Pickup","Dropoff","Expected","Status"]];
+
+  const body = filtered.map(it => [
+    it.order_id,
+    it.van_number,
+    it.driver_name,
+    it.wholesaler_name,
+    it.wholesaler_phone || "N/A", 
+    it.quantity,
+    it.pickup_location,
+    it.dropoff_location,
+    new Date(it.expected_date).toLocaleDateString(),
+    it.status
+  ]);
+
+  autoTable(doc, { startY: 30, head, body });
+  doc.save("delivery_report.pdf");
+};
+
 
   const exportExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(filtered.map(it => ({
-      OrderID: it.order_id, Van: it.van_number, Driver: it.driver_name,
-      Wholesaler: it.wholesaler_name, Quantity: it.quantity,
-      Pickup: it.pickup_location, Dropoff: it.dropoff_location,
+  const ws = XLSX.utils.json_to_sheet(
+    filtered.map(it => ({
+      OrderID: it.order_id,
+      Van: it.van_number,
+      Driver: it.driver_name,
+      Wholesaler: it.wholesaler_name,
+      Phone: it.wholesaler_phone || "N/A",  
+      Quantity: it.quantity,
+      Pickup: it.pickup_location,
+      Dropoff: it.dropoff_location,
       Expected: it.expected_date ? it.expected_date.substring(0,10) : "",
       Status: it.status
-    })));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "DeliveryReport");
-    XLSX.writeFile(wb, "delivery_report.xlsx");
-  };
+    }))
+  );
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "DeliveryReport");
+  XLSX.writeFile(wb, "delivery_report.xlsx");
+};
+
 
   // Calendar events
   const calendarEvents = filtered.map(it => ({
-    id: it._id,
-    title: `${it.van_number} • ${it.driver_name}`,
-    start: it.start_time || it.expected_date,
-    end: it.end_time || it.expected_date,
-    color: it.status === 'Completed' ? '#2ecc71'
-          : it.status === 'In Transit' ? '#f1c40f'
-          : isOverdue(it) ? '#e74c3c' : undefined
-  }));
+  id: it._id,
+  // Include phone in the title
+  title: `${it.van_number} • ${it.driver_name} • ${it.wholesaler_name} (${it.wholesaler_phone || "N/A"})`,
+  start: it.start_time || it.expected_date,
+  end: it.end_time || it.expected_date,
+  color: it.status === 'Completed' ? '#2ecc71'
+        : it.status === 'In Transit' ? '#f1c40f'
+        : isOverdue(it) ? '#e74c3c' : undefined
+}));
+
 
   // Live analytics
   const statusCounts = filtered.reduce((acc, it) => {
@@ -246,7 +270,7 @@ export default function Schedule() {
           <table>
             <thead>
               <tr>
-                <th>Schedule ID</th><th>OrderID</th><th>Van</th><th>Driver</th><th>Wholesaler</th><th>Qty</th>
+                <th>Schedule ID</th><th>OrderID</th><th>Van</th><th>Driver</th><th>Wholesaler</th><th>Wholesaler Phone</th><th>Qty</th>
                 <th>Pickup</th><th>Dropoff</th><th>Expected</th><th>Status</th><th>Timeline</th><th>Actions</th>
               </tr>
             </thead>
@@ -258,6 +282,7 @@ export default function Schedule() {
                   <td>{it.van_number}</td>
                   <td>{it.driver_name}</td>
                   <td>{it.wholesaler_name}</td>
+                  <td>{it.wholesaler_phone || "N/A"}</td> 
                   <td>{it.quantity}</td>
                   <td>{it.pickup_location}</td>
                   <td>{it.dropoff_location}</td>
@@ -299,6 +324,14 @@ export default function Schedule() {
   required
 />
           <input name="wholesaler_name" placeholder="Wholesaler" value={form.wholesaler_name} onChange={onChange} required />
+          <input 
+            name="wholesaler_phone" 
+            placeholder="Wholesaler Phone (e.g., 0712345678)" 
+            value={form.wholesaler_phone} 
+            onChange={onChange} 
+            required 
+          />
+
           <input name="quantity" type="number" placeholder="Quantity" value={form.quantity} onChange={onChange} required />
           <select name="van_number" value={form.van_number} onChange={onChange} required>
             <option value="">Select Van</option>

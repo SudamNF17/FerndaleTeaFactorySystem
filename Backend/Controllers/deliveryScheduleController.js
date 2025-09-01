@@ -60,6 +60,7 @@ const schedule = await DeliverySchedule.create({
   order_id: req.body.order_id,        // manual
   schedule_id: await generateScheduleID(), // auto
   wholesaler_name: req.body.wholesaler_name,
+  wholesaler_phone: req.body.wholesaler_phone,
   quantity: req.body.quantity,
   van_number: req.body.van_number,
   driver_name: req.body.driver_name,
@@ -126,7 +127,7 @@ exports.updateSchedule = async (req, res) => {
   try {
     const {
       van_number, driver_name, pickup_location, dropoff_location,
-      start_time, end_time, status, notes, wholesaler_name, quantity, expected_date
+      start_time, end_time, status, notes, wholesaler_name, wholesaler_phone, quantity, expected_date
     } = req.body;
 
     const schedule = await DeliverySchedule.findById(req.params.id);
@@ -153,6 +154,7 @@ exports.updateSchedule = async (req, res) => {
     schedule.status = status || schedule.status;
     schedule.notes = notes || schedule.notes;
     schedule.wholesaler_name = wholesaler_name || schedule.wholesaler_name;
+    schedule.wholesaler_phone = req.body.wholesaler_phone || schedule.wholesaler_phone; 
     schedule.quantity = quantity || schedule.quantity;
     schedule.expected_date = expected_date ? new Date(expected_date) : schedule.expected_date;
 

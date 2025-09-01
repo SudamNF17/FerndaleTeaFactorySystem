@@ -43,7 +43,7 @@ const NavigationBar = () => {
             to="/deliveryDashboard"
             className={({ isActive }) => (isActive ? "active-link" : "")}
           >
-            Delivery and Payment
+            Delivery Management
           </NavLink>
         </li>
       </ul>

@@ -5,6 +5,12 @@ const DeliveryScheduleSchema = new mongoose.Schema({
   order_id: { type: String, required: true, unique: true }, // auto-generated
   schedule_id: { type: Number, required: true, unique: true },
   wholesaler_name: { type: String, required: true, trim: true, maxlength: 100 },
+  wholesaler_phone: {
+  type: String,
+  trim: true,
+  maxlength: 15, // e.g., "+94712345678"
+  required: true
+  },
   quantity: { type: Number, required: true },
   van_number: { type: String, required: true, trim: true },
   driver_name: { type: String, required: true, trim: true, maxlength: 100 },
