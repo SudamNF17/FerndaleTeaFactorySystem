@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+<<<<<<< Updated upstream
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -52,12 +53,58 @@ function DraggableMarker({ position, setFormData }) {
   };
 
   return <Marker position={markerPosition} draggable={true} eventHandlers={eventHandlers} />;
+=======
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix default Leaflet marker icons
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+function LocationMarker({ setFormData, position, setPosition }) {
+  useMapEvents({
+    click: async (e) => {
+      const { lat, lng } = e.latlng;
+      setPosition(e.latlng);
+
+      // Reverse geocode using OpenStreetMap
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+        );
+        const data = await res.json();
+        const address = data.display_name || `Lat: ${lat}, Lng: ${lng}`;
+        setFormData((prev) => ({
+          ...prev,
+          supplierLocation: address,
+          latitude: lat,
+          longitude: lng,
+        }));
+      } catch {
+        setFormData((prev) => ({
+          ...prev,
+          supplierLocation: `Lat: ${lat}, Lng: ${lng}`,
+          latitude: lat,
+          longitude: lng,
+        }));
+      }
+    },
+  });
+
+  return position === null ? null : <Marker position={position} />;
+>>>>>>> Stashed changes
 }
 
 function Raw() {
   const [formData, setFormData] = useState({
     supplierName: "",
     contactPerson: "",
+<<<<<<< Updated upstream
     phone: "",
     email: "",
     company: "",
@@ -92,10 +139,77 @@ function Raw() {
         });
       });
     }
+=======
+    contactInfo: "",
+    businessRegNumber: "",
+    materialType: "",
+    materialName: "",
+    quantitySupplied: "",
+    batchNumber: "",
+    manufactureDate: "",
+    expiryDate: "",
+    deliveryDate: "",
+    deliveryLocation: "",
+    transportMethod: "",
+    unitPrice: "",
+    totalCost: "",
+    paymentTerms: "",
+    invoiceNumber: "",
+    qualityCertificate: "",
+    inspectionResults: "",
+    complianceNotes: "",
+    supplierLocation: "",
+    latitude: "",
+    longitude: "",
+  });
+
+  const [markerPosition, setMarkerPosition] = useState(null);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setMarkerPosition({ lat: latitude, lng: longitude });
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const data = await res.json();
+          const address = data.display_name || `Lat: ${latitude}, Lng: ${longitude}`;
+          setFormData((prev) => ({
+            ...prev,
+            supplierLocation: address,
+            latitude,
+            longitude,
+          }));
+        } catch {
+          setFormData((prev) => ({
+            ...prev,
+            supplierLocation: `Lat: ${latitude}, Lng: ${longitude}`,
+            latitude,
+            longitude,
+          }));
+        }
+      },
+      (err) => {
+        alert("Error fetching location: " + err.message);
+      }
+    );
+>>>>>>> Stashed changes
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+<<<<<<< Updated upstream
     if (editIndex !== null) {
       const updatedData = [...submittedData];
       updatedData[editIndex] = formData;
@@ -339,6 +453,145 @@ function Raw() {
           </table>
         </div>
       )}
+=======
+    console.log("Raw Material Supplier Form Submitted:", formData);
+    alert("Form submitted! Check console for details.");
+  };
+
+  return (
+    <div>
+      <h1>Raw Material Supplier Form</h1>
+      <form onSubmit={handleSubmit}>
+        <fieldset>
+          <legend>Supplier Details</legend>
+
+          <div>
+            <label>Supplier Name: </label>
+            <input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Contact Person: </label>
+            <input type="text" name="contactPerson" value={formData.contactPerson} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Contact Info: </label>
+            <input type="text" name="contactInfo" value={formData.contactInfo} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Business Reg. Number / Tax ID: </label>
+            <input type="text" name="businessRegNumber" value={formData.businessRegNumber} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Material Type: </label>
+            <input type="text" name="materialType" value={formData.materialType} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Material Name / Brand: </label>
+            <input type="text" name="materialName" value={formData.materialName} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Quantity Supplied: </label>
+            <input type="number" name="quantitySupplied" value={formData.quantitySupplied} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Batch / Lot Number: </label>
+            <input type="text" name="batchNumber" value={formData.batchNumber} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Manufacture Date: </label>
+            <input type="date" name="manufactureDate" value={formData.manufactureDate} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Expiry Date: </label>
+            <input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Delivery Date: </label>
+            <input type="date" name="deliveryDate" value={formData.deliveryDate} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Delivery Location: </label>
+            <input type="text" name="deliveryLocation" value={formData.deliveryLocation} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Transport Method: </label>
+            <input type="text" name="transportMethod" value={formData.transportMethod} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Unit Price: </label>
+            <input type="number" name="unitPrice" value={formData.unitPrice} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Total Cost: </label>
+            <input type="number" name="totalCost" value={formData.totalCost} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Payment Terms: </label>
+            <input type="text" name="paymentTerms" value={formData.paymentTerms} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Invoice / Receipt Number: </label>
+            <input type="text" name="invoiceNumber" value={formData.invoiceNumber} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Quality Certificate / Test Report: </label>
+            <input type="text" name="qualityCertificate" value={formData.qualityCertificate} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Inspection Results: </label>
+            <input type="text" name="inspectionResults" value={formData.inspectionResults} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label>Compliance Notes: </label>
+            <input type="text" name="complianceNotes" value={formData.complianceNotes} onChange={handleChange} />
+          </div>
+
+          {/* ------------------ Supplier Location at the END ------------------ */}
+          <div>
+            <label>Supplier Location (click on map or use button): </label>
+            <input type="text" name="supplierLocation" value={formData.supplierLocation} readOnly />
+          </div>
+
+          <div style={{ height: "300px", width: "100%", margin: "10px 0" }}>
+            <MapContainer center={[7.8731, 80.7718]} zoom={8} style={{ height: "100%", width: "100%" }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <LocationMarker setFormData={setFormData} position={markerPosition} setPosition={setMarkerPosition} />
+            </MapContainer>
+          </div>
+
+          <div style={{ margin: "10px 0" }}>
+            <button type="button" onClick={getCurrentLocation}>
+              Use My Current Location
+            </button>
+          </div>
+
+          {/* Hidden lat/lng */}
+          <input type="hidden" name="latitude" value={formData.latitude} />
+          <input type="hidden" name="longitude" value={formData.longitude} />
+
+          <button type="submit">Submit</button>
+        </fieldset>
+      </form>
+>>>>>>> Stashed changes
     </div>
   );
 }

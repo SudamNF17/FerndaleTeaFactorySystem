@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+<<<<<<< Updated upstream
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -54,11 +55,57 @@ function DraggableMarker({ position, setFormData }) {
   };
 
   return <Marker position={markerPosition} draggable={true} eventHandlers={eventHandlers} />;
+=======
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix default marker icons
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+function LocationMarker({ setFormData, position, setPosition }) {
+  useMapEvents({
+    click: async (e) => {
+      const { lat, lng } = e.latlng;
+      setPosition(e.latlng);
+
+      // Reverse geocode
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+        );
+        const data = await res.json();
+        const address = data.display_name || `Lat: ${lat}, Lng: ${lng}`;
+        setFormData((prev) => ({
+          ...prev,
+          farmLocation: address,
+          latitude: lat,
+          longitude: lng,
+        }));
+      } catch {
+        setFormData((prev) => ({
+          ...prev,
+          farmLocation: `Lat: ${lat}, Lng: ${lng}`,
+          latitude: lat,
+          longitude: lng,
+        }));
+      }
+    },
+  });
+
+  return position === null ? null : <Marker position={position} />;
+>>>>>>> Stashed changes
 }
 
 function Fresh() {
   const [formData, setFormData] = useState({
     supplierName: "",
+<<<<<<< Updated upstream
     contactPerson: "",
     phone: "",
     email: "",
@@ -95,10 +142,67 @@ function Fresh() {
         });
       });
     }
+=======
+    contactInfo: "",
+    leafType: "",
+    harvestDate: "",
+    quantitySupplied: "",
+    agreedPrice: "",
+    paymentDetails: "",
+    qualityCheckResults: "",
+    farmLocation: "",
+    latitude: "",
+    longitude: "",
+  });
+
+  const [markerPosition, setMarkerPosition] = useState(null);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setMarkerPosition({ lat: latitude, lng: longitude });
+
+        // Reverse geocode
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const data = await res.json();
+          const address = data.display_name || `Lat: ${latitude}, Lng: ${longitude}`;
+          setFormData((prev) => ({
+            ...prev,
+            farmLocation: address,
+            latitude,
+            longitude,
+          }));
+        } catch {
+          setFormData((prev) => ({
+            ...prev,
+            farmLocation: `Lat: ${latitude}, Lng: ${longitude}`,
+            latitude,
+            longitude,
+          }));
+        }
+      },
+      (err) => {
+        alert("Error fetching location: " + err.message);
+      }
+    );
+>>>>>>> Stashed changes
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+<<<<<<< Updated upstream
     if (editIndex !== null) {
       const updatedData = [...submittedData];
       updatedData[editIndex] = formData;
@@ -323,6 +427,86 @@ function Fresh() {
           </table>
         </div>
       )}
+=======
+    console.log("Form Submitted:", formData);
+    alert("Form submitted! Check console for details.");
+  };
+
+  return (
+    <div>
+      <h1>Fresh Tea Leaves Supplier Form</h1>
+      <form onSubmit={handleSubmit}>
+        <fieldset>
+          <legend>Supplier Details</legend>
+
+          {/* Supplier general details */}
+          <div>
+            <label>Supplier Name: </label>
+            <input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Contact Info: </label>
+            <input type="text" name="contactInfo" value={formData.contactInfo} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Leaf Type: </label>
+            <input type="text" name="leafType" value={formData.leafType} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Harvest Date: </label>
+            <input type="date" name="harvestDate" value={formData.harvestDate} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Quantity Supplied (kg): </label>
+            <input type="number" name="quantitySupplied" value={formData.quantitySupplied} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Agreed Price (per kg): </label>
+            <input type="number" name="agreedPrice" value={formData.agreedPrice} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Payment Details: </label>
+            <input type="text" name="paymentDetails" value={formData.paymentDetails} onChange={handleChange} required />
+          </div>
+
+          <div>
+            <label>Quality Check Results: </label>
+            <input type="text" name="qualityCheckResults" value={formData.qualityCheckResults} onChange={handleChange} required />
+          </div>
+
+          {/* ------------------ Farm Location at the END ------------------ */}
+          <div>
+            <label>Farm Location (click on map or use button): </label>
+            <input type="text" name="farmLocation" value={formData.farmLocation} readOnly />
+          </div>
+
+          <div style={{ height: "300px", width: "100%", margin: "10px 0" }}>
+            <MapContainer center={[7.8731, 80.7718]} zoom={8} style={{ height: "100%", width: "100%" }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <LocationMarker setFormData={setFormData} position={markerPosition} setPosition={setMarkerPosition} />
+            </MapContainer>
+          </div>
+
+          <div style={{ margin: "10px 0" }}>
+            <button type="button" onClick={getCurrentLocation}>
+              Use My Current Location
+            </button>
+          </div>
+
+          {/* Hidden lat/lng */}
+          <input type="hidden" name="latitude" value={formData.latitude} />
+          <input type="hidden" name="longitude" value={formData.longitude} />
+
+          <button type="submit">Submit</button>
+        </fieldset>
+      </form>
+>>>>>>> Stashed changes
     </div>
   );
 }
