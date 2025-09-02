@@ -7,7 +7,7 @@ const {
   deleteEmployee,
   toggleActive,
   getDepartmentSummary,
-} = require("../controllers/EmployeeController");
+} = require("../Controllers/EmployeeController");
 
 router.get("/", getEmployees);
 router.get("/summary/departments", getDepartmentSummary);

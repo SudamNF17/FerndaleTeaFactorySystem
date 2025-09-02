@@ -1,0 +1,124 @@
+/* EmployeeProfile.css - Clean Card Style */
+
+.p-6 {
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #374151; /* gray-700 */
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: #f9fafb; /* gray-50 */
+  cursor: not-allowed;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #3b82f6; /* blue-500 */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Buttons */
+button {
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button.bg-blue-500 {
+  background-color: #3b82f6;
+  color: white;
+}
+
+button.bg-blue-500:hover {
+  background-color: #2563eb;
+}
+
+button.bg-green-500 {
+  background-color: #10b981;
+  color: white;
+}
+
+button.bg-green-500:hover {
+  background-color: #059669;
+}
+
+button.bg-red-500 {
+  background-color: #ef4444;
+  color: white;
+}
+
+button.bg-red-500:hover {
+  background-color: #dc2626;
+}
+
+button.bg-gray-400 {
+  background-color: #9ca3af;
+  color: white;
+}
+
+button.bg-gray-400:hover {
+  background-color: #6b7280;
+}
+
+/* Button container spacing */
+.flex {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+/* Card style container */
+.max-w-xl {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-top: 2rem;
+}

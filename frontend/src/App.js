@@ -10,6 +10,9 @@ import WholesalerDashboard from "./Components/Dashboards/WholesalerDashboard";
 import Delivery from "./Components/Delivery/Delivery";
 import Supplier from "./Components/Supplier/Supplier";
 import EmployeeDashboard from "./Components/Employee/Dashboard";
+import EmployeeList from "./Components/Employee/EmployeeList";
+import EmployeeProfile from "./Components/Employee/EmployeeProfile";
+
 
 
 function App() {
@@ -26,6 +29,10 @@ function App() {
           <Route path="/delivery-vans" element={<Delivery />} />
           <Route path="/supplier" element={<Supplier />} />
           <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+                  <Route path="/employees" element={<EmployeeList />} />
+          <Route path="/employees/:id" element={<EmployeeProfile />} />
+
+
           
         </Routes>
       </React.Fragment>
