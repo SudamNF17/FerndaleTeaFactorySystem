@@ -1,18 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import "./Supplier.css"; // ✅ make sure this path is correct
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+import "./Supplier.css"; 
 
 function Supplier() {
   const navigate = useNavigate();
 
   return (
-<<<<<<< Updated upstream
     <div className="supplier-container">
       <h1 className="supplier-title">Supplier Main Dashboard</h1>
 
@@ -25,21 +18,6 @@ function Supplier() {
           Add Fresh Tea Leaves Supply
         </button>
       </div>
-=======
-    <div>
-      <h1>Supplier Main Page</h1>
-
-      <button onClick={() => navigate("/raw")}>
-        Supplying Raw Materials
-      </button>
-
-      <button onClick={() => navigate("/fresh")}>
-        Supplying Fresh Tea Leaves
-      </button>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     </div>
   );
 }
