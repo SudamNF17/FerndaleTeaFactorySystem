@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -54,6 +55,8 @@ function DraggableMarker({ position, setFormData }) {
 
   return <Marker position={markerPosition} draggable={true} eventHandlers={eventHandlers} />;
 =======
+=======
+>>>>>>> Stashed changes
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -97,6 +100,9 @@ function LocationMarker({ setFormData, position, setPosition }) {
   });
 
   return position === null ? null : <Marker position={position} />;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
@@ -104,6 +110,7 @@ function Raw() {
   const [formData, setFormData] = useState({
     supplierName: "",
     contactPerson: "",
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     phone: "",
     email: "",
@@ -140,6 +147,8 @@ function Raw() {
       });
     }
 =======
+=======
+>>>>>>> Stashed changes
     contactInfo: "",
     businessRegNumber: "",
     materialType: "",
@@ -204,11 +213,15 @@ function Raw() {
         alert("Error fetching location: " + err.message);
       }
     );
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     if (editIndex !== null) {
       const updatedData = [...submittedData];
@@ -454,6 +467,8 @@ function Raw() {
         </div>
       )}
 =======
+=======
+>>>>>>> Stashed changes
     console.log("Raw Material Supplier Form Submitted:", formData);
     alert("Form submitted! Check console for details.");
   };
@@ -591,6 +606,9 @@ function Raw() {
           <button type="submit">Submit</button>
         </fieldset>
       </form>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </div>
   );

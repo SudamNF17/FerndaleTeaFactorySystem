@@ -10,6 +10,7 @@ import WholesalerDashboard from "./Components/Dashboards/WholesalerDashboard";
 import Delivery from "./Components/Delivery/Delivery";
 import Supplier from "./Components/Supplier/Supplier";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import Fresh from "./Components/Fresh/Fresh";
 import Raw from "./Components/Raw/Raw";
 
@@ -28,6 +29,8 @@ function App() {
       <Route path="/fresh" element={<Fresh />} />
     </Routes>
 =======
+=======
+>>>>>>> Stashed changes
 import Raw from "./Components/Raw/Raw";
 import Fresh from "./Components/Fresh/Fresh"
 

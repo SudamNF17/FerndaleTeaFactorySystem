@@ -1,7 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import "./Supplier.css"; // ✅ make sure this path is correct
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -33,6 +36,9 @@ function Supplier() {
       <button onClick={() => navigate("/fresh")}>
         Supplying Fresh Tea Leaves
       </button>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </div>
   );

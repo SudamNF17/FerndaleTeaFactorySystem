@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -56,6 +57,8 @@ function DraggableMarker({ position, setFormData }) {
 
   return <Marker position={markerPosition} draggable={true} eventHandlers={eventHandlers} />;
 =======
+=======
+>>>>>>> Stashed changes
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -99,12 +102,16 @@ function LocationMarker({ setFormData, position, setPosition }) {
   });
 
   return position === null ? null : <Marker position={position} />;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
 function Fresh() {
   const [formData, setFormData] = useState({
     supplierName: "",
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     contactPerson: "",
     phone: "",
@@ -143,6 +150,8 @@ function Fresh() {
       });
     }
 =======
+=======
+>>>>>>> Stashed changes
     contactInfo: "",
     leafType: "",
     harvestDate: "",
@@ -197,11 +206,15 @@ function Fresh() {
         alert("Error fetching location: " + err.message);
       }
     );
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     if (editIndex !== null) {
       const updatedData = [...submittedData];
@@ -428,6 +441,8 @@ function Fresh() {
         </div>
       )}
 =======
+=======
+>>>>>>> Stashed changes
     console.log("Form Submitted:", formData);
     alert("Form submitted! Check console for details.");
   };
@@ -506,6 +521,9 @@ function Fresh() {
           <button type="submit">Submit</button>
         </fieldset>
       </form>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </div>
   );
