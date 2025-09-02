@@ -1,0 +1,146 @@
+/* Container */
+.fresh-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* Title */
+.fresh-container h1,
+.fresh-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+/* Form */
+.fresh-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Label & Input */
+.fresh-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.fresh-form input[type="text"],
+.fresh-form input[type="email"],
+.fresh-form input[type="tel"],
+.fresh-form input[type="number"] {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Checkbox aligned left */
+.checkbox-label {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+}
+
+.checkbox-label input {
+  transform: scale(1.2);
+}
+
+/* Buttons */
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-right: 5px;
+}
+
+.submit-btn {
+  background: #27ae60;
+  color: white;
+}
+
+.submit-btn:hover {
+  background: #219150;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Map */
+.map-container {
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Submitted Data */
+.submitted-data {
+  margin-top: 30px;
+}
+
+.submitted-data table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submitted-data th,
+.submitted-data td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.submitted-data th {
+  background: #34495e;
+  color: white;
+}
+
+.submitted-data tr:nth-child(even) {
+  background: #f2f2f2;
+}
+
+.submitted-data button {
+  margin: 3px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.submitted-data button:nth-child(1) {
+  background: #2980b9;
+  color: white;
+}
+
+.submitted-data button:nth-child(2) {
+  background: #e74c3c;
+  color: white;
+}
+
+.submitted-data button:nth-child(3) {
+  background: #8e44ad;
+  color: white;
+}
+
+.submitted-data button:nth-child(4) {
+  background: #f39c12;
+  color: white;
+}
