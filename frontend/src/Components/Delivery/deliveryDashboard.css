@@ -1,5 +1,6 @@
 /* deliveryDashboard.css */
 
+/* ----- Buttons Section ----- */
 .dashboard-buttons {
   display: flex;
   gap: 20px;
@@ -37,6 +38,7 @@
   background: linear-gradient(135deg, #2980b9, #1c5980);
 }
 
+/* Back button style */
 .back-button {
   padding: 8px 16px;
   border-radius: 8px;
@@ -53,6 +55,8 @@
   background-color: #2980b9;
   transform: translateY(-2px);
 }
+
+/* Floating back-to-top button (bottom-right circle) */
 .back-to-top {
   position: fixed;
   bottom: 30px;
@@ -74,6 +78,7 @@
   transform: translateY(-3px);
 }
 
+/* ----- Analytics Section ----- */
 .dashboard-analytics {
   margin-top: 40px;
 }

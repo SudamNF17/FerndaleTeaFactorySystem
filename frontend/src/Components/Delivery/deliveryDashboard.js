@@ -1,10 +1,16 @@
 // src/Components/Delivery/DeliveryDashboard.js
 import React, { useEffect, useState } from "react";
+// useEffect → to fetch data when component loads
+// useState → to store data in state variables
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Bar, Pie } from "react-chartjs-2";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
+import "./deliveryDashboard.css";
+
+// Chart.js modules
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,8 +21,8 @@ import {
   Legend,
   ArcElement
 } from "chart.js";
-import "./deliveryDashboard.css";
 
+// Register chart.js modules
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,13 +36,14 @@ ChartJS.register(
 const DeliveryDashboard = () => { 
   const userName = localStorage.getItem("userName");
   const navigate = useNavigate();
-
+  //clears user data and navigates to login
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
   };
 
-  // State for vans data
+
+  // store delivery vans data from backend
   const [vans, setVans] = useState([]);
 
   // Fetch vans from backend
@@ -52,6 +59,7 @@ const DeliveryDashboard = () => {
     fetchVans();
   }, []);
 
+  
   // Prepare chart data
   const statusCounts = vans.reduce((acc, van) => {
     acc[van.availability_status] = (acc[van.availability_status] || 0) + 1;
@@ -91,7 +99,7 @@ const DeliveryDashboard = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      {/* Header */}
+      {/*Header with user name and logout button */}
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
         <h2>Welcome HR Manager, {userName}</h2>
         <button
