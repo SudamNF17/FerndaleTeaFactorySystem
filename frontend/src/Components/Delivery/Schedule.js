@@ -189,6 +189,7 @@ export default function Schedule() {
   XLSX.writeFile(wb, "delivery_report.xlsx");
 };
 
+  
 
   // Calendar events
   const calendarEvents = filtered.map(it => ({
@@ -259,6 +260,48 @@ export default function Schedule() {
   </button>
   <button title="Download delivery schedule as PDF" onClick={generatePDF}>Export PDF 📄</button>
   <button title="Download delivery schedule as Excel" onClick={exportExcel}>Export Excel 📊</button>
+  
+  <button title="send delivery report to delivery person"
+  onClick={() => {
+    const email = prompt("Enter the email of the delivery van you want to send the report to:");
+
+    if (!email) {
+      alert("No email provided");
+      return;
+    }
+
+    const cleanEmail = email.trim();
+
+    // Simple email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanEmail)) {
+      alert("Invalid email address. Please enter a valid email.");
+      return;
+    }
+
+    const subject = encodeURIComponent("Delivery Report");
+    const body = encodeURIComponent(
+      "Please find the attached delivery report.\n\n(Attach PDF manually)"
+    );
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(cleanEmail)}&su=${subject}&body=${body}`;
+    const mailtoUrl = `mailto:${encodeURIComponent(cleanEmail)}?subject=${subject}&body=${body}`;
+
+    const win = window.open(gmailUrl, "_blank");
+
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      window.location.href = mailtoUrl;
+    }
+  }}
+>
+  Send Email ✉️
+</button>
+
+
+
+
+
+  
 </div>
 
 
