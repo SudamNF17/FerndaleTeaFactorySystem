@@ -231,31 +231,36 @@ export default function Schedule() {
       </div>
 
       <div style={{ padding: "20px" }}>
-        <button className="back-button" onClick={()=>navigate("/deliveryDashboard")}>← Back to Dashboard</button>
-      </div>
+  <button className="back-button" onClick={()=>navigate("/deliveryDashboard")}>
+    ← Back to Dashboard
+  </button>
+</div>
 
       <h2>Delivery Schedule Management</h2>
 
-      {/* Filters */}
-      <div className="toolbar">
-        <input placeholder="Van" value={vanFilter} onChange={e=>setVanFilter(e.target.value)} />
-        <input placeholder="Wholesaler" value={wholesalerFilter} onChange={e=>setWholesalerFilter(e.target.value)} />
-        <select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
-          <option value="">All Status</option>
-          {['Pending','Scheduled','Dispatched','In Transit','Completed','Canceled'].map(s=>(
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-        <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} />
-        <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} />
-        <button onClick={()=>{setVanFilter(""); setWholesalerFilter(""); setStatusFilter(""); setDateFrom(""); setDateTo("");}}>Clear</button>
-      </div>
+{/* Filters */}
+<div className="toolbar">
+  <input placeholder="Van" value={vanFilter} onChange={e=>setVanFilter(e.target.value)} />
+  <input placeholder="Wholesaler" value={wholesalerFilter} onChange={e=>setWholesalerFilter(e.target.value)} />
+  <select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
+    <option value="">All Status</option>
+    {['Pending','Scheduled','Dispatched','In Transit','Completed','Canceled'].map(s=>(
+      <option key={s} value={s}>{s}</option>
+    ))}
+  </select>
+  <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} />
+  <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} />
+  <button onClick={()=>{setVanFilter(""); setWholesalerFilter(""); setStatusFilter(""); setDateFrom(""); setDateTo("");}}>Clear</button>
+</div>
 
       <div className="actions">
-        <button onClick={()=>setView(view==="table"?"calendar":"table")}>{view==="table"?"Calendar View":"Table View"}</button>
-        <button onClick={generatePDF}>Export PDF 📄</button>
-        <button onClick={exportExcel}>Export Excel 📊</button>
-      </div>
+  <button title="Switch to Calendar View" onClick={()=>setView(view==="table"?"calendar":"table")}>
+    {view==="table" ? "Calendar View" : "Table View"}
+  </button>
+  <button title="Download delivery schedule as PDF" onClick={generatePDF}>Export PDF 📄</button>
+  <button title="Download delivery schedule as Excel" onClick={exportExcel}>Export Excel 📊</button>
+</div>
+
 
       {view==="calendar" ? (
         <FullCalendar
@@ -306,61 +311,90 @@ export default function Schedule() {
         </div>
       )}
 
-      {/* Form */}
-      <div className="form-container">
-        <h3>{editingId?"Edit Delivery":"New Delivery"}</h3>
-        <form onSubmit={onSubmit}>
-          <input
-  name="schedule_id"
-  value={form.schedule_id}
-  placeholder="Auto-generatedSheduleId"
-  readOnly
-/>
-          <input
-  name="order_id"
-  placeholder="Order ID (from report)"
-  value={form.order_id}
-  onChange={onChange}
-  required
-/>
-          <input name="wholesaler_name" placeholder="Wholesaler" value={form.wholesaler_name} onChange={onChange} required />
-          <input 
-            name="wholesaler_phone" 
-            placeholder="Wholesaler Phone (e.g., 0712345678)" 
-            value={form.wholesaler_phone} 
-            onChange={onChange} 
-            required 
-          />
+     {/* Form */}
+<div className="form-container">
+  <h3>{editingId ? "Edit Delivery" : "New Delivery"}</h3>
+  <form onSubmit={onSubmit}>
+    
+    {/* Row 1 */}
+    <div className="form-row">
+      <input name="schedule_id" value={form.schedule_id} placeholder="Schedule Id" readOnly />
+      <input name="order_id" value={form.order_id} placeholder="Order ID" onChange={onChange} required />
+    </div>
 
-          <input name="quantity" type="number" placeholder="Quantity" value={form.quantity} onChange={onChange} required />
-          <select name="van_number" value={form.van_number} onChange={onChange} required>
-            <option value="">Select Van</option>
-            {vans.filter(v=>v.availability_status==="Available").map(v=>(
-              <option key={v._id} value={v.van_number}>{v.van_number} ({v.name})</option>
-            ))}
-          </select>
-          <input name="driver_name" placeholder="Driver" value={form.driver_name} onChange={onChange} required />
-          <input name="pickup_location" placeholder="Pickup Location" value={form.pickup_location} onChange={onChange} required />
-          <input name="dropoff_location" placeholder="Dropoff Location" value={form.dropoff_location} onChange={onChange} required />
-          <input name="expected_date" type="date" placeholder="Expected Date" value={form.expected_date} onChange={onChange} required />
-          <input name="start_time" type="datetime-local" placeholder="Start Time" value={form.start_time} onChange={onChange} />
-          <input name="end_time" type="datetime-local" placeholder="End Time" value={form.end_time} onChange={onChange} />
-          <select name="status" value={form.status} onChange={onChange}>
-            {['Pending','Scheduled','Dispatched','In Transit','Completed','Canceled'].map(s=>(<option key={s} value={s}>{s}</option>))}
-          </select>
-          <textarea name="notes" placeholder="Notes" value={form.notes} onChange={onChange}></textarea>
-          <button type="submit">{editingId?"Update":"Create"}</button>
-          {editingId && <button type="button" onClick={()=>{setEditingId(null); setForm(initialForm)}}>Cancel</button>}
-        </form>
-      </div>
+    {/* Row 2 */}
+    <div className="form-row">
+      <input name="wholesaler_name" value={form.wholesaler_name} placeholder="Wholesaler" onChange={onChange} required />
+      <input name="wholesaler_phone" value={form.wholesaler_phone} placeholder="Phone" onChange={onChange} required />
+    </div>
 
-      {/* Live Charts */}
-      <div className="charts">
-        <h3>Status Distribution</h3>
-        <Pie data={pieData} />
-        <h3>Van Usage</h3>
-        <Bar data={barData} />
-      </div>
+    {/* Row 3 */}
+    <div className="form-row">
+      <input name="quantity" type="number" value={form.quantity} placeholder="Quantity" onChange={onChange} required />
+      <select name="van_number" value={form.van_number} onChange={onChange} required>
+        <option value="">Select Van</option>
+        {vans.filter(v=>v.availability_status==="Available").map(v=>(
+          <option key={v._id} value={v.van_number}>{v.van_number} ({v.name})</option>
+        ))}
+      </select>
+    </div>
+
+    {/* Row 4 */}
+    <div className="form-row">
+      <input name="driver_name" value={form.driver_name} placeholder="Driver" onChange={onChange} required />
+      <input name="pickup_location" value={form.pickup_location} placeholder="Pickup Location" onChange={onChange} required />
+    </div>
+
+    {/* Row 5 */}
+    <div className="form-row">
+      <input name="dropoff_location" value={form.dropoff_location} placeholder="Dropoff Location" onChange={onChange} required />
+      <input name="expected_date" type="date" value={form.expected_date} onChange={onChange} required />
+    </div>
+
+    {/* Row 6 */}
+    <div className="form-row">
+      <input name="start_time" type="datetime-local" value={form.start_time} onChange={onChange} />
+      <input name="end_time" type="datetime-local" value={form.end_time} onChange={onChange} />
+    </div>
+
+    {/* Row 7 */}
+    <div className="form-row">
+      <select name="status" value={form.status} onChange={onChange}>
+        {['Pending','Scheduled','Dispatched','In Transit','Completed','Canceled'].map(s=>(
+          <option key={s} value={s}>{s}</option>
+        ))}
+      </select>
+      <textarea name="notes" placeholder="Notes" value={form.notes} onChange={onChange}></textarea>
+    </div>
+
+    <div className="form-buttons">
+      <button type="submit" className="btn-primary">{editingId ? "Update" : "Create"}</button>
+      {editingId && <button type="button" className="btn-secondary" onClick={()=>{setEditingId(null); setForm(initialForm)}}>Cancel</button>}
+    </div>
+
+  </form>
+</div>
+
+
+
+
+    {/* Live Charts */}
+<div className="charts">
+  {/* Status Distribution */}
+  <div className="chart-box status">
+    <h3>Status Distribution</h3>
+    <Pie data={pieData} />
+  </div>
+
+  {/* Van Usage */}
+  <div className="chart-box usage">
+    <h3>Van Usage</h3>
+    <Bar data={barData} />
+  </div>
+</div>
+
+
+   
 
       {/* Scroll to top */}
       <button className="scroll-top" onClick={()=>window.scrollTo({top:0, behavior:"smooth"})}>↑ Top</button>

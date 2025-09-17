@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Bar, Pie } from "react-chartjs-2";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css'; 
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -107,7 +109,7 @@ const DeliveryDashboard = () => {
         </button>
       </div>
 
-      <h3>Delivery & Payment Dashboard</h3>
+      <h3>Delivery Dashboard</h3>
       <p>Here you can manage delivery vans and schedules.</p>
 
       {/* Dashboard Buttons */}
@@ -129,20 +131,57 @@ const DeliveryDashboard = () => {
         </div>
       </div>
 
-      {/* Analytics Charts */}
-      <div className="dashboard-analytics" style={{ marginTop: "40px" }}>
-        <h3>📊 Delivery Analytics</h3>
+{/* Analytics + Calendar */}
+<div className="dashboard-analytics">
+  <h3>📊 Delivery Analytics & Schedule</h3>
 
-        <div style={{ maxWidth: "700px", margin: "20px auto" }}>
-          <h4>Status Distribution</h4>
-          <Pie data={pieData} />
-        </div>
+  <div className="charts-row">
+    <div className="chart-card pie-chart">
+      <h4>Status Distribution</h4>
+      <Pie data={pieData} />
+    </div>
 
-        <div style={{ maxWidth: "700px", margin: "20px auto" }}>
-          <h4>Deliveries per Person</h4>
-          <Bar data={barData} />
-        </div>
-      </div>
+    <div className="chart-card bar-chart">
+      <h4>Deliveries per Person</h4>
+      <Bar data={barData} />
+    </div>
+
+    <div className="chart-card calendar-card">
+      <h4>📅 Delivery Calendar</h4>
+      <Calendar />
+    </div>
+  </div>
+</div>
+
+{/* Factory Details */}
+<div className="factory-details">
+  <h3>🏭 Factory Details</h3>
+  <div className="factory-cards">
+    <div className="factory-card">
+      <h4>Factory Name</h4>
+      <p>Ferndale Tea Factory</p>
+    </div>
+    <div className="factory-card">
+      <h4>Location</h4>
+      <p>Balangoda, Sri Lanka</p>
+    </div>
+    <div className="factory-card">
+      <h4>Established</h4>
+      <p>1965</p>
+    </div>
+    <div className="factory-card">
+      <h4>Total Employees</h4>
+      <p>100</p>
+    </div>
+    <div className="factory-card">
+      <h4>Active Vans</h4>
+      <p>{vans.filter(v => v.availability_status !== "Unavailable").length}</p>
+    </div>
+  </div>
+</div>
+
+
+
 
         <button
             className="back-to-top"

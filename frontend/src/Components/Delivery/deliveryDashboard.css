@@ -73,3 +73,131 @@
   background-color: #2980b9;
   transform: translateY(-3px);
 }
+
+.dashboard-analytics {
+  margin-top: 40px;
+}
+
+.dashboard-analytics h3 {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2e7d32; /* dark green */
+}
+
+.charts-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap; /* stack on small screens */
+}
+
+/* Common card style */
+.chart-card {
+  padding: 20px;
+  background: linear-gradient(to bottom right, #e8f5e9, #c8e6c9);
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.chart-card h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #1b5e20;
+  text-align: center;
+}
+
+/* Individual sizes */
+.pie-chart { flex: 1; max-width: 300px; }
+.bar-chart { flex: 2; max-width: 450px; }
+.calendar-card { flex: 1; max-width: 300px; }
+
+/* Calendar styles */
+.calendar-card .react-calendar {
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.calendar-card .react-calendar__tile--now {
+  background: #90caf9; /* today highlight */
+  color: white;
+  border-radius: 8px;
+}
+
+.calendar-card .react-calendar__tile--active {
+  background: #42a5f5; /* selected date */
+  color: white;
+  border-radius: 8px;
+}
+
+/* Responsive: stack vertically on small screens */
+@media (max-width: 900px) {
+  .charts-row {
+    flex-direction: column;
+    align-items: center;
+  }
+  .pie-chart,
+  .bar-chart,
+  .calendar-card {
+    max-width: 90%;
+  }
+}
+
+.factory-details {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.factory-details h3 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2e7d32;
+}
+
+/* Grid layout for factory info cards */
+.factory-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.factory-card {
+  flex: 1;
+  min-width: 180px;
+  max-width: 220px;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #fff9c4, #fff59d); /* soft yellow */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.factory-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.factory-card h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #f57f17; /* dark yellow */
+}
+
+.factory-card p {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
