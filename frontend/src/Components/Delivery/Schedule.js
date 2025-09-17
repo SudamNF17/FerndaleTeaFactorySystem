@@ -368,7 +368,9 @@ export default function Schedule() {
     {/* Row 2 */}
     <div className="form-row">
       <input name="wholesaler_name" value={form.wholesaler_name} placeholder="Wholesaler" onChange={onChange} required />
-      <input name="wholesaler_phone" value={form.wholesaler_phone} placeholder="Phone" onChange={onChange} required />
+      <input name="wholesaler_phone" value={form.wholesaler_phone} placeholder="Phone" onChange={onChange} required pattern="^07[0-9]{8}$"
+          title="Enter a valid 10-digit Sri Lankan phone number starting with 07"
+ />
     </div>
 
     {/* Row 3 */}
