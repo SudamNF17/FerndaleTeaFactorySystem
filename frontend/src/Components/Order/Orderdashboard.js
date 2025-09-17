@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./Orderdashboard.css"; // Import external CSS
+import OrderCard from "./OrderCard";
 
 export default function Orderdashboard() {
   const [orders, setOrders] = useState([]);
@@ -25,7 +27,7 @@ export default function Orderdashboard() {
     fetchOrders();
   }, []);
 
-  // ✅ Update totals when cart changes
+  // Update totals when cart changes
   useEffect(() => {
     setNewOrder((prev) => {
       const subtotal = prev.cart.reduce(
@@ -40,7 +42,7 @@ export default function Orderdashboard() {
     });
   }, [newOrder.cart]);
 
-  // Handle input changes
+  // Handlers
   const handleBuyerChange = (e) => {
     const { name, value } = e.target;
     setNewOrder((prev) => ({
@@ -72,7 +74,6 @@ export default function Orderdashboard() {
     });
   };
 
-  // Submit new order
   const submitOrder = async () => {
     try {
       await axios.post("http://localhost:5000/api/orders", newOrder);
@@ -89,7 +90,6 @@ export default function Orderdashboard() {
     }
   };
 
-  // Change order status
   const updateOrderStatus = async (id, status) => {
     try {
       await axios.put(`http://localhost:5000/api/orders/${id}/status`, {
@@ -101,17 +101,45 @@ export default function Orderdashboard() {
     }
   };
 
+  // Generate CSV Report
+  const generateReport = () => {
+    if (orders.length === 0) {
+      alert("No orders to generate report.");
+      return;
+    }
+
+    let csvContent =
+      "Buyer,Email,Phone,Address,Items,Subtotal,Shipping,Total,Status,Date\n";
+
+    orders.forEach((order) => {
+      const items = order.cart.map((i) => `${i.name} x${i.qty}`).join("; ");
+      csvContent += `"${order.buyer.name}","${order.buyer.email}","${order.buyer.phone}","${order.buyer.address}","${items}",${order.totals.subtotal},${order.totals.shipping},${order.totals.total},${order.status},${new Date(order.createdAt).toLocaleString()}\n`;
+    });
+
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `orders_report_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">HR Manager Dashboard</h1>
+    <div className="dashboard-container">
+      <h1 className="dashboard-title">HR Manager Dashboard</h1>
 
       {/* Tabs */}
-      <div className="flex space-x-4 mb-6">
+      <div className="tab-container">
         {["pending", "accepted", "cancelled"].map((tab) => (
           <button
             key={tab}
-            className={`px-4 py-2 rounded-lg font-semibold ${
-              activeTab === tab ? "bg-blue-600 text-white" : "bg-gray-200"
+            className={`tab-button ${
+              activeTab === tab ? "active" : ""
             }`}
             onClick={() => setActiveTab(tab)}
           >
@@ -119,8 +147,8 @@ export default function Orderdashboard() {
           </button>
         ))}
         <button
-          className={`px-4 py-2 rounded-lg font-semibold ${
-            activeTab === "make" ? "bg-green-600 text-white" : "bg-gray-200"
+          className={`tab-button make-order ${
+            activeTab === "make" ? "active" : ""
           }`}
           onClick={() => setActiveTab("make")}
         >
@@ -130,45 +158,55 @@ export default function Orderdashboard() {
 
       {/* Orders List */}
       {activeTab !== "make" && (
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">
-            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Orders
-          </h2>
-          <table className="w-full border-collapse">
+        <div className="card">
+          <div className="card-header">
+            <h2>
+              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Orders
+            </h2>
+            <button onClick={generateReport} className="btn btn-report">
+              📄 Generate Report
+            </button>
+          </div>
+
+          <table className="orders-table">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="p-2 border">Buyer</th>
-                <th className="p-2 border">Items</th>
-                <th className="p-2 border">Total</th>
-                <th className="p-2 border">Actions</th>
+              <tr>
+                <th>Buyer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {orders
                 .filter((o) => o.status === activeTab)
                 .map((o) => (
-                  <tr key={o._id} className="border-t">
-                    <td className="p-2 border">{o.buyer.name}</td>
-                    <td className="p-2 border">
+                  <tr key={o._id}>
+                    <td>{o.buyer.name}</td>
+                    <td>
                       {o.cart.map((item, i) => (
                         <div key={i}>
                           {item.name} × {item.qty}
                         </div>
                       ))}
                     </td>
-                    <td className="p-2 border">${o.totals.total}</td>
-                    <td className="p-2 border text-center space-x-2">
+                    <td>${o.totals.total}</td>
+                    <td className="action-buttons">
                       {activeTab === "pending" && (
                         <>
                           <button
-                            onClick={() => updateOrderStatus(o._id, "accepted")}
-                            className="px-3 py-1 bg-green-500 text-white rounded"
+                            onClick={() =>
+                              updateOrderStatus(o._id, "accepted")
+                            }
+                            className="btn btn-accept"
                           >
                             Accept
                           </button>
                           <button
-                            onClick={() => updateOrderStatus(o._id, "cancelled")}
-                            className="px-3 py-1 bg-red-500 text-white rounded"
+                            onClick={() =>
+                              updateOrderStatus(o._id, "cancelled")
+                            }
+                            className="btn btn-cancel"
                           >
                             Cancel
                           </button>
@@ -176,8 +214,10 @@ export default function Orderdashboard() {
                       )}
                       {activeTab === "accepted" && (
                         <button
-                          onClick={() => updateOrderStatus(o._id, "cancelled")}
-                          className="px-3 py-1 bg-red-500 text-white rounded"
+                          onClick={() =>
+                            updateOrderStatus(o._id, "cancelled")
+                          }
+                          className="btn btn-cancel"
                         >
                           Cancel
                         </button>
@@ -192,18 +232,17 @@ export default function Orderdashboard() {
 
       {/* Make Order */}
       {activeTab === "make" && (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Make a New Order</h2>
+        <div className="card">
+          <h2>Make a New Order</h2>
 
           {/* Buyer Info */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="form-grid">
             <input
               type="text"
               name="name"
               placeholder="Buyer Name"
               value={newOrder.buyer.name}
               onChange={handleBuyerChange}
-              className="p-2 border rounded"
             />
             <input
               type="email"
@@ -211,7 +250,6 @@ export default function Orderdashboard() {
               placeholder="Buyer Email"
               value={newOrder.buyer.email}
               onChange={handleBuyerChange}
-              className="p-2 border rounded"
             />
             <input
               type="text"
@@ -219,7 +257,6 @@ export default function Orderdashboard() {
               placeholder="Buyer Phone"
               value={newOrder.buyer.phone}
               onChange={handleBuyerChange}
-              className="p-2 border rounded"
             />
             <input
               type="text"
@@ -227,58 +264,54 @@ export default function Orderdashboard() {
               placeholder="Buyer Address"
               value={newOrder.buyer.address}
               onChange={handleBuyerChange}
-              className="p-2 border rounded"
             />
           </div>
 
           {/* Cart Items */}
-          <h3 className="text-lg font-semibold mb-2">Cart Items</h3>
-          <table className="w-full border-collapse mb-4">
+          <h3>Cart Items</h3>
+          <table className="orders-table">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="p-2 border">Item</th>
-                <th className="p-2 border">Price</th>
-                <th className="p-2 border">Qty</th>
-                <th className="p-2 border">Actions</th>
+              <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {newOrder.cart.map((item, index) => (
                 <tr key={index}>
-                  <td className="p-2 border">
+                  <td>
                     <input
                       type="text"
                       value={item.name}
                       onChange={(e) =>
                         handleCartChange(index, "name", e.target.value)
                       }
-                      className="p-1 border rounded w-full"
                     />
                   </td>
-                  <td className="p-2 border">
+                  <td>
                     <input
                       type="number"
                       value={item.price}
                       onChange={(e) =>
                         handleCartChange(index, "price", e.target.value)
                       }
-                      className="p-1 border rounded w-full"
                     />
                   </td>
-                  <td className="p-2 border">
+                  <td>
                     <input
                       type="number"
                       value={item.qty}
                       onChange={(e) =>
                         handleCartChange(index, "qty", e.target.value)
                       }
-                      className="p-1 border rounded w-full"
                     />
                   </td>
-                  <td className="p-2 border text-center">
+                  <td>
                     <button
                       onClick={() => removeCartRow(index)}
-                      className="px-3 py-1 bg-red-500 text-white rounded"
+                      className="btn btn-cancel"
                     >
                       ✕
                     </button>
@@ -287,25 +320,19 @@ export default function Orderdashboard() {
               ))}
             </tbody>
           </table>
-          <button
-            onClick={addCartRow}
-            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
-          >
+          <button onClick={addCartRow} className="btn btn-add">
             + Add Item
           </button>
 
           {/* Totals */}
-          <div className="mb-4">
+          <div className="totals">
             <p>Subtotal: ${newOrder.totals.subtotal}</p>
             <p>Shipping: ${newOrder.totals.shipping}</p>
-            <p className="font-bold">Total: ${newOrder.totals.total}</p>
+            <p className="total">Total: ${newOrder.totals.total}</p>
           </div>
 
           {/* Submit */}
-          <button
-            onClick={submitOrder}
-            className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold"
-          >
+          <button onClick={submitOrder} className="btn btn-submit">
             ✅ Place Order
           </button>
         </div>

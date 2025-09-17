@@ -1,33 +1,31 @@
 import React from "react";
+import "./Orderdashboard.css";
 
 export default function OrderCard({ order, onStatusChange, onBuyerUpdate, onDelete }) {
   return (
-    <div className="p-3 border rounded-lg mb-2 bg-gray-50">
+    <div className="order-card">
       <p><b>Buyer:</b> {order.buyer.name}</p>
       <input
         type="text"
         defaultValue={order.buyer.phone}
         onBlur={(e) => onBuyerUpdate(order._id, { ...order.buyer, phone: e.target.value })}
-        className="border p-1 w-full mb-1"
       />
       <textarea
         defaultValue={order.buyer.address}
         onBlur={(e) => onBuyerUpdate(order._id, { ...order.buyer, address: e.target.value })}
-        className="border p-1 w-full"
       />
-
-      <div className="flex gap-2 mt-2">
+      <div className="card-actions">
         {order.status !== "accepted" && (
-          <button onClick={() => onStatusChange(order._id, "accepted")} className="bg-green-500 text-white px-2 py-1 rounded">
+          <button onClick={() => onStatusChange(order._id, "accepted")} className="btn btn-accept">
             Accept
           </button>
         )}
         {order.status !== "cancelled" && (
-          <button onClick={() => onStatusChange(order._id, "cancelled")} className="bg-red-500 text-white px-2 py-1 rounded">
+          <button onClick={() => onStatusChange(order._id, "cancelled")} className="btn btn-cancel">
             Cancel
           </button>
         )}
-        <button onClick={() => onDelete(order._id)} className="bg-gray-500 text-white px-2 py-1 rounded">
+        <button onClick={() => onDelete(order._id)} className="btn btn-delete">
           Delete
         </button>
       </div>
