@@ -206,3 +206,57 @@
   margin: 0;
 }
 
+.scroll-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Title */
+.scroll-header h3 {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Marquee container */
+.marquee {
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+  margin-left: 20px;
+  height: 24px; /* adjust to text size */
+}
+
+/* Scrolling content */
+.marquee-content {
+  display: flex;
+  width: max-content;
+  animation: scroll 10s linear infinite;
+  color: #007BFF;
+  font-weight: 400;
+}
+
+/* Duplicate text spans to make continuous scroll */
+.marquee-content span {
+  white-space: nowrap;
+  margin-right: 50px; /* space between repeats */
+}
+
+/* Keyframes for smooth scrolling */
+@keyframes scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+

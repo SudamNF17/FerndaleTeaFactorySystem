@@ -4,6 +4,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import './delivery.css';
 import { useNavigate } from "react-router-dom";
+import VanTracker from "./VanTracker";
 
 
 const API_URL = "http://localhost:5000/api/delivery-vans"; // change if needed
@@ -22,6 +23,12 @@ function Delivery() {
   const [vans, setVans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [selectedVan, setSelectedVan] = useState(null);
+
+const handleTrack = (van) => {
+  setSelectedVan(van);
+};
 
   // For add/edit form
   const initialFormState = {
@@ -217,11 +224,15 @@ function Delivery() {
               <td>
                 <button onClick={() => handleEditClick(van)}>Edit</button>{" "}
                 <button onClick={() => handleDelete(van._id)}>Delete</button>
+                <button onClick={() => handleTrack(van)}>Track 🚐</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <VanTracker van={selectedVan} />
+
 
       <h3>{isEditing ? "Edit Van" : "Add New Van"}</h3>
       <form onSubmit={isEditing ? handleUpdate : handleAdd} style={{ marginTop: "20px" }}>

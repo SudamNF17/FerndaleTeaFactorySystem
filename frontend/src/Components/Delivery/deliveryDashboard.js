@@ -9,6 +9,7 @@ import { Bar, Pie } from "react-chartjs-2";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
 import "./deliveryDashboard.css";
+import Nav from "../Nav/Nav";
 
 // Chart.js modules
 import {
@@ -100,8 +101,8 @@ const DeliveryDashboard = () => {
   return (
     <div style={{ padding: "20px" }}>
       {/*Header with user name and logout button */}
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-        <h2>Welcome HR Manager, {userName}</h2>
+      <div className="dashboard-header" style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
+        <h2>Welcome Manager, {userName}</h2>
         <button
           onClick={handleLogout}
           style={{
@@ -117,8 +118,17 @@ const DeliveryDashboard = () => {
         </button>
       </div>
 
+      <Nav/>
+
+     <div className="scroll-header">
       <h3>Delivery Dashboard</h3>
-      <p>Here you can manage delivery vans and schedules.</p>
+      <div className="marquee">
+        <div className="marquee-content">
+          <span>Here you can manage delivery vans and schedules. &nbsp;&nbsp;&nbsp;</span>
+          <span>Here you can manage delivery vans and schedules. &nbsp;&nbsp;&nbsp;</span>
+        </div>
+      </div>
+    </div>
 
       {/* Dashboard Buttons */}
       <div className="dashboard-buttons">
