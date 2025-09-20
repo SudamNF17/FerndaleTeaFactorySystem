@@ -8,6 +8,7 @@ const userRoutes = require("./Routes/UserRoutes");
 const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes");
 const employeeRoutes = require("./Routes/EmployeeRoutes");
 const attendanceRoutes = require("./Routes/AttendanceRoutes");
+const departmentRoutes = require("./Routes/departmentRoutes"); 
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/delivery-vans", deliveryVanRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/departments", departmentRoutes);
 
 // ================= Test Root Route =================
 app.get("/", (req, res) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./EmployeeList.css";
+import "./EmployeeList.css"; // Make sure you include the CSS provided earlier
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -73,12 +73,12 @@ const EmployeeList = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Employees</h1>
+    <div className="employee-container">
+      <h1>Employees</h1>
 
       {/* Toggle Add Employee Form */}
       <button
-        className="bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600"
+        className="add-employee-btn"
         onClick={() => setShowForm(!showForm)}
       >
         {showForm ? "Cancel" : "Add Employee"}
@@ -86,17 +86,13 @@ const EmployeeList = () => {
 
       {/* Inline Add Employee Form */}
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="border p-4 mb-6 bg-gray-50 rounded"
-        >
+        <form onSubmit={handleSubmit} className="employee-form">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               name="empId"
               value={newEmployee.empId}
               onChange={handleChange}
               placeholder="Employee ID"
-              className="border p-2"
               required
             />
             <input
@@ -104,7 +100,6 @@ const EmployeeList = () => {
               value={newEmployee.name}
               onChange={handleChange}
               placeholder="Name"
-              className="border p-2"
               required
             />
             <input
@@ -112,34 +107,29 @@ const EmployeeList = () => {
               value={newEmployee.email}
               onChange={handleChange}
               placeholder="Email"
-              className="border p-2"
             />
             <input
               name="contact"
               value={newEmployee.contact}
               onChange={handleChange}
               placeholder="Contact"
-              className="border p-2"
             />
             <input
               name="address"
               value={newEmployee.address}
               onChange={handleChange}
               placeholder="Address"
-              className="border p-2"
             />
             <input
               name="department"
               value={newEmployee.department}
               onChange={handleChange}
               placeholder="Department"
-              className="border p-2"
             />
             <select
               name="type"
               value={newEmployee.type}
               onChange={handleChange}
-              className="border p-2"
             >
               <option value="Permanent">Permanent</option>
               <option value="Temporary">Temporary</option>
@@ -149,20 +139,15 @@ const EmployeeList = () => {
               value={newEmployee.jobRole}
               onChange={handleChange}
               placeholder="Job Role"
-              className="border p-2"
             />
             <input
               name="description"
               value={newEmployee.description}
               onChange={handleChange}
               placeholder="Description"
-              className="border p-2"
             />
           </div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600"
-          >
+          <button type="submit" className="submit-employee-btn">
             Add Employee
           </button>
         </form>
@@ -171,31 +156,30 @@ const EmployeeList = () => {
       {/* Search Input */}
       <input
         type="text"
-        placeholder="Search by name or ID"
-        className="border p-2 mb-4 w-full"
+        placeholder="🔍 Search by name or ID"
+        className="employee-search"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
       {/* Employee Table */}
-      <table className="min-w-full border">
+      <table className="employee-table">
         <thead>
-          <tr className="bg-gray-200">
-            <th className="p-2 border">ID</th>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Department</th>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Department</th>
           </tr>
         </thead>
         <tbody>
           {filteredEmployees.map((emp) => (
             <tr
               key={emp._id}
-              className="cursor-pointer hover:bg-gray-100"
               onClick={() => navigate(`/employees/${emp._id}`)}
             >
-              <td className="p-2 border">{emp.empId}</td>
-              <td className="p-2 border">{emp.name}</td>
-              <td className="p-2 border">{emp.department}</td>
+              <td>{emp.empId}</td>
+              <td>{emp.name}</td>
+              <td>{emp.department}</td>
             </tr>
           ))}
         </tbody>

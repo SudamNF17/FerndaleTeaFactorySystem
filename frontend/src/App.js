@@ -12,8 +12,8 @@ import Supplier from "./Components/Supplier/Supplier";
 import EmployeeDashboard from "./Components/Employee/Dashboard";
 import EmployeeList from "./Components/Employee/EmployeeList";
 import EmployeeProfile from "./Components/Employee/EmployeeProfile";
-
-
+import AttendancePage from "./Components/Employee/AttendancePage";
+import DepartmentsPage from "./Components/Employee/DepartmentDashboard"
 
 function App() {
   return (
@@ -31,7 +31,8 @@ function App() {
           <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
                   <Route path="/employees" element={<EmployeeList />} />
           <Route path="/employees/:id" element={<EmployeeProfile />} />
-
+          <Route path="/attendance" element={<AttendancePage/>}/>
+          <Route path="/departments" element={<DepartmentsPage />} />
 
           
         </Routes>

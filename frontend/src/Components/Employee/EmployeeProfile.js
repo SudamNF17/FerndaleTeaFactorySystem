@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./EmployeeProfile.css";
 
-
 const EmployeeProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -12,16 +11,20 @@ const EmployeeProfile = () => {
 
   // Fetch single employee
   useEffect(() => {
-    fetch(`http://localhost:5000/api/employees/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchEmployee = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/employees/${id}`);
+        const data = await res.json();
         setEmployee(data);
         setFormData(data);
-      })
-      .catch((err) => console.error(err));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchEmployee();
   }, [id]);
 
-  if (!employee) return <div className="p-6">Loading...</div>;
+  if (!employee) return <div className="employee-container">Loading...</div>;
 
   // Handle input change
   const handleChange = (e) => {
@@ -44,6 +47,7 @@ const EmployeeProfile = () => {
       }
     } catch (err) {
       console.error(err);
+      alert("Update failed. Try again!");
     }
   };
 
@@ -60,130 +64,87 @@ const EmployeeProfile = () => {
       }
     } catch (err) {
       console.error(err);
+      alert("Delete failed. Try again!");
     }
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Employee Details</h1>
-      <div className="space-y-2">
-        <label>ID:</label>
-        <input
-          name="empId"
-          value={formData.empId}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        />
+    <div className="employee-container">
+      <h1>Employee Details</h1>
 
-        <label>Name:</label>
-        <input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        />
+      <div className="space-y-3">
+        {["empId", "name", "email", "contact", "address", "department", "jobRole"].map((field) => (
+          <div key={field}>
+            <label className="font-semibold">{field === "empId" ? "ID" : field.charAt(0).toUpperCase() + field.slice(1)}:</label>
+            <input
+              name={field}
+              value={formData[field] || ""}
+              onChange={handleChange}
+              disabled={!editing}
+              className="border p-2 w-full rounded"
+            />
+          </div>
+        ))}
 
-        <label>Email:</label>
-        <input
-          name="email"
-          value={formData.email || ""}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        />
+        {/* Type Field */}
+        <div>
+          <label className="font-semibold">Type:</label>
+          <select
+            name="type"
+            value={formData.type || "Permanent"}
+            onChange={handleChange}
+            disabled={!editing}
+            className="border p-2 w-full rounded"
+          >
+            <option value="Permanent">Permanent</option>
+            <option value="Temporary">Temporary</option>
+          </select>
+        </div>
 
-        <label>Contact:</label>
-        <input
-          name="contact"
-          value={formData.contact || ""}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        />
-
-        <label>Address:</label>
-        <input
-          name="address"
-          value={formData.address || ""}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        />
-
-        <label>Department:</label>
-        <input
-          name="department"
-          value={formData.department || ""}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        />
-
-        <label>Type:</label>
-        <select
-          name="type"
-          value={formData.type || "Permanent"}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        >
-          <option value="Permanent">Permanent</option>
-          <option value="Temporary">Temporary</option>
-        </select>
-
-        <label>Job Role:</label>
-        <input
-          name="jobRole"
-          value={formData.jobRole || ""}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        />
-
-        <label>Description:</label>
-        <textarea
-          name="description"
-          value={formData.description || ""}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          disabled={!editing}
-        />
+        {/* Description */}
+        <div>
+          <label className="font-semibold">Description:</label>
+          <textarea
+            name="description"
+            value={formData.description || ""}
+            onChange={handleChange}
+            disabled={!editing}
+            className="border p-2 w-full rounded"
+          />
+        </div>
       </div>
 
-      <div className="flex mt-4 gap-4">
+      {/* Buttons */}
+      <div className="flex mt-4 gap-3">
         {!editing ? (
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500"
             onClick={() => setEditing(true)}
           >
             Edit
           </button>
         ) : (
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            onClick={handleUpdate}
-          >
-            Save
-          </button>
+          <>
+            <button
+              className="bg-green-500"
+              onClick={handleUpdate}
+            >
+              Save
+            </button>
+            <button
+              className="bg-gray-400"
+              onClick={() => setEditing(false)}
+            >
+              Cancel
+            </button>
+          </>
         )}
-
         <button
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          className="bg-red-500"
           onClick={handleDelete}
         >
           Delete
         </button>
-
-        {editing && (
-          <button
-            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-            onClick={() => setEditing(false)}
-          >
-            Cancel
-          </button>
-        )}
       </div>
     </div>
   );

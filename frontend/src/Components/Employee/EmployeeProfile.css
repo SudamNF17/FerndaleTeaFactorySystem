@@ -1,124 +1,121 @@
-/* EmployeeProfile.css - Clean Card Style */
+/* EmployeeProfile.css */
 
-.p-6 {
-  padding: 2rem;
-  font-family: 'Inter', sans-serif;
-  background-color: #f3f4f6;
-  min-height: 100vh;
+/* General Container */
+.employee-container {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 25px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-  font-size: 2rem;
+/* Header */
+.employee-container h1 {
+  color: #004080;
+  font-size: 26px;
   font-weight: 700;
-  color: #111827;
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
 }
 
-label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: #374151; /* gray-700 */
-}
-
-input, select, textarea {
+/* Form Inputs & Textarea */
+.employee-container input,
+.employee-container select,
+.employee-container textarea {
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db; /* gray-300 */
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
-}
-
-input:disabled,
-select:disabled,
-textarea:disabled {
-  background-color: #f9fafb; /* gray-50 */
-  cursor: not-allowed;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: #3b82f6; /* blue-500 */
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   outline: none;
 }
 
-textarea {
-  resize: vertical;
+.employee-container input:focus,
+.employee-container select:focus,
+.employee-container textarea:focus {
+  border-color: #0088fe;
+  box-shadow: 0 0 5px rgba(0, 136, 254, 0.3);
+}
+
+/* Textarea */
+.employee-container textarea {
   min-height: 80px;
+  resize: vertical;
 }
 
 /* Buttons */
-button {
+.employee-container button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1.25rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   transition: all 0.3s ease;
 }
 
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+/* Specific Button Colors */
+.employee-container button.bg-blue-500 {
+  background: linear-gradient(135deg, #0088fe, #005bb5);
+  color: #fff;
 }
 
-button:active {
-  transform: translateY(0);
+.employee-container button.bg-blue-500:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 91, 181, 0.3);
 }
 
-button.bg-blue-500 {
-  background-color: #3b82f6;
-  color: white;
+.employee-container button.bg-green-500 {
+  background: linear-gradient(135deg, #00c853, #007e33);
+  color: #fff;
 }
 
-button.bg-blue-500:hover {
-  background-color: #2563eb;
+.employee-container button.bg-green-500:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 126, 51, 0.3);
 }
 
-button.bg-green-500 {
-  background-color: #10b981;
-  color: white;
+.employee-container button.bg-red-500 {
+  background: linear-gradient(135deg, #ff5252, #c62828);
+  color: #fff;
 }
 
-button.bg-green-500:hover {
-  background-color: #059669;
+.employee-container button.bg-red-500:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.3);
 }
 
-button.bg-red-500 {
-  background-color: #ef4444;
-  color: white;
+.employee-container button.bg-gray-400 {
+  background: linear-gradient(135deg, #b0b0b0, #7a7a7a);
+  color: #fff;
 }
 
-button.bg-red-500:hover {
-  background-color: #dc2626;
+.employee-container button.bg-gray-400:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(122, 122, 122, 0.3);
 }
 
-button.bg-gray-400 {
-  background-color: #9ca3af;
-  color: white;
-}
-
-button.bg-gray-400:hover {
-  background-color: #6b7280;
-}
-
-/* Button container spacing */
-.flex {
+/* Button Container */
+.employee-container .flex {
   display: flex;
-  gap: 1rem;
+  gap: 12px;
   flex-wrap: wrap;
-  margin-top: 1rem;
+  margin-top: 20px;
 }
 
-/* Card style container */
-.max-w-xl {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-top: 2rem;
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .employee-container {
+    padding: 20px;
+  }
+
+  .employee-container .flex {
+    flex-direction: column;
+  }
 }
