@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './register.css';
-import logo from '../../assets/tea-logo.png'; 
+import logo from '../../assets/logo.jpeg'; 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Nav from "../Nav/Nav";
 import axios from "axios";
@@ -9,9 +9,15 @@ const HRDashboard = () => {
   const [showUsers, setShowUsers] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({ fullName: "", email: "", role: "" });
+  const [currentTime, setCurrentTime] = useState(new Date());
   const userName = localStorage.getItem("userName");
   const navigate = useNavigate();
   const token = localStorage.getItem("userToken");
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const fetchUsers = async () => {
     try {
@@ -27,11 +33,8 @@ const HRDashboard = () => {
   };
 
   const handleToggleUsers = () => {
-    if (!showUsers) {
-      fetchUsers();
-    } else {
-      setShowUsers(false);
-    }
+    if (!showUsers) fetchUsers();
+    else setShowUsers(false);
   };
 
   const handleLogout = () => {
@@ -62,11 +65,9 @@ const HRDashboard = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
-        `http://localhost:5000/api/users/${editingUser}`,
-        formData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.put(`http://localhost:5000/api/users/${editingUser}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setEditingUser(null);
       fetchUsers();
     } catch (err) {
@@ -75,23 +76,47 @@ const HRDashboard = () => {
     }
   };
 
+  const factoryDetails = {
+    location: "Ferndale Tea Factory, Colombo",
+    established: "1985",
+    totalShifts: 3,
+    teaVarieties: ["Black Tea", "Green Tea", "Herbal Tea"],
+    dailyProduction: "1500 kg",
+    employees: 75,
+    safetyRating: "A+",
+  };
+
   return (
     <div className="dashboard-container">
+      {/* Header */}
       <div className="dashboard-header">
-        <h2>Welcome Manager, {userName}</h2>
+        <h2>Welcome, {userName}</h2>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
 
       <Nav />
-      <br />
 
-      {/* Toggle button */}
-      <button onClick={handleToggleUsers} className="view-users-btn">
+       {/* Factory Overview Card - floated right below Nav */}
+      <div className="factory-card-container">
+        <div className="factory-card">
+          <h3>Factory Overview</h3>
+          <p><strong>Location:</strong> {factoryDetails.location}</p>
+          <p><strong>Established:</strong> {factoryDetails.established}</p>
+          <p><strong>Total Shifts:</strong> {factoryDetails.totalShifts}</p>
+          <p><strong>Tea Varieties:</strong> {factoryDetails.teaVarieties.join(", ")}</p>
+          <p><strong>Daily Production:</strong> {factoryDetails.dailyProduction}</p>
+          <p><strong>Total Employees:</strong> {factoryDetails.employees}</p>
+          <p><strong>Safety Rating:</strong> {factoryDetails.safetyRating}</p>
+        </div>
+      </div>
+
+      {/* Toggle Registered Users */}
+      <button className="view-users-btn" onClick={handleToggleUsers}>
         {showUsers ? "Hide Registered Users" : "View Registered Users"}
       </button>
 
       {showUsers && (
-        <>
+        <div className="users-section">
           <h3>Registered Users</h3>
           <table className="user-table">
             <thead>
@@ -145,14 +170,33 @@ const HRDashboard = () => {
                   <option value="Supplier">Supplier</option>
                   <option value="Wholesaler">Wholesaler</option>
                 </select>
-                <br />
-                <button type="submit">Save</button>
-                <button type="button" onClick={handleCancel}>Cancel</button>
+                <div className="modal-buttons">
+                  <button type="submit">Save</button>
+                  <button type="button" onClick={handleCancel}>Cancel</button>
+                </div>
               </form>
             </div>
           )}
-        </>
+        </div>
       )}
+
+      {/* Time & Calendar Section */}
+      <div className="footer-time-calendar">
+        <div className="time-card">
+          <h3>Current Time</h3>
+          <p>{currentTime.toLocaleTimeString()}</p>
+        </div>
+        <div className="calendar-card">
+          <h3>Today's Date</h3>
+          <p>{currentTime.toDateString()}</p>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="dashboard-footer">
+        <p>© 2025 Ferndale Tea Factory</p>
+        <p>Tea Factory Management System</p>
+      </footer>
     </div>
   );
 };

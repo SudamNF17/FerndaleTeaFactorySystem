@@ -8,6 +8,15 @@ const NavigationBar = () => {
       <ul className="nav-list">
         <li>
           <NavLink
+            to="/hr-dashboard"
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+          >
+            Home
+          </NavLink>
+        </li>
+        <li>
+          
+          <NavLink
             to="/employees"
             className={({ isActive }) => (isActive ? "active-link" : "")}
           >
