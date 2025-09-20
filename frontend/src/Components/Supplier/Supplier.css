@@ -1,0 +1,54 @@
+/* Container for the dashboard */
+.supplier-container {
+  padding: 24px;
+  font-family: Arial, sans-serif;
+}
+
+/* Dashboard title */
+.supplier-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Button container */
+.supplier-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+/* Raw Material Supply Button */
+.raw-btn {
+  padding: 12px 20px;
+  background-color: #2563eb; /* blue */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.raw-btn:hover {
+  background-color: #1e40af; /* darker blue */
+  transform: translateY(-2px);
+}
+
+/* Fresh Tea Leaves Supply Button */
+.fresh-btn {
+  padding: 12px 20px;
+  background-color: #16a34a; /* green */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.fresh-btn:hover {
+  background-color: #166534; /* darker green */
+  transform: translateY(-2px);
+}

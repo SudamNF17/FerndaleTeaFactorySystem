@@ -1,6 +1,10 @@
 // src/App.js
 import React from "react";
+
 import { Route, Routes, Navigate } from "react-router-dom";
+
+import { Routes, Route } from "react-router-dom";
+
 import "./App.css";
 
 import Register from "./Components/Register/Register";
@@ -12,7 +16,12 @@ import WholesalerDashboard from "./Components/Dashboards/WholesalerDashboard";
 import Delivery from "./Components/Delivery/Delivery";
 import Schedule from "./Components/Delivery/Schedule";
 import Supplier from "./Components/Supplier/Supplier";
+
 import DeliveryDashboard from "./Components/Delivery/deliveryDashboard";
+
+import Raw from "./Components/Raw/Raw";
+import Fresh from "./Components/Fresh/Fresh";
+
 
 function App() {
   // Protected route for HR Manager
@@ -25,6 +34,7 @@ function App() {
   };
 
   return (
+
     <div>
       <React.Fragment>
         <Routes>
@@ -57,6 +67,20 @@ function App() {
         </Routes>
       </React.Fragment>
     </div>
+
+    <Routes>
+      <Route path="/" element={<Welcome />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/hr-dashboard" element={<HRDashboard />} />
+      <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
+      <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
+      <Route path="/delivery-vans" element={<Delivery />} />
+      <Route path="/supplier" element={<Supplier />} />
+      <Route path="/raw" element={<Raw />} />
+      <Route path="/fresh" element={<Fresh />} />
+    </Routes>
+
   );
 }
 
