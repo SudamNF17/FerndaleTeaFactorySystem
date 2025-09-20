@@ -1,17 +1,27 @@
 /* src/Components/HRDashboard.css */
 
+/* Dashboard Container */
 .dashboard-container {
-  background: white;
+  background: #f5f7fa;
   min-height: 100vh;
   padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
 }
 
+/* Header */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #4caf50;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Logout Button */
 .logout-button {
   background-color: #d9534f;
   color: white;
@@ -20,9 +30,163 @@
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .logout-button:hover {
   background-color: #c9302c;
+  transform: translateY(-2px);
+}
+
+/* Nav placeholder styling */
+.dashboard-container nav {
+  margin-top: 1rem;
+}
+
+/* View Users Button */
+.view-users-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.view-users-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* User Table */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.user-table th, .user-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.user-table th {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+}
+
+.user-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.user-table tr:hover {
+  background-color: #e0f2f1;
+}
+
+/* Action Buttons */
+.user-table button {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-table button:hover {
+  transform: translateY(-1px);
+}
+
+.user-table button:first-child {
+  background-color: #ffc107; /* Edit */
+  color: #fff;
+}
+
+.user-table button:first-child:hover {
+  background-color: #e0a800;
+}
+
+.user-table button:last-child {
+  background-color: #dc3545; /* Delete */
+  color: #fff;
+}
+
+.user-table button:last-child:hover {
+  background-color: #c82333;
+}
+
+/* Edit Modal */
+.edit-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.edit-modal form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.edit-modal h3 {
+  margin-bottom: 1rem;
+  color: #4caf50;
+  text-align: center;
+}
+
+.edit-modal input,
+.edit-modal select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.edit-modal button {
+  width: 48%;
+  padding: 10px 0;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin-right: 4%;
+}
+
+.edit-modal button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.edit-modal button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.edit-modal button[type="button"] {
+  background-color: #6c757d;
+  color: white;
+}
+
+.edit-modal button[type="button"]:hover {
+  background-color: #5a6268;
 }

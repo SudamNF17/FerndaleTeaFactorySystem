@@ -111,3 +111,36 @@
     flex-direction: column;
   }
 }
+
+.dashboard-buttons {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.fancy-button {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 250px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.fancy-button:hover {
+  transform: translateY(-10px) rotate(-2deg);
+  box-shadow: 0px 20px 40px rgba(0,0,0,0.3);
+}
+
+.fancy-button h3 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+}
+
+.fancy-button p {
+  font-size: 14px;
+  opacity: 0.8;
+}

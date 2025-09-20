@@ -1,0 +1,262 @@
+/* deliveryDashboard.css */
+
+/* ----- Buttons Section ----- */
+.dashboard-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.fancy-button {
+  flex: 1 1 250px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: #fff;
+  padding: 24px 18px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.fancy-button h3 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+}
+
+.fancy-button p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.fancy-button:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, #2980b9, #1c5980);
+}
+
+/* Back button style */
+.back-button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #3498db;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+/* Floating back-to-top button (bottom-right circle) */
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background 0.3s, transform 0.3s;
+  z-index: 1000;
+}
+
+.back-to-top:hover {
+  background-color: #2980b9;
+  transform: translateY(-3px);
+}
+
+/* ----- Analytics Section ----- */
+.dashboard-analytics {
+  margin-top: 40px;
+}
+
+.dashboard-analytics h3 {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2e7d32; /* dark green */
+}
+
+.charts-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap; /* stack on small screens */
+}
+
+/* Common card style */
+.chart-card {
+  padding: 20px;
+  background: linear-gradient(to bottom right, #e8f5e9, #c8e6c9);
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.chart-card h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #1b5e20;
+  text-align: center;
+}
+
+/* Individual sizes */
+.pie-chart { flex: 1; max-width: 300px; }
+.bar-chart { flex: 2; max-width: 450px; }
+.calendar-card { flex: 1; max-width: 300px; }
+
+/* Calendar styles */
+.calendar-card .react-calendar {
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.calendar-card .react-calendar__tile--now {
+  background: #90caf9; /* today highlight */
+  color: white;
+  border-radius: 8px;
+}
+
+.calendar-card .react-calendar__tile--active {
+  background: #42a5f5; /* selected date */
+  color: white;
+  border-radius: 8px;
+}
+
+/* Responsive: stack vertically on small screens */
+@media (max-width: 900px) {
+  .charts-row {
+    flex-direction: column;
+    align-items: center;
+  }
+  .pie-chart,
+  .bar-chart,
+  .calendar-card {
+    max-width: 90%;
+  }
+}
+
+.factory-details {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.factory-details h3 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2e7d32;
+}
+
+/* Grid layout for factory info cards */
+.factory-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.factory-card {
+  flex: 1;
+  min-width: 180px;
+  max-width: 220px;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #fff9c4, #fff59d); /* soft yellow */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.factory-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.factory-card h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #f57f17; /* dark yellow */
+}
+
+.factory-card p {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+.scroll-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Title */
+.scroll-header h3 {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Marquee container */
+.marquee {
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+  margin-left: 20px;
+  height: 24px; /* adjust to text size */
+}
+
+/* Scrolling content */
+.marquee-content {
+  display: flex;
+  width: max-content;
+  animation: scroll 10s linear infinite;
+  color: #007BFF;
+  font-weight: 400;
+}
+
+/* Duplicate text spans to make continuous scroll */
+.marquee-content span {
+  white-space: nowrap;
+  margin-right: 50px; /* space between repeats */
+}
+
+/* Keyframes for smooth scrolling */
+@keyframes scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
