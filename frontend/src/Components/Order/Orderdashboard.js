@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Orderdashboard.css"; // Import external CSS
 import OrderCard from "./OrderCard";
+import Nav from "../Nav/Nav";
+
 
 export default function Orderdashboard() {
   const [orders, setOrders] = useState([]);
@@ -131,6 +133,9 @@ export default function Orderdashboard() {
 
   return (
     <div className="dashboard-container">
+
+    <Nav />
+
       <h1 className="dashboard-title">HR Manager Dashboard</h1>
 
       {/* Tabs */}
