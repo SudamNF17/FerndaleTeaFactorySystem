@@ -124,8 +124,8 @@ const DeliveryDashboard = () => {
       <h3>Delivery Dashboard</h3>
       <div className="marquee">
         <div className="marquee-content">
-          <span>Here you can manage delivery vans and schedules. &nbsp;&nbsp;&nbsp;</span>
-          <span>Here you can manage delivery vans and schedules. &nbsp;&nbsp;&nbsp;</span>
+          <span>🚚Here you can manage delivery vans and schedules. &nbsp;&nbsp;&nbsp;</span>
+          <span>🚚Here you can manage delivery vans and schedules. &nbsp;&nbsp;&nbsp;</span>
         </div>
       </div>
     </div>

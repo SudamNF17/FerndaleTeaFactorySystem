@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Orderdashboard.css"; // Import external CSS
-import OrderCard from "./OrderCard";
 import Nav from "../Nav/Nav";
+import { useNavigate } from "react-router-dom";
+
 
 
 export default function Orderdashboard() {
@@ -14,6 +15,13 @@ export default function Orderdashboard() {
     totals: { subtotal: 0, shipping: 0, total: 0 },
     deliveryLocation: { lat: 0, lng: 0 },
   });
+  const userName = localStorage.getItem("userName");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   // Fetch orders
   const fetchOrders = async () => {
@@ -133,10 +141,22 @@ export default function Orderdashboard() {
 
   return (
     <div className="dashboard-container">
-
+      {/* Header */}
+      <div className="dashboard-header">
+        <h2>Welcome, {userName}</h2>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
+      </div>
     <Nav />
 
-      <h1 className="dashboard-title">HR Manager Dashboard</h1>
+      <div className="scroll-header">
+      <h3>Order Management Dashboard</h3>
+      <div className="marquee">
+        <div className="marquee-content">
+          <span>📦Track and manage all your orders in one place. &nbsp;&nbsp;&nbsp;</span>
+          <span>📦Track and manage all your orders in one place. &nbsp;&nbsp;&nbsp;</span>
+        </div>
+      </div>
+    </div>
 
       {/* Tabs */}
       <div className="tab-container">
