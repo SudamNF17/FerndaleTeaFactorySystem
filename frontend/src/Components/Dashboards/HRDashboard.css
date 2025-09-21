@@ -35,22 +35,32 @@
   transform: translateY(-2px);
 }
 
-/* Container for the Factory Card to float right below Nav */
-.factory-card-container {
-  display: flex;
+/* Container for the Factory Card */
+.factory-card-containerr {
+ display: flex;
   justify-content: center;
-  margin: 1rem 0 2rem 0;     /* spacing from nav and bottom */
+  margin: 2rem 0;       /* add side padding for small screens */
 }
 
 /* Factory Card */
-.factory-card {
+.factory-cardd {
   background: linear-gradient(135deg, #a8e6cf, #dcedc1);
-  padding: 1.5rem 3rem;
+  padding: 2rem 3rem;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  width: 320px;
+  width: 90%;
+  max-width: 800px;
+  min-width: 400px;
   font-weight: 500;
-  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+}
+
+.factory-logoo img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  border-radius: 10px;
 }
 
 .factory-card:hover {
@@ -239,12 +249,38 @@
 }
 
 /* Footer */
+/* === Dashboard Footer === */
 .dashboard-footer {
-  background: linear-gradient(90deg, #4caf50, #66bb6a);
-  color: white;
-  text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  margin-top: 40px;
+  padding: 20px 40px;
+  background: #1f2937; /* dark slate background */
+  color: #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* responsive */
+  border-top: 3px solid #4facfe;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+  font-size: 0.9rem;
 }
+
+.dashboard-footer p {
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+.footer-left p:first-child {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.footer-right {
+  text-align: right;
+}
+
+.footer-right p:first-child {
+  font-weight: 500;
+  color: #4facfe; /* highlight system name */
+}
+
+

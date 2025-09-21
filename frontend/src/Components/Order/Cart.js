@@ -17,13 +17,28 @@ export default function Cart() {
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
 
+  //------------
+  const [userName, setUserName] = useState("");
+
+
   // ✅ Load cart from localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       setCart(JSON.parse(savedCart));
+
+      const savedUser = localStorage.getItem("userName");
+    if (savedUser) setUserName(savedUser);
+    else navigate("/login");
     }
-  }, []);
+  }, [navigate]);
+
+  const logout = () => {
+    localStorage.removeItem("userName");
+    localStorage.removeItem("cart");
+    navigate("/login");
+  };
+
 
   const saveCart = (updatedCart) => {
     setCart(updatedCart);
@@ -73,6 +88,15 @@ export default function Cart() {
     <div className="cart-app">
       {/* ✅ Header Component */}
       <Header cartCount={cart.reduce((t, i) => t + i.qty, 0)} />
+
+      {/* ✅ Logged-in user & logout */}
+      <div className="session-info" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 2rem", background: "#f1f5f9", borderRadius: "8px", margin: "1rem 2rem" }}>
+        <span>Logged in successfull <strong>{userName}</strong></span>
+        <button onClick={logout} style={{ padding: "6px 12px", background: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer" }}>
+          Logout
+        </button>
+      </div>
+
 
       <div className="content-container">
         {/* ✅ Products Section */}

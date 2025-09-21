@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Orderdashboard.css"; // Import external CSS
-import OrderCard from "./OrderCard";
 import Nav from "../Nav/Nav";
-
+import { useNavigate } from "react-router-dom";
 
 export default function Orderdashboard() {
   const [orders, setOrders] = useState([]);
@@ -14,6 +13,13 @@ export default function Orderdashboard() {
     totals: { subtotal: 0, shipping: 0, total: 0 },
     deliveryLocation: { lat: 0, lng: 0 },
   });
+  const userName = localStorage.getItem("userName");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   // Fetch orders
   const fetchOrders = async () => {
@@ -115,7 +121,13 @@ export default function Orderdashboard() {
 
     orders.forEach((order) => {
       const items = order.cart.map((i) => `${i.name} x${i.qty}`).join("; ");
-      csvContent += `"${order.buyer.name}","${order.buyer.email}","${order.buyer.phone}","${order.buyer.address}","${items}",${order.totals.subtotal},${order.totals.shipping},${order.totals.total},${order.status},${new Date(order.createdAt).toLocaleString()}\n`;
+      csvContent += `"${order.buyer.name}","${order.buyer.email}","${
+        order.buyer.phone
+      }","${order.buyer.address}","${items}",${order.totals.subtotal},${
+        order.totals.shipping
+      },${order.totals.total},${order.status},${new Date(
+        order.createdAt
+      ).toLocaleString()}\n`;
     });
 
     const blob = new Blob([csvContent], {
@@ -133,19 +145,37 @@ export default function Orderdashboard() {
 
   return (
     <div className="dashboard-container">
+      {/* Header */}
+      <div className="dashboard-header">
+        <h2>Welcome Manager, {userName}</h2>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+      <Nav />
 
-    <Nav />
-
-      <h1 className="dashboard-title">HR Manager Dashboard</h1>
+      <div className="scroll-header">
+        <h3>Order Dashboard</h3>
+        <div className="marquee">
+          <div className="marquee-content">
+            <span>
+              📦Track and manage all your orders in one place.
+              &nbsp;&nbsp;&nbsp;
+            </span>
+            <span>
+              📦Track and manage all your orders in one place.
+              &nbsp;&nbsp;&nbsp;
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* Tabs */}
       <div className="tab-container">
         {["pending", "accepted", "cancelled"].map((tab) => (
           <button
             key={tab}
-            className={`tab-button ${
-              activeTab === tab ? "active" : ""
-            }`}
+            className={`tab-button ${activeTab === tab ? "active" : ""}`}
             onClick={() => setActiveTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)} Orders
@@ -200,9 +230,7 @@ export default function Orderdashboard() {
                       {activeTab === "pending" && (
                         <>
                           <button
-                            onClick={() =>
-                              updateOrderStatus(o._id, "accepted")
-                            }
+                            onClick={() => updateOrderStatus(o._id, "accepted")}
                             className="btn btn-accept"
                           >
                             Accept
@@ -219,9 +247,7 @@ export default function Orderdashboard() {
                       )}
                       {activeTab === "accepted" && (
                         <button
-                          onClick={() =>
-                            updateOrderStatus(o._id, "cancelled")
-                          }
+                          onClick={() => updateOrderStatus(o._id, "cancelled")}
                           className="btn btn-cancel"
                         >
                           Cancel
@@ -342,6 +368,19 @@ export default function Orderdashboard() {
           </button>
         </div>
       )}
+
+      {/* Footer */}
+      <footer className="dashboard-footer">
+        <div className="footer-left">
+          <p>
+            © 2025 <strong>Ferndale Tea Factory</strong>
+          </p>
+          <p>All rights reserved.</p>
+        </div>
+        <div className="footer-right">
+          <p>🍃 Tea Factory Management System</p>
+        </div>
+      </footer>
     </div>
   );
 }

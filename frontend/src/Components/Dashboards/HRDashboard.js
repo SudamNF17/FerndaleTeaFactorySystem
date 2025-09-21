@@ -77,7 +77,7 @@ const HRDashboard = () => {
   };
 
   const factoryDetails = {
-    location: "Ferndale Tea Factory, Colombo",
+    location: "Ferndale Tea Factory, Ragala",
     established: "1985",
     totalShifts: 3,
     teaVarieties: ["Black Tea", "Green Tea", "Herbal Tea"],
@@ -90,25 +90,29 @@ const HRDashboard = () => {
     <div className="dashboard-container">
       {/* Header */}
       <div className="dashboard-header">
-        <h2>Welcome, {userName}</h2>
+        <h2>Welcome Manager, {userName}</h2>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
 
       <Nav />
 
-       {/* Factory Overview Card - floated right below Nav */}
-      <div className="factory-card-container">
-        <div className="factory-card">
-          <h3>Factory Overview</h3>
-          <p><strong>Location:</strong> {factoryDetails.location}</p>
-          <p><strong>Established:</strong> {factoryDetails.established}</p>
-          <p><strong>Total Shifts:</strong> {factoryDetails.totalShifts}</p>
-          <p><strong>Tea Varieties:</strong> {factoryDetails.teaVarieties.join(", ")}</p>
-          <p><strong>Daily Production:</strong> {factoryDetails.dailyProduction}</p>
-          <p><strong>Total Employees:</strong> {factoryDetails.employees}</p>
-          <p><strong>Safety Rating:</strong> {factoryDetails.safetyRating}</p>
-        </div>
-      </div>
+       <div className="factory-card-containerr">
+  <div className="factory-cardd">
+    {/* Logo */}
+    <div className="factory-logoo">
+      <img src={require("../../assets/logo.jpeg")} alt="Factory Logo" />
+    </div>
+
+    <h3>Factory Overview</h3>
+    <p><strong>Location:</strong> {factoryDetails.location}</p>
+    <p><strong>Established:</strong> {factoryDetails.established}</p>
+    <p><strong>Total Shifts:</strong> {factoryDetails.totalShifts}</p>
+    <p><strong>Tea Varieties:</strong> {factoryDetails.teaVarieties.join(", ")}</p>
+    <p><strong>Daily Production:</strong> {factoryDetails.dailyProduction}</p>
+    <p><strong>Total Employees:</strong> {factoryDetails.employees}</p>
+    <p><strong>Safety Rating:</strong> {factoryDetails.safetyRating}</p>
+  </div>
+</div>
 
       {/* Toggle Registered Users */}
       <button className="view-users-btn" onClick={handleToggleUsers}>
@@ -193,10 +197,15 @@ const HRDashboard = () => {
       </div>
 
       {/* Footer */}
-      <footer className="dashboard-footer">
-        <p>© 2025 Ferndale Tea Factory</p>
-        <p>Tea Factory Management System</p>
-      </footer>
+<footer className="dashboard-footer">
+  <div className="footer-left">
+    <p>© 2025 <strong>Ferndale Tea Factory</strong></p>
+    <p>All rights reserved.</p>
+  </div>
+  <div className="footer-right">
+    <p>🍃 Tea Factory Management System</p>
+  </div>
+</footer>
     </div>
   );
 };
