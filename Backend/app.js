@@ -2,23 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-
-// Import your routes
-const orderRoutes = require("./Routes/OrderRoutes");
-const userRoutes = require("./Routes/UserRoutes");
-const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes");
-
 // Import routes
 const userRoutes = require("./Routes/UserRoutes");
 const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes");
 const scheduleRoutes = require("./Routes/deliveryScheduleRoutes");
 const freshRoutes = require("./Routes/fresh");
 const rawRoutes = require("./Routes/raw");
-
-
-
-
- 
+const orderRoutes = require("./Routes/OrderRoutes");
 
 const app = express();
 
@@ -27,7 +17,6 @@ app.use(cors());
 app.use(express.json()); // parse JSON requests
 
 // MongoDB Connection
-mongoose.connect("mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.net/teafactory", {
 const mongoURI = "mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.net/teafactory";
 
 mongoose.connect(mongoURI, {
@@ -37,23 +26,13 @@ mongoose.connect(mongoURI, {
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-
-app.use("/api/users", userRoutes); 
+// Routes
+app.use("/api/users", userRoutes);            // All user/login/register routes
 app.use("/api/delivery-vans", deliveryVanRoutes);
 app.use("/api/orders", orderRoutes);
-
-app.use("/api/users", userRoutes); // All user/login/register routes
-app.use("/api/delivery-vans", deliveryVanRoutes);
 app.use("/api/schedules", scheduleRoutes);
 app.use("/api/fresh", freshRoutes);
 app.use("/api/raw", rawRoutes);
-
-
-
-
-
-
-
 
 // Root route for testing
 app.get("/", (req, res) => {

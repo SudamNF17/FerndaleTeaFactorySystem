@@ -19,7 +19,6 @@ import Payment from "./Components/Order/Payment";
 import Bill from "./Components/Order/Bill";
 import Orderdashboard from "./Components/Order/Orderdashboard";
 
-
 import DeliveryDashboard from "./Components/Delivery/deliveryDashboard";
 import Raw from "./Components/Raw/Raw";
 import Fresh from "./Components/Fresh/Fresh";
@@ -36,26 +35,8 @@ function App() {
 
   return (
     <div>
-      <React.Fragment>
-        <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/hr-dashboard" element={<HRDashboard />} />
-          <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
-          <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
-          <Route path="/delivery-vans" element={<Delivery />} />
-          <Route path="/supplier" element={<Supplier />} />
-          <Route path="/cart" element={<Cart />} />
-           <Route path="/payment" element={<Payment />} />
-            <Route path="/bill/:id" element={<Bill />} />
-            <Route path="/Orderdashboard" element={<Orderdashboard />} />
-
-            
-        </Routes>
-      </React.Fragment>
-
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<Welcome />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
@@ -80,6 +61,12 @@ function App() {
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/supplier" element={<Supplier />} />
 
+        {/* Order routes */}
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/bill/:id" element={<Bill />} />
+        <Route path="/orderdashboard" element={<Orderdashboard />} />
+
         {/* Raw & Fresh routes */}
         <Route path="/raw" element={<Raw />} />
         <Route path="/fresh" element={<Fresh />} />
@@ -87,7 +74,6 @@ function App() {
         {/* Redirect unknown routes to Welcome */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
     </div>
   );
 }
