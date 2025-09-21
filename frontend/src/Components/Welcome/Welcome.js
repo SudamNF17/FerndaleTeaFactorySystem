@@ -31,7 +31,7 @@ function Welcome() {
               Sign In
             </button>
             <button
-              className="btn btn-outline"
+              className="btn btn-primary"
               onClick={() => navigate("/register")}
             >
               Sign Up

@@ -33,7 +33,7 @@ function Login() {
       } else if (role === "Supplier") {
         navigate("/supplier-dashboard");
       } else if (role === "Wholesaler") {
-        navigate("/wholesaler-dashboard");
+        navigate("/cart");
       } else {
         alert("Unknown user role.");
       }

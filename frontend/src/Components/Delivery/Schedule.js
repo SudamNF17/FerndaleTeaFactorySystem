@@ -476,6 +476,19 @@ export default function Schedule() {
 
       {/* Scroll to top */}
       <button className="scroll-top" onClick={()=>window.scrollTo({top:0, behavior:"smooth"})}>↑ Top</button>
+
+       {/* Footer */}
+      <footer className="dashboard-footer">
+        <div className="footer-left">
+          <p>
+            © 2025 <strong>Ferndale Tea Factory</strong>
+          </p>
+          <p>All rights reserved.</p>
+        </div>
+        <div className="footer-right">
+          <p>🍃 Tea Factory Management System</p>
+        </div>
+      </footer>
     </div>
   );
 }

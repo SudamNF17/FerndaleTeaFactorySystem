@@ -2,23 +2,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import './delivery.css';
+import "./delivery.css";
 import { useNavigate } from "react-router-dom";
 import VanTracker from "./VanTracker";
-
 
 const API_URL = "http://localhost:5000/api/delivery-vans"; // change if needed
 
 function Delivery() {
-  
-    const userName = localStorage.getItem("userName");
-      const navigate = useNavigate();
-    
-      const handleLogout = () => {
-        localStorage.clear();
-        navigate("/login");
-      };
-    
+  const userName = localStorage.getItem("userName");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   const [vans, setVans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,9 +23,9 @@ function Delivery() {
 
   const [selectedVan, setSelectedVan] = useState(null);
 
-const handleTrack = (van) => {
-  setSelectedVan(van);
-};
+  const handleTrack = (van) => {
+    setSelectedVan(van);
+  };
 
   // For add/edit form
   const initialFormState = {
@@ -126,79 +123,72 @@ const handleTrack = (van) => {
   };
 
   // Generate PDF report
- const generatePDF = () => {
-  const doc = new jsPDF();
-  doc.setFontSize(18);
-  doc.text("Delivery Vans Report", 14, 22);
-  doc.setFontSize(11);
-  doc.setTextColor(100);
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Delivery Vans Report", 14, 22);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
 
-  const headers = [
-    [
-      "ID",
-      "Name",
-      "Phone",
-      "Email",
-      "Van Number",
-      "Status",
-      "Notes",
-    ],
-  ];
+    const headers = [
+      ["ID", "Name", "Phone", "Email", "Van Number", "Status", "Notes"],
+    ];
 
-  const data = vans.map((van) => [
-    van.delivery_person_id,
-    van.name,
-    van.phone_number,
-    van.email,
-    van.van_number,
-    van.availability_status,
-    van.notes || "",
-  ]);
+    const data = vans.map((van) => [
+      van.delivery_person_id,
+      van.name,
+      van.phone_number,
+      van.email,
+      van.van_number,
+      van.availability_status,
+      van.notes || "",
+    ]);
 
-  autoTable(doc, {
-    startY: 30,
-    head: headers,
-    body: data,
-  });
+    autoTable(doc, {
+      startY: 30,
+      head: headers,
+      body: data,
+    });
 
-  doc.save("delivery_vans_report.pdf");
-};
-
+    doc.save("delivery_vans_report.pdf");
+  };
 
   if (loading) return <p>Loading vans...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    
     <div className="delivery-container">
-        <div className="dashboard-header">
+      <div className="dashboard-header">
         <h2>Welcome HR Manager, {userName}</h2>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
-        </div>
-        <div style={{ padding: "20px" }}>
-      <button
-        className="back-button"
-        onClick={() => navigate("/deliveryDashboard")}
-      >
-        ← Back to Dashboard
-      </button>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
-        <div className="dashboard-buttons">
-          <div
-            className="fancy-button"
-            onClick={() => navigate("/schedule")}
-          >
-        <h3>🚚 Delivery Schedule</h3>
-        <p>Click here to manage schedules!</p>
-          </div>
+      <div style={{ padding: "20px" }}>
+        <button
+          className="back-button"
+          onClick={() => navigate("/deliveryDashboard")}
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
+      <div className="dashboard-buttons">
+        <div className="fancy-button" onClick={() => navigate("/schedule")}>
+          <h3>🚚 Delivery Schedule</h3>
+          <p>Click here to manage schedules!</p>
         </div>
+      </div>
       <h2>Delivery Vans List</h2>
 
       <button onClick={generatePDF} style={{ marginBottom: "10px" }}>
         Generate PDF Report
       </button>
 
-      <table border="1" cellPadding="5" style={{ borderCollapse: "collapse", width: "100%" }}>
+      <table
+        border="1"
+        cellPadding="5"
+        style={{ borderCollapse: "collapse", width: "100%" }}
+      >
         <thead>
           <tr>
             <th>ID</th>
@@ -233,9 +223,11 @@ const handleTrack = (van) => {
 
       <VanTracker van={selectedVan} />
 
-
       <h3>{isEditing ? "Edit Van" : "Add New Van"}</h3>
-      <form onSubmit={isEditing ? handleUpdate : handleAdd} style={{ marginTop: "20px" }}>
+      <form
+        onSubmit={isEditing ? handleUpdate : handleAdd}
+        style={{ marginTop: "20px" }}
+      >
         <div>
           <label>Delivery Person ID:</label>
           <input
@@ -335,11 +327,24 @@ const handleTrack = (van) => {
       </form>
 
       <button
-            className="back-to-top"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-             ↑
-        </button>
+        className="back-to-top"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        ↑
+      </button>
+
+      {/* Footer */}
+      <footer className="dashboard-footer">
+        <div className="footer-left">
+          <p>
+            © 2025 <strong>Ferndale Tea Factory</strong>
+          </p>
+          <p>All rights reserved.</p>
+        </div>
+        <div className="footer-right">
+          <p>🍃 Tea Factory Management System</p>
+        </div>
+      </footer>
     </div>
   );
 }

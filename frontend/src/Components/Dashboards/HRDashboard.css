@@ -37,10 +37,9 @@
 
 /* Container for the Factory Card */
 .factory-card-containerr {
-  display: flex;
-  justify-content: center; /* center horizontally */
-  margin: 1rem 0 2rem 0;
-  padding: 0 20px;        /* add side padding for small screens */
+ display: flex;
+  justify-content: center;
+  margin: 2rem 0;       /* add side padding for small screens */
 }
 
 /* Factory Card */
@@ -49,15 +48,20 @@
   padding: 2rem 3rem;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-
-  width: 100%;          /* fill parent container */
-  max-width: 900px;     /* max width */
-  min-width: 500px;     /* minimum width for readability */
-
+  width: 90%;
+  max-width: 800px;
+  min-width: 400px;
   font-weight: 500;
-  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
 }
 
+.factory-logoo img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+}
 
 .factory-card:hover {
   transform: translateY(-5px);
