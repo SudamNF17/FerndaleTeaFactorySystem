@@ -14,7 +14,8 @@ import Supplier from "./Components/Supplier/Supplier";
 import Fresh from "./Components/Fresh/Fresh";
 
 import Raw from "./Components/Raw/Raw";
-import Fresh from "./Components/Fresh/Fresh";
+import Process from "./Components/Process/Process";
+
 
 function App() {
   return (
@@ -32,22 +33,12 @@ function App() {
           <Route path="/supplier" element={<Supplier />} />
           <Route path="/raw" element={<Raw />} />
           <Route path="/fresh" element={<Fresh />} />
+          <Route path="/process" element={<Process/>} />
         </Routes>
       </React.Fragment>
     </div>
 
-    <Routes>
-      <Route path="/" element={<Welcome />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/hr-dashboard" element={<HRDashboard />} />
-      <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
-      <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
-      <Route path="/delivery-vans" element={<Delivery />} />
-      <Route path="/supplier" element={<Supplier />} />
-      <Route path="/raw" element={<Raw />} />
-      <Route path="/fresh" element={<Fresh />} />
-    </Routes>
+    
 
   );
 }

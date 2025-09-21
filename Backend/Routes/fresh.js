@@ -1,34 +1,56 @@
 const express = require("express");
 const router = express.Router();
-const FreshSupplier = require("../Model/FreshSupplier");
+const FreshSupplier = require("../Model/FreshSupplier"); // Make sure path is correct
 
-// Get all fresh suppliers
+// GET all fresh suppliers
 router.get("/", async (req, res) => {
-  const suppliers = await FreshSupplier.find();
-  res.json(suppliers);
+  try {
+    const suppliers = await FreshSupplier.find().sort({ createdAt: -1 }); // Latest first
+    res.json({ suppliers });
+  } catch (err) {
+    console.error("Error fetching suppliers:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-// Add new supplier
+// POST a new supplier
 router.post("/", async (req, res) => {
-  const newSupplier = new FreshSupplier(req.body);
-  await newSupplier.save();
-  res.json({ message: "Fresh supplier added", supplier: newSupplier });
+  try {
+    const supplier = new FreshSupplier(req.body);
+    await supplier.save();
+    res.status(201).json({ supplier });
+  } catch (err) {
+    console.error("Error creating supplier:", err);
+    res.status(400).json({ message: "Failed to create supplier", error: err.message });
+  }
 });
 
-// Update supplier
+// PUT /:id update supplier
 router.put("/:id", async (req, res) => {
-  const updatedSupplier = await FreshSupplier.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-  res.json({ message: "Fresh supplier updated", supplier: updatedSupplier });
+  try {
+    const supplier = await FreshSupplier.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true } // Ensure validators run on update
+    );
+    if (!supplier) return res.status(404).json({ message: "Supplier not found" });
+    res.json({ supplier });
+  } catch (err) {
+    console.error("Error updating supplier:", err);
+    res.status(400).json({ message: "Failed to update supplier", error: err.message });
+  }
 });
 
-// Delete supplier
+// DELETE /:id
 router.delete("/:id", async (req, res) => {
-  await FreshSupplier.findByIdAndDelete(req.params.id);
-  res.json({ message: "Fresh supplier deleted" });
+  try {
+    const supplier = await FreshSupplier.findByIdAndDelete(req.params.id);
+    if (!supplier) return res.status(404).json({ message: "Supplier not found" });
+    res.json({ message: "Supplier deleted" });
+  } catch (err) {
+    console.error("Error deleting supplier:", err);
+    res.status(400).json({ message: "Failed to delete supplier", error: err.message });
+  }
 });
 
 module.exports = router;

@@ -11,6 +11,7 @@ const NavigationBar = () => {
         <li><Link to="/orders">Orders</Link></li>
         <li><Link to="/inventory">supply Tea leaves</Link></li>
         <li><Link to="/delivery-vans">Delivery and Payment</Link></li>
+        <li><Link to="/Process">Process Management</Link></li>
         
       </ul>
     </nav>

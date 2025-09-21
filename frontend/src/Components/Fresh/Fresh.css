@@ -1,37 +1,39 @@
-/* Container */
+/* 🌱 Container */
 .fresh-container {
   max-width: 900px;
   margin: auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
-  color: #333;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
 }
 
-/* Title */
+/* 🌱 Title */
 .fresh-container h1,
 .fresh-container h2 {
   text-align: center;
   margin-bottom: 20px;
   color: #2c3e50;
+  font-weight: 600;
 }
 
-/* Form */
+/* 🌱 Form */
 .fresh-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #fdfdfd;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
 }
 
-/* Label & Input */
+/* 🌱 Label & Input */
 .fresh-form label {
   display: flex;
   flex-direction: column;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 14px;
+  color: #34495e;
 }
 
 .fresh-form input[type="text"],
@@ -39,32 +41,40 @@
 .fresh-form input[type="tel"],
 .fresh-form input[type="number"] {
   padding: 10px;
-  margin-top: 5px;
+  margin-top: 6px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
+  transition: 0.3s ease;
 }
 
-/* Checkbox aligned left */
+.fresh-form input:focus {
+  border-color: #27ae60;
+  outline: none;
+  box-shadow: 0 0 4px rgba(39, 174, 96, 0.4);
+}
+
+/* 🌱 Checkbox aligned left */
 .checkbox-label {
   flex-direction: row !important;
   align-items: center;
   gap: 10px;
-  font-weight: bold;
+  font-weight: 600;
+  color: #2c3e50;
 }
 
 .checkbox-label input {
   transform: scale(1.2);
 }
 
-/* Buttons */
+/* 🌱 Buttons */
 button {
   padding: 10px 16px;
   border: none;
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
   margin-right: 5px;
 }
 
@@ -75,72 +85,97 @@ button {
 
 .submit-btn:hover {
   background: #219150;
+  transform: scale(1.05);
 }
 
 button:hover {
   opacity: 0.9;
 }
 
-/* Map */
+/* 🌱 Map */
 .map-container {
   margin-top: 20px;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Submitted Data */
+/* 🌱 Submitted Data */
 .submitted-data {
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 .submitted-data table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
-  font-size: 14px;
+  font-size: 15px;
   background: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
 }
 
 .submitted-data th,
 .submitted-data td {
-  border: 1px solid #ddd;
-  padding: 10px;
+  border: 1px solid #e0e0e0;
+  padding: 12px;
   text-align: center;
 }
 
 .submitted-data th {
-  background: #34495e;
+  background: #2c3e50;
   color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .submitted-data tr:nth-child(even) {
-  background: #f2f2f2;
+  background: #f9f9f9;
 }
 
+.submitted-data tr:hover {
+  background: #f1f1f1;
+}
+
+/* 🌱 Action Buttons */
 .submitted-data button {
   margin: 3px;
-  padding: 6px 10px;
+  padding: 7px 12px;
   font-size: 12px;
+  border-radius: 5px;
+  font-weight: 600;
 }
 
 .submitted-data button:nth-child(1) {
   background: #2980b9;
   color: white;
 }
+.submitted-data button:nth-child(1):hover {
+  background: #1f6690;
+}
 
 .submitted-data button:nth-child(2) {
   background: #e74c3c;
   color: white;
+}
+.submitted-data button:nth-child(2):hover {
+  background: #c0392b;
 }
 
 .submitted-data button:nth-child(3) {
   background: #8e44ad;
   color: white;
 }
+.submitted-data button:nth-child(3):hover {
+  background: #6d318a;
+}
 
 .submitted-data button:nth-child(4) {
   background: #f39c12;
   color: white;
+}
+.submitted-data button:nth-child(4):hover {
+  background: #d68910;
 }

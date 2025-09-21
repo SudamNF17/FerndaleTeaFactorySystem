@@ -1,34 +1,69 @@
 const express = require("express");
 const router = express.Router();
-const RawSupplier = require("../Model/RawSupplier");
+const mongoose = require("mongoose");
 
-// Get all raw suppliers
+// Supplier schema
+const rawSupplierSchema = new mongoose.Schema({
+  supplierName: String,
+  contactPerson: String,
+  phone: String,
+  email: String,
+  company: String,
+  materialType: String,
+  quantity: Number,
+  pricePerUnit: Number,
+  leadTime: String,
+  certification: String,
+  latitude: Number,
+  longitude: Number,
+  locationName: String,
+}, { timestamps: true });
+
+const RawSupplier = mongoose.model("RawSupplier", rawSupplierSchema);
+
+// GET all suppliers
 router.get("/", async (req, res) => {
-  const suppliers = await RawSupplier.find();
-  res.json(suppliers);
+  try {
+    const suppliers = await RawSupplier.find();
+    res.json({ suppliers }); // ✅ frontend expects { suppliers: [...] }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-// Add new supplier
+// POST new supplier
 router.post("/", async (req, res) => {
-  const newSupplier = new RawSupplier(req.body);
-  await newSupplier.save();
-  res.json({ message: "Raw supplier added", supplier: newSupplier });
+  try {
+    const newSupplier = new RawSupplier(req.body);
+    const saved = await newSupplier.save();
+    res.json({ supplier: saved });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to save supplier" });
+  }
 });
 
-// Update supplier
+// PUT update supplier by ID
 router.put("/:id", async (req, res) => {
-  const updatedSupplier = await RawSupplier.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-  res.json({ message: "Raw supplier updated", supplier: updatedSupplier });
+  try {
+    const updated = await RawSupplier.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json({ supplier: updated });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update supplier" });
+  }
 });
 
-// Delete supplier
+// DELETE supplier by ID
 router.delete("/:id", async (req, res) => {
-  await RawSupplier.findByIdAndDelete(req.params.id);
-  res.json({ message: "Raw supplier deleted" });
+  try {
+    await RawSupplier.findByIdAndDelete(req.params.id);
+    res.json({ message: "Supplier deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete supplier" });
+  }
 });
 
 module.exports = router;

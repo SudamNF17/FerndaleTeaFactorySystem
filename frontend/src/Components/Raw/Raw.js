@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import axios from "axios";
 import "./Raw.css";
+import printLogo from "../../assets/printlogo.png";
 
-// Fix default marker icon issue
-delete L.Icon.Default.prototype._getIconUrl;
+// Configure default Leaflet marker icon
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
@@ -15,47 +16,66 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
+// Recenter map when marker moves
+function RecenterMap({ center }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!center || !map) return;
+    map.setView(center);
+  }, [center, map]);
+  return null;
+}
+
 // Draggable marker with reverse geocoding
 function DraggableMarker({ position, setFormData }) {
   const [markerPosition, setMarkerPosition] = useState(position);
 
-  const eventHandlers = {
-    dragend: async (e) => {
-      const latlng = e.target.getLatLng();
-      setMarkerPosition([latlng.lat, latlng.lng]);
+  useEffect(() => {
+    setMarkerPosition(position);
+  }, [position]);
 
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${latlng.lat}&lon=${latlng.lng}&format=json`
-        );
-        const data = await response.json();
-        const placeName =
-          data.display_name ||
-          `Lat: ${latlng.lat.toFixed(4)}, Lng: ${latlng.lng.toFixed(4)}`;
+  const handleDragEnd = async (e) => {
+    const latlng = e.target.getLatLng();
+    const lat = latlng.lat;
+    const lng = latlng.lng;
+    setMarkerPosition([lat, lng]);
 
-        setFormData((prev) => ({
-          ...prev,
-          latitude: latlng.lat,
-          longitude: latlng.lng,
-          locationName: placeName,
-        }));
-      } catch (err) {
-        console.error("Reverse geocoding error:", err);
-        setFormData((prev) => ({
-          ...prev,
-          latitude: latlng.lat,
-          longitude: latlng.lng,
-          locationName: `Lat: ${latlng.lat.toFixed(4)}, Lng: ${latlng.lng.toFixed(4)}`,
-        }));
-      }
-    },
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+      );
+      const data = await response.json();
+      const placeName =
+        (data && data.display_name) || `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+
+      setFormData((prev) => ({
+        ...prev,
+        latitude: lat,
+        longitude: lng,
+        locationName: placeName,
+      }));
+    } catch (err) {
+      console.error("Reverse geocoding error:", err);
+      setFormData((prev) => ({
+        ...prev,
+        latitude: lat,
+        longitude: lng,
+        locationName: `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`,
+      }));
+    }
   };
 
-  return <Marker position={markerPosition} draggable={true} eventHandlers={eventHandlers} />;
+  return (
+    <Marker
+      position={markerPosition}
+      draggable={true}
+      eventHandlers={{ dragend: handleDragEnd }}
+    />
+  );
 }
 
 function Raw() {
-  const [formData, setFormData] = useState({
+  const initial = {
     supplierName: "",
     contactPerson: "",
     phone: "",
@@ -69,57 +89,71 @@ function Raw() {
     latitude: 7.8731,
     longitude: 80.7718,
     locationName: "",
-  });
+  };
 
+  const [formData, setFormData] = useState(initial);
   const [submittedData, setSubmittedData] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        setFormData({
-          ...formData,
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          locationName: `Lat: ${pos.coords.latitude.toFixed(
-            4
-          )}, Lng: ${pos.coords.longitude.toFixed(4)}`,
-        });
-      });
-    }
+    if (!navigator || !navigator.geolocation) return alert("Geolocation not available.");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setFormData((prev) => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          locationName: `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`,
+        }));
+      },
+      (err) => console.error("Geolocation error:", err)
+    );
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (editIndex !== null) {
-      const updatedData = [...submittedData];
-      updatedData[editIndex] = formData;
-      setSubmittedData(updatedData);
-      setEditIndex(null);
-    } else {
-      setSubmittedData([...submittedData, formData]);
-    }
+  // ✅ Fetch existing raw material suppliers from backend
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/raw-suppliers");
+        setSubmittedData(res.data.suppliers); // assuming backend returns { suppliers: [...] }
+      } catch (err) {
+        console.error("Error fetching suppliers:", err);
+      }
+    };
 
-    setFormData({
-      supplierName: "",
-      contactPerson: "",
-      phone: "",
-      email: "",
-      company: "",
-      materialType: "",
-      quantity: "",
-      pricePerUnit: "",
-      leadTime: "",
-      certification: "",
-      latitude: 7.8731,
-      longitude: 80.7718,
-      locationName: "",
-    });
+    fetchSuppliers();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (editIndex !== null) {
+        const updated = await axios.put(
+          `http://localhost:5000/api/raw-suppliers/${submittedData[editIndex]._id}`,
+          formData
+        );
+        const newData = [...submittedData];
+        newData[editIndex] = updated.data.supplier;
+        setSubmittedData(newData);
+        setEditIndex(null);
+      } else {
+        const res = await axios.post("http://localhost:5000/api/raw-suppliers", formData);
+        setSubmittedData([...submittedData, res.data.supplier]);
+      }
+
+      setFormData(initial);
+    } catch (err) {
+      console.error("Error saving supplier:", err);
+      alert("Failed to save supplier. Check console for details.");
+    }
   };
 
   const handleEdit = (index) => {
@@ -128,174 +162,126 @@ function Raw() {
   };
 
   const handleDelete = (index) => {
-    const updatedData = submittedData.filter((_, i) => i !== index);
-    setSubmittedData(updatedData);
+    const updated = submittedData.filter((_, i) => i !== index);
+    setSubmittedData(updated);
   };
 
   const handlePrint = (row) => {
-    const printWindow = window.open("", "_blank");
-    printWindow.document.write("<h2>Raw Material Supplier Data</h2>");
-    Object.entries(row).forEach(([key, value]) => {
-      printWindow.document.write(`<p><b>${key}:</b> ${value}</p>`);
-    });
+    const printWindow = window.open("", "_blank", "width=600,height=800");
+    if (!printWindow) return;
+
+    const now = new Date().toLocaleString();
+
+    printWindow.document.write(`
+      <!doctype html>
+      <html>
+        <head>
+          <title>Supplier Slip</title>
+          <meta name="viewport" content="width=device-width,initial-scale=1"/>
+          <style>
+            body { font-family: "Times New Roman", serif; padding: 20px; background: #fff; color: #000; }
+            .slip { border: 2px solid #2c3e50; border-radius: 10px; padding: 25px; max-width: 500px; margin: auto; }
+            .header { text-align: center; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; margin-bottom: 20px; }
+            .header img { max-width: 100px; height: auto; margin-bottom: 5px; }
+            .header h1 { margin: 0; font-size: 22px; color: #2c3e50; }
+            .header h2 { margin: 5px 0 0 0; font-size: 16px; color: #555; }
+            .data p { margin: 4px 0; font-size: 14px; }
+            .sign { margin-top: 40px; text-align: right; font-size: 14px; }
+            .footer { border-top: 2px solid #2c3e50; margin-top: 20px; padding-top: 10px; font-size: 12px; text-align: center; color: #555; }
+          </style>
+        </head>
+        <body>
+          <div class="slip">
+            <div class="header">
+              <img src="${printLogo}" alt="Factory Logo"/>
+              <h1>Green Leaf Tea Factory</h1>
+              <h2>Raw Material Supplier Slip</h2>
+            </div>
+            <div class="data">
+              ${Object.entries(row)
+                .map(([key, value]) => `<p><strong>${key}:</strong> ${value == null ? "" : value}</p>`)
+                .join("")}
+            </div>
+            <div class="sign">
+              ________________________ <br/>
+              Authorized Signature
+            </div>
+            <div class="footer">
+              Generated on: ${now} <br/>
+              Thank you for supplying quality raw materials.
+            </div>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
     printWindow.print();
   };
 
   const handleGmail = (row) => {
     const subject = encodeURIComponent("Raw Material Supplier Information");
     const body = encodeURIComponent(
-      `Here are the details:\n\n${Object.entries(row)
+      Object.entries(row)
         .map(([k, v]) => `${k}: ${v}`)
-        .join("\n")}`
+        .join("\n")
     );
-    window.location.href = `mailto:${row.email}?subject=${subject}&body=${body}`;
+    const mailTo = row.email || "";
+    window.location.href = `mailto:${mailTo}?subject=${subject}&body=${body}`;
   };
 
   return (
     <div className="raw-container">
       <h1>Raw Material Supplier Form</h1>
+
       <form className="raw-form" onSubmit={handleSubmit}>
-        <label>
-          Supplier Name:
-          <input
-            type="text"
-            name="supplierName"
-            value={formData.supplierName}
-            onChange={handleChange}
-            required
-          />
+        <label>Supplier Name:
+          <input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange} required />
+        </label>
+        <label>Contact Person:
+          <input type="text" name="contactPerson" value={formData.contactPerson} onChange={handleChange} required />
+        </label>
+        <label>Phone:
+          <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
+        </label>
+        <label>Email:
+          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+        </label>
+        <label>Company/Organization:
+          <input type="text" name="company" value={formData.company} onChange={handleChange} />
+        </label>
+        <label>Material Type:
+          <input type="text" name="materialType" value={formData.materialType} onChange={handleChange} required />
+        </label>
+        <label>Quantity Available:
+          <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} />
+        </label>
+        <label>Price per Unit:
+          <input type="number" name="pricePerUnit" value={formData.pricePerUnit} onChange={handleChange} />
+        </label>
+        <label>Delivery Lead Time:
+          <input type="text" name="leadTime" value={formData.leadTime} onChange={handleChange} />
+        </label>
+        <label>Certification/Quality Standard:
+          <input type="text" name="certification" value={formData.certification} onChange={handleChange} />
+        </label>
+        <label>Location Name:
+          <input type="text" name="locationName" value={formData.locationName} onChange={handleChange} placeholder="Enter or drag marker on map"/>
         </label>
 
-        <label>
-          Contact Person:
-          <input
-            type="text"
-            name="contactPerson"
-            value={formData.contactPerson}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
-          Phone:
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
-          Email:
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
-          Company/Organization:
-          <input
-            type="text"
-            name="company"
-            value={formData.company}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label>
-          Material Type:
-          <input
-            type="text"
-            name="materialType"
-            value={formData.materialType}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
-          Quantity Available:
-          <input
-            type="number"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label>
-          Price per Unit:
-          <input
-            type="number"
-            name="pricePerUnit"
-            value={formData.pricePerUnit}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label>
-          Delivery Lead Time:
-          <input
-            type="text"
-            name="leadTime"
-            value={formData.leadTime}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label>
-          Certification/Quality Standard:
-          <input
-            type="text"
-            name="certification"
-            value={formData.certification}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label>
-          Location Name:
-          <input
-            type="text"
-            name="locationName"
-            value={formData.locationName}
-            onChange={handleChange}
-            placeholder="Enter or drag marker on map"
-          />
-        </label>
-
-        <button type="button" onClick={handleLocation}>
-          Get Live Location
-        </button>
-
-        <div className="map-container">
-          <MapContainer
-            center={[formData.latitude, formData.longitude]}
-            zoom={7}
-            style={{ height: "250px", width: "100%" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution="© OpenStreetMap contributors"
-            />
-            <DraggableMarker
-              position={[formData.latitude, formData.longitude]}
-              setFormData={setFormData}
-            />
-          </MapContainer>
+        <div className="button-row">
+          <button type="button" onClick={handleLocation}>Get Live Location</button>
+          <button type="submit" className="submit-btn">{editIndex !== null ? "Update" : "Submit"}</button>
         </div>
-
-        <button type="submit" className="submit-btn">
-          {editIndex !== null ? "Update" : "Submit"}
-        </button>
       </form>
+
+      <div className="map-container">
+        <MapContainer center={[formData.latitude, formData.longitude]} zoom={7} style={{ height: "320px", width: "100%" }}>
+          <RecenterMap center={[formData.latitude, formData.longitude]} />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <DraggableMarker position={[formData.latitude, formData.longitude]} setFormData={setFormData} />
+        </MapContainer>
+      </div>
 
       {submittedData.length > 0 && (
         <div className="submitted-data">

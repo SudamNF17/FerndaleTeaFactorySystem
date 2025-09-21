@@ -1,0 +1,119 @@
+.process-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.process-container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c3e50;
+}
+
+/* Form styling */
+.process-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.process-form input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.process-form button {
+  padding: 10px 20px;
+  background-color: #27ae60;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.process-form button:hover {
+  background-color: #219150;
+}
+
+/* Table styling */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.process-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.process-table th,
+.process-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.process-table th {
+  background-color: #34495e;
+  color: white;
+}
+
+.process-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Action buttons vertically aligned */
+.action-buttons .buttons-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.action-buttons button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  width: 70px;
+}
+
+.action-buttons button:nth-child(1) { background-color: #2980b9; color: white; }
+.action-buttons button:nth-child(1):hover { background-color: #1f6691; }
+
+.action-buttons button:nth-child(2) { background-color: #c0392b; color: white; }
+.action-buttons button:nth-child(2):hover { background-color: #992d22; }
+
+.action-buttons button:nth-child(3) { background-color: #f39c12; color: white; }
+.action-buttons button:nth-child(3):hover { background-color: #d87b0a; }
+
+.action-buttons button:nth-child(4) { background-color: #16a085; color: white; }
+.action-buttons button:nth-child(4):hover { background-color: #117a66; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .process-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .process-form input,
+  .process-form button {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .process-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
