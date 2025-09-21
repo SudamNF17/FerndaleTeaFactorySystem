@@ -13,6 +13,13 @@ import WholesalerDashboard from "./Components/Dashboards/WholesalerDashboard";
 import Delivery from "./Components/Delivery/Delivery";
 import Schedule from "./Components/Delivery/Schedule";
 import Supplier from "./Components/Supplier/Supplier";
+
+import Cart from "./Components/Order/Cart";
+import Payment from "./Components/Order/Payment";
+import Bill from "./Components/Order/Bill";
+import Orderdashboard from "./Components/Order/Orderdashboard";
+
+
 import DeliveryDashboard from "./Components/Delivery/deliveryDashboard";
 import Raw from "./Components/Raw/Raw";
 import Fresh from "./Components/Fresh/Fresh";
@@ -29,6 +36,25 @@ function App() {
 
   return (
     <div>
+      <React.Fragment>
+        <Routes>
+          <Route path="/" element={<Welcome />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/hr-dashboard" element={<HRDashboard />} />
+          <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
+          <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
+          <Route path="/delivery-vans" element={<Delivery />} />
+          <Route path="/supplier" element={<Supplier />} />
+          <Route path="/cart" element={<Cart />} />
+           <Route path="/payment" element={<Payment />} />
+            <Route path="/bill/:id" element={<Bill />} />
+            <Route path="/Orderdashboard" element={<Orderdashboard />} />
+
+            
+        </Routes>
+      </React.Fragment>
+
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/register" element={<Register />} />
@@ -61,6 +87,7 @@ function App() {
         {/* Redirect unknown routes to Welcome */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
     </div>
   );
 }
