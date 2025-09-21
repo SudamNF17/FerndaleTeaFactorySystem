@@ -18,17 +18,20 @@ function Login() {
         password,
       });
 
-      const { role, fullName } = res.data;
+      const { role, fullName, token } = res.data; // <-- Get token too
+
+      console.log("Login response:", res.data); // Debug
 
       // Save to localStorage (for session)
       localStorage.setItem("userName", fullName);
       localStorage.setItem("userRole", role);
+      localStorage.setItem("userToken", token); // <-- Add this line
 
       // Redirect based on role
       if (role === "HRManager") {
         navigate("/hr-dashboard");
       } else if (role === "Supplier") {
-        navigate("/Supplier-dashboard");
+        navigate("/supplier-dashboard");
       } else if (role === "Wholesaler") {
         navigate("/wholesaler-dashboard");
       } else {
