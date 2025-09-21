@@ -11,6 +11,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { Bar, Pie } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
 import "./schedule.css";
+import logo from "../../assets/logo.jpeg"; 
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -145,17 +146,35 @@ export default function Schedule() {
 
   const generatePDF = () => {
   const doc = new jsPDF();
-  doc.text("Delivery Report", 14, 22);
 
-  // Add Wholesaler Phone column
+  // Add logo
+  const imgWidth = 25;
+  const imgHeight = 25;
+  doc.addImage(logo, "JPEG", 14, 10, imgWidth, imgHeight);
+
+  // Factory name
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.text("Ferndale Tea Factory", 45, 20);
+
+  // Report Title
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Delivery Report", 14, 45);
+
+  // Date
+  const today = new Date().toLocaleDateString();
+  doc.setFontSize(10);
+  doc.text(`Generated on: ${today}`, 150, 45);
+
+  // Table
   const head = [["OrderID","Van","Driver","Wholesaler","Phone","Qty","Pickup","Dropoff","Expected","Status"]];
-
   const body = filtered.map(it => [
     it.order_id,
     it.van_number,
     it.driver_name,
     it.wholesaler_name,
-    it.wholesaler_phone || "N/A", 
+    it.wholesaler_phone || "N/A",
     it.quantity,
     it.pickup_location,
     it.dropoff_location,
@@ -163,10 +182,24 @@ export default function Schedule() {
     it.status
   ]);
 
-  autoTable(doc, { startY: 30, head, body });
+  autoTable(doc, {
+    startY: 55,
+    head,
+    body,
+    theme: "grid",
+    headStyles: { fillColor: [41, 128, 185], textColor: 255, halign: "center" },
+    bodyStyles: { fontSize: 10, halign: "center" },
+    alternateRowStyles: { fillColor: [240, 240, 240] }
+  });
+
+  // Signature section
+  const finalY = doc.lastAutoTable.finalY + 20;
+  doc.setFontSize(12);
+  doc.text("Authorized Signature: _______________________", 14, finalY);
+
+  // Save PDF
   doc.save("delivery_report.pdf");
 };
-
 
   const exportExcel = () => {
   const ws = XLSX.utils.json_to_sheet(

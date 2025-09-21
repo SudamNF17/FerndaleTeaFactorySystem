@@ -90,15 +90,15 @@ const HRDashboard = () => {
     <div className="dashboard-container">
       {/* Header */}
       <div className="dashboard-header">
-        <h2>Welcome, {userName}</h2>
+        <h2>Welcome Manager, {userName}</h2>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
 
       <Nav />
 
        {/* Factory Overview Card - floated right below Nav */}
-      <div className="factory-card-container">
-        <div className="factory-card">
+      <div className="factory-card-containerr">
+        <div className="factory-cardd">
           <h3>Factory Overview</h3>
           <p><strong>Location:</strong> {factoryDetails.location}</p>
           <p><strong>Established:</strong> {factoryDetails.established}</p>
@@ -193,10 +193,15 @@ const HRDashboard = () => {
       </div>
 
       {/* Footer */}
-      <footer className="dashboard-footer">
-        <p>© 2025 Ferndale Tea Factory</p>
-        <p>Tea Factory Management System</p>
-      </footer>
+<footer className="dashboard-footer">
+  <div className="footer-left">
+    <p>© 2025 <strong>Ferndale Tea Factory</strong></p>
+    <p>All rights reserved.</p>
+  </div>
+  <div className="footer-right">
+    <p>🍃 Tea Factory Management System</p>
+  </div>
+</footer>
     </div>
   );
 };

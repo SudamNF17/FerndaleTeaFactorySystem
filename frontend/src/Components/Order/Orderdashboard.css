@@ -41,7 +41,7 @@
   padding: 12px 20px;
   border-radius: 8px;
   margin: 20px 0;
-  color: #fff;
+  color: #0b0202;
   text-align: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
@@ -60,7 +60,7 @@
 .marquee-content {
   display: inline-block;
   white-space: nowrap;
-  animation: marquee 15s linear infinite;
+  animation: marquee 20s linear infinite;
 }
 
 .marquee span {
@@ -263,4 +263,38 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: #28a745;
+}
+
+/* === Dashboard Footer === */
+.dashboard-footer {
+  margin-top: 40px;
+  padding: 20px 40px;
+  background: #1f2937; /* dark slate background */
+  color: #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* responsive */
+  border-top: 3px solid #4facfe;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+  font-size: 0.9rem;
+}
+
+.dashboard-footer p {
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+.footer-left p:first-child {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.footer-right {
+  text-align: right;
+}
+
+.footer-right p:first-child {
+  font-weight: 500;
+  color: #4facfe; /* highlight system name */
 }
