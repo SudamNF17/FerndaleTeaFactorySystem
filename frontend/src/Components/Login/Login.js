@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './login.css'; 
-import logo from '../../assets/tea-logo.png'; 
+import logo from '../../assets/logo.jpeg'; 
 
 function Login() {
   const [email, setEmail] = useState('');
