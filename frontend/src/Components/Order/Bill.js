@@ -1,6 +1,8 @@
 // src/Bill.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Header from "./Header";
+import Footer from "./Footer";
 
 export default function Bill() {
   const navigate = useNavigate();
@@ -26,14 +28,15 @@ export default function Bill() {
     fetchOrder();
   }, [id]);
 
-  // ✅ Safe checks
   if (loading) return <p>Loading bill...</p>;
   if (error) return <p style={{ color: "red" }}>❌ {error}</p>;
   if (!order || !order.buyer) {
     return (
       <div className="cart-app">
+        <Header />
         <h2>No bill found</h2>
-        <button onClick={() => navigate("/")}>Back to Cart</button>
+        <button onClick={() => navigate("/cart")}>Back to Cart</button>
+        <Footer />
       </div>
     );
   }
@@ -59,15 +62,13 @@ export default function Bill() {
   }
   `;
 
-  // WhatsApp + Email links
   const whatsappLink = `https://wa.me/?text=${encodeURIComponent(billText)}`;
   const emailLink = `mailto:${order.buyer.email}?subject=Your TeaCart Bill&body=${encodeURIComponent(billText)}`;
 
   return (
     <div className="cart-app">
-      <header className="app-header">
-        <h1>Bill</h1>
-      </header>
+      {/* ✅ Reusable Header */}
+      <Header />
 
       <div className="content-container" style={{ gridTemplateColumns: "1fr" }}>
         <section className="cart-section">
@@ -121,12 +122,15 @@ export default function Bill() {
           <button
             style={{ marginTop: "1rem" }}
             className="checkout-btn"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/cart")}
           >
             Back to Home
           </button>
         </section>
       </div>
+
+      {/* ✅ Reusable Footer */}
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,7 @@
-// src/CartApp.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "./Header";
+import Footer from "./Footer";
 import "./Cart.css";
 
 const products = [
@@ -12,7 +13,7 @@ const products = [
   { id: 6, name: "Dragon Well", price: 18, image: "https://placehold.co/400x300?text=Dragon+Well" }
 ];
 
-export default function CartApp() {
+export default function Cart() {
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
 
@@ -70,14 +71,11 @@ export default function CartApp() {
 
   return (
     <div className="cart-app">
-      <header className="app-header">
-        <h1>TeaCart</h1>
-        <div className="cart-indicator">
-          <span>{cart.reduce((t, i) => t + i.qty, 0)} items</span>
-        </div>
-      </header>
+      {/* ✅ Header Component */}
+      <Header cartCount={cart.reduce((t, i) => t + i.qty, 0)} />
 
       <div className="content-container">
+        {/* ✅ Products Section */}
         <section className="products-section">
           <h2>Our Teas</h2>
           <div className="product-grid">
@@ -96,6 +94,7 @@ export default function CartApp() {
           </div>
         </section>
 
+        {/* ✅ Cart Section */}
         <section className="cart-section">
           <h2>Your Cart</h2>
           {cart.length === 0 ? (
@@ -110,7 +109,9 @@ export default function CartApp() {
                     <img src={item.image} alt={item.name} className="item-image" />
                     <div className="item-details">
                       <h3>{item.name}</h3>
-                      <p>${item.price} × {item.qty}</p>
+                      <p>
+                        ${item.price} × {item.qty}
+                      </p>
                     </div>
                     <div className="item-controls">
                       <button onClick={() => updateQuantity(item.id, item.qty - 1)}>-</button>
@@ -130,9 +131,18 @@ export default function CartApp() {
               </div>
 
               <div className="cart-summary">
-                <div className="summary-row"><span>Subtotal:</span><span>${subtotal.toFixed(2)}</span></div>
-                <div className="summary-row"><span>Shipping:</span><span>${shipping.toFixed(2)}</span></div>
-                <div className="summary-row total"><span>Total:</span><span>${total.toFixed(2)}</span></div>
+                <div className="summary-row">
+                  <span>Subtotal:</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="summary-row">
+                  <span>Shipping:</span>
+                  <span>${shipping.toFixed(2)}</span>
+                </div>
+                <div className="summary-row total">
+                  <span>Total:</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
 
                 <button className="checkout-btn" onClick={goToPayment}>
                   Proceed to Checkout
@@ -146,6 +156,9 @@ export default function CartApp() {
           )}
         </section>
       </div>
+
+      {/* ✅ Footer Component */}
+      <Footer />
     </div>
   );
 }

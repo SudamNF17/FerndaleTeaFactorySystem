@@ -1,4 +1,3 @@
-// src/Payment.jsx
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'ol/ol.css';
@@ -12,6 +11,10 @@ import Feature from 'ol/Feature.js';
 import Point from 'ol/geom/Point.js';
 import { fromLonLat, toLonLat } from 'ol/proj.js';
 import { Icon, Style } from 'ol/style.js';
+
+// ✅ Import shared Header and Footer
+import Header from "./Header";
+import Footer from "./Footer";
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -33,14 +36,14 @@ export default function Payment() {
     return { subtotal, shipping, total };
   }, [cart, totalsFromLS]);
 
-  // Restore user + location if present
+  // ---- User + location ----
   const [user, setUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem('user')) || { name: '', email: '', address: '', phone: '' }; }
     catch { return { name: '', email: '', address: '', phone: '' }; }
   });
   const [markerCoord, setMarkerCoord] = useState(() => {
     try { return JSON.parse(localStorage.getItem('location') || 'null'); } catch { return null; }
-  }); // [lon, lat]
+  });
 
   // ---- Map setup ----
   const mapEl = useRef(null);
@@ -79,7 +82,6 @@ export default function Payment() {
       const coord = evt.coordinate; // EPSG:3857
       vectorSourceRef.current.clear();
 
-      // drop marker
       const feature = new Feature({ geometry: new Point(coord) });
       feature.setStyle(new Style({
         image: new Icon({
@@ -93,7 +95,6 @@ export default function Payment() {
       const [lon, lat] = toLonLat(coord);
       setMarkerCoord([lon, lat]);
 
-      // Reverse geocoding
       try {
         const res = await fetch(
           `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
@@ -117,7 +118,6 @@ export default function Payment() {
       return;
     }
 
-    // validation
     if (!user.name.trim()) {
       alert("Please enter your name.");
       return;
@@ -140,14 +140,8 @@ export default function Payment() {
       return;
     }
 
-    // order payload
     const orderData = {
-      buyer: {
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        address: user.address,
-      },
+      buyer: { ...user },
       cart: cart.map(item => ({
         id: item.id,
         name: item.name,
@@ -170,8 +164,7 @@ export default function Payment() {
       const data = await res.json();
 
       if (res.ok) {
-        const savedOrder = data.order;
-        navigate(`/bill/${savedOrder._id}`);
+        navigate(`/bill/${data.order._id}`);
       } else {
         alert("❌ Failed to place order: " + data.message);
       }
@@ -189,12 +182,8 @@ export default function Payment() {
   // ---- UI ----
   return (
     <div className="cart-app">
-      <header className="app-header">
-        <h1>Order</h1>
-        <div className="cart-indicator">
-          <span>{cart.reduce((t, i) => t + (i.qty || 0), 0)} items</span>
-        </div>
-      </header>
+      {/* ✅ Shared Header */}
+      <Header />
 
       <div className="content-container" style={{ gridTemplateColumns: '1.5fr 1fr' }}>
         {/* Left: Cart details + Map */}
@@ -300,6 +289,9 @@ export default function Payment() {
           </button>
         </section>
       </div>
+
+      {/* ✅ Shared Footer */}
+      <Footer />
     </div>
   );
 }
