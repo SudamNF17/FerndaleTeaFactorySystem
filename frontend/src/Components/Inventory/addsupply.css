@@ -1,0 +1,70 @@
+/* Container */
+.supply-container {
+  padding: 30px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa; /* optional light bg */
+  min-height: 100vh;
+}
+
+/* Heading */
+.supply-container h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+/* === Image wrapper and image === */
+.supply-image-wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Actual image */
+.supply-image {
+  width: 100%;
+  border-radius: 10px;
+  display: block;
+}
+
+/* === Buttons now in the middle of the image === */
+.supply-buttons {
+  position: absolute;
+  top: 50%;               /* middle vertically */
+  left: 50%;              /* middle horizontally */
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 20px;
+}
+
+/* Button styles */
+.supply-btn {
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.supply-btn:hover {
+  background-color: #219150;
+  transform: scale(1.05);
+}
+
+/* Second button style */
+.supply-btn.secondary {
+  background-color: #2980b9;
+}
+
+.supply-btn.secondary:hover {
+  background-color: #1f6391;
+}

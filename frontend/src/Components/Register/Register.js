@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './register.css';
-import logo from '../../assets/tea-logo.png'; 
+import logo from '../../assets/logo.jpeg'; 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -77,7 +77,7 @@ function Register() {
               <select value={role} onChange={(e) => setRole(e.target.value)} required>
                 <option value="Supplier">Supplier</option>
                 <option value="Wholesaler">Wholesaler</option>
-                <option value="HRManager">HR Manager</option>
+                <option value="HRManager">Management</option>
               </select>
             </div>
             <button type="submit" className="register-btn">Register</button>

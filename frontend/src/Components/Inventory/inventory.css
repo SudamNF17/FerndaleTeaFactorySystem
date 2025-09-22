@@ -1,0 +1,36 @@
+.inventory-container {
+  position: relative; /* needed for absolute child positioning */
+  text-align: center;
+  padding: 20px;
+}
+
+.inventory-image {
+  width: 100%;
+  max-width: 800px; /* optional */
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+.inventory-buttons {
+  position: absolute;
+  top: 50%; /* center vertically */
+  left: 50%; /* center horizontally */
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 20px;
+}
+
+.inventory-btn {
+  padding: 12px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.inventory-btn.secondary {
+  background-color: #2196F3;
+}

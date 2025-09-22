@@ -39,7 +39,10 @@ const deliveryVanSchema = new Schema({
     notes: {
         type: String,
         trim: true
-    }
+    },
+    latitude: { type: Number },
+    longitude: { type: Number },
+    
 });
 
 module.exports = mongoose.model(
