@@ -11,8 +11,6 @@ const rawRoutes = require("./Routes/raw"); // Raw supplier routes
 const processRoutes = require("./Routes/Process"); // Process routes
 
 const scheduleRoutes = require("./Routes/deliveryScheduleRoutes");
-const freshRoutes = require("./Routes/fresh");
-const rawRoutes = require("./Routes/raw");
 const orderRoutes = require("./Routes/OrderRoutes");
 
 const app = express();
@@ -43,8 +41,7 @@ app.use("/api/processes", processRoutes); // ✅ FIXED: plural & consistent with
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/schedules", scheduleRoutes);
-app.use("/api/fresh", freshRoutes);
-app.use("/api/raw", rawRoutes);
+
 
 // Root route for testing
 app.get("/", (req, res) => {

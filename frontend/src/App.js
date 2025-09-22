@@ -24,7 +24,6 @@ import DeliveryDashboard from "./Components/Delivery/deliveryDashboard";
 import Raw from "./Components/Raw/Raw";
 import Fresh from "./Components/Fresh/Fresh";
 
-import Raw from "./Components/Raw/Raw";
 import Process from "./Components/Process/Process";
 
 
@@ -40,27 +39,11 @@ function App() {
 
   return (
 
-    <div>
-      <React.Fragment>
-        <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/hr-dashboard" element={<HRDashboard />} />
-          <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
-          <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
-          <Route path="/delivery-vans" element={<Delivery />} />
-          <Route path="/supplier" element={<Supplier />} />
-          <Route path="/raw" element={<Raw />} />
-          <Route path="/fresh" element={<Fresh />} />
-          <Route path="/process" element={<Process/>} />
-        </Routes>
-      </React.Fragment>
-    </div>
-
+    
+        
     
 
-=======
+
     <div>
       <Routes>
         {/* Public routes */}
@@ -97,6 +80,11 @@ function App() {
         {/* Raw & Fresh routes */}
         <Route path="/raw" element={<Raw />} />
         <Route path="/fresh" element={<Fresh />} />
+
+          <Route path="/supplier" element={<Supplier />} />
+          <Route path="/raw" element={<Raw />} />
+          <Route path="/fresh" element={<Fresh />} />
+          <Route path="/process" element={<Process/>} />
 
         {/* Redirect unknown routes to Welcome */}
         <Route path="*" element={<Navigate to="/" replace />} />
