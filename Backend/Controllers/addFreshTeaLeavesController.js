@@ -13,10 +13,10 @@ exports.getAllLeaves = async (req, res) => {
 // Create leaves
 exports.createLeaves = async (req, res) => {
   try {
-    const { supplierName, weight, pricePerKg } = req.body;
+    const { supplierName, email, weight, pricePerKg } = req.body;
     const totalPrice = weight * pricePerKg;
 
-    const leaves = new AddFreshTeaLeaves({ supplierName, weight, pricePerKg, totalPrice });
+    const leaves = new AddFreshTeaLeaves({ supplierName, email, weight, pricePerKg, totalPrice });
     const saved = await leaves.save();
     res.status(201).json(saved);
   } catch (err) {
@@ -27,7 +27,15 @@ exports.createLeaves = async (req, res) => {
 // Update leaves
 exports.updateLeaves = async (req, res) => {
   try {
-    const updated = await AddFreshTeaLeaves.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { supplierName, email, weight, pricePerKg } = req.body;
+    const totalPrice = weight * pricePerKg;
+
+    const updated = await AddFreshTeaLeaves.findByIdAndUpdate(
+      req.params.id,
+      { supplierName, email, weight, pricePerKg, totalPrice },
+      { new: true }
+    );
+
     if (!updated) return res.status(404).json({ message: "Tea leaves not found" });
     res.json(updated);
   } catch (err) {

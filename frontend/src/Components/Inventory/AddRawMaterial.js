@@ -2,29 +2,27 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import "./AddRawMaterial.css";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"; // ✅ Important
+import autoTable from "jspdf-autotable";
 import sasLogo from "../../assets/saslogo.jpg";
 
-
-
-// Fix default Leaflet marker icons
+// ✅ Fix default Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png")
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
 const AddRawMaterial = () => {
   const API_URL = "http://localhost:5000/api/raw-materials";
 
   const [materials, setMaterials] = useState([]);
-
-  // 🔹 Error states
   const [emailError, setEmailError] = useState("");
   const [mobileError, setMobileError] = useState("");
+  const [loadingLocation, setLoadingLocation] = useState(false); // for location name
 
   const [formData, setFormData] = useState({
     id: "",
@@ -37,84 +35,88 @@ const AddRawMaterial = () => {
     certification: "",
     factoryLocation: "",
     collectedLocationName: "",
-    collectedLocation: { lat: 6.9271, lng: 79.8612 } // Default Colombo
+    collectedLocation: { lat: 6.9271, lng: 79.8612 }, // default Colombo
   });
 
-  
-const generateAttractivePDF = (material) => {
-  const doc = new jsPDF("p", "pt", "a4");
+  // ✅ Generate PDF
+  const generateAttractivePDF = (material) => {
+    const doc = new jsPDF("p", "pt", "a4");
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-  const pageWidth = doc.internal.pageSize.getWidth();
+    const imgProps = doc.getImageProperties(sasLogo);
+    const imgWidth = 100;
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+    const imgX = (pageWidth - imgWidth) / 2;
+    doc.addImage(sasLogo, "JPEG", imgX, 20, imgWidth, imgHeight);
 
-  // === Logo Centered ===
-  const imgProps = doc.getImageProperties(sasLogo);
-  const imgWidth = 100;
-  const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-  const imgX = (pageWidth - imgWidth) / 2;
-  doc.addImage(sasLogo, "JPEG", imgX, 20, imgWidth, imgHeight);
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor("#1f3a93");
+    doc.text("Raw Material Report", pageWidth / 2, imgHeight + 50, {
+      align: "center",
+    });
 
-  // === Title ===
-  doc.setFontSize(20);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor("#1f3a93");
-  doc.text("Raw Material Report", pageWidth / 2, imgHeight + 50, { align: "center" });
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      `Date: ${new Date().toLocaleDateString()}`,
+      pageWidth - 50,
+      imgHeight + 70,
+      { align: "right" }
+    );
 
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth - 50, imgHeight + 70, { align: "right" });
+    const tableRows = [
+      ["Supplier Name", material.supplierName || "-"],
+      ["Mobile", material.mobile || "-"],
+      ["Email", material.email || "-"],
+      ["Material Type", material.materialType || "-"],
+      ["Quantity", material.quantity || 0],
+      ["Price per Unit", material.pricePerUnit || 0],
+      ["Certification", material.certification || "-"],
+      ["Factory Location", material.factoryLocation || "-"],
+      ["Collected Location", material.collectedLocationName || "-"],
+    ];
 
-  // === Table Data ===
-  const tableRows = [
-    ["Supplier Name", material.supplierName || "-"],
-    ["Mobile", material.mobile || "-"],
-    ["Email", material.email || "-"],
-    ["Material Type", material.materialType || "-"],
-    ["Quantity", material.quantity || 0],
-    ["Price per Unit", material.pricePerUnit || 0],
-    ["Certification", material.certification || "-"],
-    ["Factory Location", material.factoryLocation || "-"],
-    ["Collected Location", material.collectedLocationName || "-"],
-  ];
+    autoTable(doc, {
+      startY: imgHeight + 90,
+      head: [["Field", "Value"]],
+      body: tableRows,
+      theme: "grid",
+      headStyles: {
+        fillColor: "#2980b9",
+        textColor: "#fff",
+        halign: "center",
+        fontStyle: "bold",
+      },
+      bodyStyles: {
+        fontSize: 12,
+        cellPadding: 6,
+      },
+      alternateRowStyles: { fillColor: "#f2f2f2" },
+      columnStyles: {
+        0: { cellWidth: 150 },
+        1: { cellWidth: 300 },
+      },
+    });
 
-  autoTable(doc, {
-    startY: imgHeight + 90,
-    head: [["Field", "Value"]],
-    body: tableRows,
-    theme: "grid",
-    headStyles: {
-      fillColor: "#2980b9",
-      textColor: "#fff",
-      halign: "center",
-      fontStyle: "bold",
-    },
-    bodyStyles: {
-      fontSize: 12,
-      cellPadding: 6,
-    },
-    alternateRowStyles: { fillColor: "#f2f2f2" },
-    columnStyles: {
-      0: { cellWidth: 150 },
-      1: { cellWidth: 300 },
-    },
-  });
+    const finalY = doc.lastAutoTable.finalY || imgHeight + 200;
+    doc.setFont("helvetica", "bold");
+    doc.text("Authorized Signature:", 40, finalY + 50);
+    doc.line(150, finalY + 55, 350, finalY + 55);
 
-  // === Signature Area ===
-  const finalY = doc.lastAutoTable.finalY || imgHeight + 200;
-  doc.setFont("helvetica", "bold");
-  doc.text("Authorized Signature:", 40, finalY + 50);
-  doc.line(150, finalY + 55, 350, finalY + 55); // signature line
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor("#555");
+    doc.text(
+      "Generated by Ferndale Tea Factory Management System",
+      pageWidth / 2,
+      820,
+      { align: "center" }
+    );
 
-  // Footer
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "italic");
-  doc.setTextColor("#555");
-  doc.text("Generated by Ferndale Tea Factory Management System", pageWidth / 2, 820, { align: "center" });
+    doc.save(`RawMaterial_${material.supplierName || "unknown"}.pdf`);
+  };
 
-  // Save PDF
-  doc.save(`RawMaterial_${material.supplierName || "unknown"}.pdf`);
-};
-
-  
   useEffect(() => {
     fetchMaterials();
   }, []);
@@ -128,68 +130,62 @@ const generateAttractivePDF = (material) => {
     }
   };
 
-  // 🔹 Validation functions
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
-  const validateMobile = (mobile) => {
-    // Accepts 10 digits starting with 0 or 11 digits starting +94
-    const regex = /^(?:\+94\d{9}|0\d{9})$/;
-    return regex.test(mobile);
-  };
+  // ✅ Validation
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateMobile = (mobile) => /^(?:\+94\d{9}|0\d{9})$/.test(mobile);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Validate Email
-    if (name === "email") {
-      if (!validateEmail(value)) {
-        setEmailError("Please enter a valid email address");
-      } else {
-        setEmailError("");
-      }
-    }
-
-    // Validate Mobile
-    if (name === "mobile") {
-      if (!validateMobile(value)) {
-        setMobileError("Enter a valid mobile number (e.g. 0712345678 or +94712345678)");
-      } else {
-        setMobileError("");
-      }
-    }
+    if (name === "email")
+      setEmailError(validateEmail(value) ? "" : "Invalid email");
+    if (name === "mobile")
+      setMobileError(
+        validateMobile(value)
+          ? ""
+          : "Invalid mobile (e.g. 0712345678 or +94712345678)"
+      );
 
     setFormData({ ...formData, [name]: value });
   };
 
+  // ✅ Fetch location name from OpenStreetMap Nominatim
+  const fetchLocationName = async (lat, lng) => {
+    try {
+      setLoadingLocation(true);
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+      );
+      const data = await res.json();
+      setFormData((prev) => ({
+        ...prev,
+        collectedLocationName:
+          data.display_name || "Unknown location",
+      }));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingLocation(false);
+    }
+  };
+
+  // ✅ Update when marker dragged
   const handleMarkerDrag = (e) => {
-    setFormData({
-      ...formData,
-      collectedLocation: {
-        lat: e.target.getLatLng().lat,
-        lng: e.target.getLatLng().lng
-      }
-    });
+    const { lat, lng } = e.target.getLatLng();
+    setFormData((prev) => ({
+      ...prev,
+      collectedLocation: { lat, lng },
+    }));
+    fetchLocationName(lat, lng); // also fetch name
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // 🔹 Final validation before submit
-    if (!validateEmail(formData.email)) {
-      alert("Please enter a valid email!");
-      return;
-    }
-    if (!validateMobile(formData.mobile)) {
-      alert("Please enter a valid mobile number!");
-      return;
-    }
-    if (!formData.collectedLocationName) {
-      alert("Please enter the collected location name!");
-      return;
-    }
+    if (!validateEmail(formData.email))
+      return alert("Please enter a valid email!");
+    if (!validateMobile(formData.mobile))
+      return alert("Please enter a valid mobile number!");
+    if (!formData.collectedLocationName)
+      return alert("Please enter the collected location name!");
 
     try {
       if (formData.id) {
@@ -197,7 +193,6 @@ const generateAttractivePDF = (material) => {
       } else {
         await axios.post(API_URL, formData);
       }
-      // Reset form
       setFormData({
         id: "",
         supplierName: "",
@@ -209,7 +204,7 @@ const generateAttractivePDF = (material) => {
         certification: "",
         factoryLocation: "",
         collectedLocationName: "",
-        collectedLocation: { lat: 6.9271, lng: 79.8612 }
+        collectedLocation: { lat: 6.9271, lng: 79.8612 },
       });
       setEmailError("");
       setMobileError("");
@@ -231,7 +226,8 @@ const generateAttractivePDF = (material) => {
       certification: m.certification,
       factoryLocation: m.factoryLocation,
       collectedLocationName: m.collectedLocationName,
-      collectedLocation: m.collectedLocation || { lat: 6.9271, lng: 79.8612 }
+      collectedLocation:
+        m.collectedLocation || { lat: 6.9271, lng: 79.8612 },
     });
     setEmailError("");
     setMobileError("");
@@ -268,9 +264,7 @@ const generateAttractivePDF = (material) => {
           style={{ borderColor: mobileError ? "red" : undefined }}
         />
         {mobileError && (
-          <span className="error-text" style={{ color: "red", fontSize: "12px" }}>
-            {mobileError}
-          </span>
+          <span style={{ color: "red", fontSize: "12px" }}>{mobileError}</span>
         )}
 
         <input
@@ -282,9 +276,7 @@ const generateAttractivePDF = (material) => {
           style={{ borderColor: emailError ? "red" : undefined }}
         />
         {emailError && (
-          <span className="error-text" style={{ color: "red", fontSize: "12px" }}>
-            {emailError}
-          </span>
+          <span style={{ color: "red", fontSize: "12px" }}>{emailError}</span>
         )}
 
         <input
@@ -330,32 +322,49 @@ const generateAttractivePDF = (material) => {
           <option value="Warehouse 3">Warehouse 3</option>
         </select>
 
+        {/* ✅ Auto-filled location name */}
         <input
           name="collectedLocationName"
           placeholder="Collected Location Name"
-          value={formData.collectedLocationName}
+          value={
+            loadingLocation
+              ? "Loading location name..."
+              : formData.collectedLocationName
+          }
           onChange={handleChange}
           required
         />
 
         <div className="map-container">
           <MapContainer
-            center={[formData.collectedLocation.lat, formData.collectedLocation.lng]}
+            center={[
+              formData.collectedLocation.lat,
+              formData.collectedLocation.lng,
+            ]}
             zoom={10}
             style={{ height: "300px", width: "100%" }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker
-              position={[formData.collectedLocation.lat, formData.collectedLocation.lng]}
               draggable={true}
+              position={[
+                formData.collectedLocation.lat,
+                formData.collectedLocation.lng,
+              ]}
               eventHandlers={{ dragend: handleMarkerDrag }}
             />
           </MapContainer>
         </div>
 
+        {/* ✅ Show live coordinates */}
+        <p style={{ fontSize: "12px", marginTop: "5px" }}>
+          Lat: {formData.collectedLocation.lat.toFixed(5)}, Lng:{" "}
+          {formData.collectedLocation.lng.toFixed(5)}
+        </p>
+
         <button
           type="submit"
-          disabled={emailError !== "" || mobileError !== ""} // 🔹 disable submit if invalid
+          disabled={emailError !== "" || mobileError !== ""}
         >
           {formData.id ? "Update" : "Add"}
         </button>
@@ -389,18 +398,11 @@ const generateAttractivePDF = (material) => {
               <td>{m.factoryLocation}</td>
               <td>{m.collectedLocationName}</td>
               <td>
-                <button className="action-btn edit" onClick={() => handleEdit(m)}>
-                  Edit
+                <button onClick={() => handleEdit(m)}>Edit</button>
+                <button onClick={() => handleDelete(m._id)}>Delete</button>
+                <button onClick={() => generateAttractivePDF(m)}>
+                  Download PDF
                 </button>
-                <button className="action-btn delete" onClick={() => handleDelete(m._id)}>
-                  Delete
-                </button>
-<td>
-  <button className="action-btn pdf" onClick={() => generateAttractivePDF(m)}>
-    Download PDF
-  </button>
-</td>
-
               </td>
             </tr>
           ))}
