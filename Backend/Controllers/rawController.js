@@ -1,30 +1,73 @@
 const RawSupplier = require("../Model/RawSupplier");
 
-// Get all
+// Get all suppliers
 exports.getAllRawSuppliers = async (req, res) => {
-  const suppliers = await RawSupplier.find();
-  res.json(suppliers);
+  try {
+    const suppliers = await RawSupplier.find();
+    res.status(200).json({
+      success: true,
+      count: suppliers.length,
+      data: suppliers,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: "Server Error" });
+  }
 };
 
-// Add new
+// Add new supplier
 exports.addRawSupplier = async (req, res) => {
-  const newSupplier = new RawSupplier(req.body);
-  await newSupplier.save();
-  res.json({ message: "Raw supplier added", supplier: newSupplier });
+  try {
+    const newSupplier = new RawSupplier(req.body);
+    await newSupplier.save();
+    res.status(201).json({
+      success: true,
+      message: "Raw material supplier added successfully",
+      data: newSupplier,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ success: false, error: err.message });
+  }
 };
 
-// Update
+// Update supplier
 exports.updateRawSupplier = async (req, res) => {
-  const updatedSupplier = await RawSupplier.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-  res.json({ message: "Raw supplier updated", supplier: updatedSupplier });
+  try {
+    const updatedSupplier = await RawSupplier.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedSupplier)
+      return res.status(404).json({ success: false, error: "Supplier not found" });
+
+    res.status(200).json({
+      success: true,
+      message: "Raw material supplier updated successfully",
+      data: updatedSupplier,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ success: false, error: err.message });
+  }
 };
 
-// Delete
+// Delete supplier
 exports.deleteRawSupplier = async (req, res) => {
-  await RawSupplier.findByIdAndDelete(req.params.id);
-  res.json({ message: "Raw supplier deleted" });
+  try {
+    const deletedSupplier = await RawSupplier.findByIdAndDelete(req.params.id);
+
+    if (!deletedSupplier)
+      return res.status(404).json({ success: false, error: "Supplier not found" });
+
+    res.status(200).json({
+      success: true,
+      message: "Raw material supplier deleted successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: "Server Error" });
+  }
 };

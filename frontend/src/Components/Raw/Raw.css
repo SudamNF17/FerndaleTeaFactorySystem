@@ -3,8 +3,9 @@
   max-width: 900px;
   margin: auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   color: #333;
+  background: #f4f9f4;
 }
 
 /* Titles */
@@ -12,7 +13,7 @@
 .raw-container h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #2c3e50;
+  color: #1e5631; /* dark green */
 }
 
 /* Form styling */
@@ -20,18 +21,19 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Label and input */
 .raw-form label {
   display: flex;
   flex-direction: column;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 14px;
+  color: #1e5631;
 }
 
 .raw-form input[type="text"],
@@ -40,9 +42,16 @@
 .raw-form input[type="number"] {
   padding: 10px;
   margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid #a2c4a2;
+  border-radius: 8px;
   font-size: 14px;
+  background: #fdfdfd;
+  transition: border 0.3s;
+}
+
+.raw-form input:focus {
+  border-color: #27ae60;
+  outline: none;
 }
 
 /* Buttons */
@@ -72,9 +81,9 @@ button:hover {
 /* Map container */
 .map-container {
   margin-top: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Submitted data table */
@@ -87,24 +96,24 @@ button:hover {
   border-collapse: collapse;
   margin-top: 15px;
   font-size: 14px;
-  background: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .submitted-data th,
 .submitted-data td {
-  border: 1px solid #ddd;
+  border: 1px solid #d0e2d0;
   padding: 10px;
   text-align: center;
 }
 
 .submitted-data th {
-  background: #34495e;
+  background: #1e5631; /* dark green */
   color: white;
 }
 
 .submitted-data tr:nth-child(even) {
-  background: #f2f2f2;
+  background: #edf7ed;
 }
 
 /* Action buttons in table */
@@ -125,11 +134,69 @@ button:hover {
 }
 
 .submitted-data button:nth-child(3) {
-  background: #8e44ad; /* Print */
+  background: #27ae60; /* Print */
   color: white;
 }
 
 .submitted-data button:nth-child(4) {
   background: #f39c12; /* Gmail */
   color: white;
+}
+
+/* ----------- Print Slip Styling ----------- */
+.slip {
+  border: 2px solid #1e5631;
+  border-radius: 10px;
+  padding: 25px;
+  max-width: 500px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.slip .header {
+  text-align: center;
+  border-bottom: 2px solid #1e5631;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.slip .header img {
+  max-width: 120px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.slip .header h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #1e5631;
+}
+
+.slip .header h2 {
+  margin: 5px 0 0 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.slip .data p {
+  margin: 4px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.slip .sign {
+  margin-top: 40px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.slip .footer {
+  border-top: 2px solid #1e5631;
+  margin-top: 20px;
+  padding-top: 10px;
+  font-size: 12px;
+  text-align: center;
+  color: #555;
 }
