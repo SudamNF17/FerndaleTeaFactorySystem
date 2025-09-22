@@ -1,0 +1,151 @@
+/* Prevent horizontal scrolling */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* Full page container with background image */
+.raw-material-container {
+  min-height: 100vh;
+  width: 100%;
+  padding: 30px;
+
+  background-image: url('../../assets/sas1.png'); /* ✅ background image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  flex-direction: column; /* because heading + form + table */
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Heading */
+.raw-material-container h2 {
+  color: #2c3e50;
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 8px 20px;
+  border-radius: 8px;
+}
+
+/* Form box */
+.raw-material-form {
+  background-color: rgba(245, 248, 252, 0.9);
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 950px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+.raw-material-form input,
+.raw-material-form select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 150px;
+  box-sizing: border-box;
+}
+
+.raw-material-form button {
+  padding: 12px 25px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.raw-material-form button:hover {
+  background-color: #2b80b8;
+  transform: scale(1.05);
+}
+
+/* Map */
+.map-container {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Table styling */
+.raw-material-table {
+  width: 90%;
+  max-width: 950px;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.raw-material-table th,
+.raw-material-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.raw-material-table th {
+  background-color: #3498db;
+  color: #fff;
+}
+
+/* Action buttons */
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin-right: 5px;
+  color: #fff;
+}
+
+/* Specific button colors */
+.action-btn.edit {
+  background-color: #2980b9;
+}
+.action-btn.edit:hover {
+  background-color: #1f6391;
+}
+
+.action-btn.delete {
+  background-color: #c0392b;
+}
+.action-btn.delete:hover {
+  background-color: #922b21;
+}
+
+.action-btn.pdf {
+  background-color: #f39c12;
+}
+.action-btn.pdf:hover {
+  background-color: #d68910;
+}
+
+/* Error message styling */
+.error-text {
+  width: 100%;
+  text-align: left;
+  margin-left: 5px;
+  color: red;
+  font-size: 12px;
+}

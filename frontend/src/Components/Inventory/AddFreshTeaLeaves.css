@@ -1,0 +1,150 @@
+/* Prevent horizontal scrolling */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+  font-family: Arial, sans-serif;
+}
+
+/* Full page container with background image */
+.fresh-leaves-container {
+  min-height: 100vh;
+  width: 100%;
+  padding: 30px;
+
+  background-image: url('../../assets/sas1.png'); /* adjust path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+/* Content box */
+.fresh-leaves-content {
+  background-color: rgba(235, 246, 248, 0.9);
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Title */
+.fresh-leaves-content h2 {
+  color: #2c3e50;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+/* Form styling */
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form input {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 150px;
+  box-sizing: border-box;
+}
+
+.form button {
+  padding: 12px 25px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #27ae60;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form button:hover {
+  background-color: #219150;
+  transform: scale(1.05);
+}
+
+/* Table container */
+.table-container {
+  overflow-x: auto; /* horizontal scroll only if needed */
+}
+
+.table-container h3 {
+  margin-top: 20px;
+  font-size: 22px;
+  color: #2c3e50;
+}
+
+/* Table styling */
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table-container th,
+.table-container td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  word-wrap: break-word; /* prevent table cells from expanding */
+}
+
+/* Action buttons */
+.edit-btn,
+.delete-btn,
+.email-btn,
+.pdf-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin-right: 5px;
+}
+
+/* Specific colors */
+.edit-btn {
+  background-color: #2980b9;
+  color: white;
+}
+.edit-btn:hover {
+  background-color: #1f6391;
+}
+
+.delete-btn {
+  background-color: #c0392b;
+  color: white;
+}
+.delete-btn:hover {
+  background-color: #922b21;
+}
+
+.email-btn {
+  background-color: #8e44ad;
+  color: white;
+}
+.email-btn:hover {
+  background-color: #6c3483;
+}
+
+.pdf-btn {
+  background-color: #f39c12;
+  color: white;
+}
+.pdf-btn:hover {
+  background-color: #d68910;
+}
