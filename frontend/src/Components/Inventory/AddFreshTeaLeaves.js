@@ -7,7 +7,7 @@ import "./AddFreshTeaLeaves.css";
 
 const AddFreshTeaLeaves = () => {
   const API_URL = "http://localhost:5000/api/tea-leaves";
-  const EMAIL_API_URL = "http://localhost:5000/api/send-email"; // your backend email route
+  //const EMAIL_API_URL = "http://localhost:5000/api/send-email"; // your backend email route
 
   const [leaves, setLeaves] = useState([]);
   const [formData, setFormData] = useState({
@@ -138,7 +138,7 @@ const AddFreshTeaLeaves = () => {
   };
 
   // ✅ Send Email
-  const sendEmail = async (leaf) => {
+  /*const sendEmail = async (leaf) => {
     try {
       await axios.post(EMAIL_API_URL, {
         to: leaf.email,
@@ -150,7 +150,7 @@ const AddFreshTeaLeaves = () => {
       console.error(err);
       alert("Failed to send email");
     }
-  };
+  }; */
 
   return (
     <div className="fresh-leaves-container">

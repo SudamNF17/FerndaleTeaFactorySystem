@@ -90,6 +90,16 @@ const EmployeeDashboard = () => {
           </div>
         ))}
       </div>
+           {/* Footer */}
+<footer className="dashboard-footer">
+  <div className="footer-left">
+    <p>© 2025 <strong>Ferndale Tea Factory</strong></p>
+    <p>All rights reserved.</p>
+  </div>
+  <div className="footer-right">
+    <p>🍃 Tea Factory Management System</p>
+  </div>
+</footer>
     </div>
   );
 };
