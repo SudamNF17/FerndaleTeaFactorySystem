@@ -1,41 +1,58 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  
-  background-size: cover;
 }
 
+/* Register page container with background image */
 .register-page {
   display: flex;
   height: 100vh;
-  backdrop-filter: blur(5px);
+  background: url("../../assets/bcg.jpeg") no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+  overflow-x: hidden;
 }
 
+/* Dark overlay to improve readability */
+.register-page::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4); /* adjust darkness (0.2 lighter, 0.6 darker) */
+  z-index: 0;
+}
+
+/* Left panel (branding/info) */
 .register-left {
   flex: 1;
   color: white;
+  background: rgba(0, 0, 0, 0.7);
   padding: 40px;
-  background: rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   transition: all 0.3s ease;
+  z-index: 1; /* above overlay */
 }
 
 .register-left:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .register-left h1 {
-  font-size: 32px;
+  font-size: 34px;
   margin: 20px 0 10px;
+  font-weight: 700;
 }
 
 .register-left p {
   font-size: 16px;
-  max-width: 300px;
+  max-width: 320px;
+  line-height: 1.5;
+  opacity: 0.9;
 }
 
 .register-logo {
@@ -45,18 +62,22 @@ body {
 }
 
 .register-logo:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
+/* Right panel (form) */
 .register-right {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  z-index: 1; /* above overlay */
 }
 
+/* Register card */
 .register-card {
-  background: #ffffffee;
+  background: rgba(255, 255, 255, 0.9);
   padding: 40px;
   border-radius: 16px;
   width: 100%;
@@ -74,8 +95,11 @@ body {
   color: #2e7d32;
   margin-bottom: 20px;
   text-align: center;
+  font-size: 26px;
+  font-weight: 600;
 }
 
+/* Form styling */
 .register-form .form-group {
   margin-bottom: 15px;
 }
@@ -84,11 +108,12 @@ body {
   display: block;
   font-weight: 500;
   margin-bottom: 6px;
+  color: #333;
 }
 
 .register-form input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 15px;
@@ -98,13 +123,14 @@ body {
 .register-form input:focus {
   border-color: #4caf50;
   outline: none;
-  box-shadow: 0 0 5px #81c784;
+  box-shadow: 0 0 6px #81c784;
 }
 
 .register-form input:hover {
   border-color: #66bb6a;
 }
 
+/* Button */
 .register-btn {
   width: 100%;
   background-color: #388e3c;
@@ -123,6 +149,7 @@ body {
   transform: translateY(-2px);
 }
 
+/* Link to login page */
 .login-link {
   margin-top: 20px;
   font-size: 14px;
@@ -131,6 +158,7 @@ body {
 
 .login-link a {
   color: #388e3c;
+  font-weight: 500;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -138,4 +166,20 @@ body {
 .login-link a:hover {
   text-decoration: underline;
   color: #2e7d32;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .register-page {
+    flex-direction: column;
+  }
+
+  .register-left {
+    padding: 20px;
+  }
+
+  .register-card {
+    margin-top: 20px;
+    padding: 30px;
+  }
 }

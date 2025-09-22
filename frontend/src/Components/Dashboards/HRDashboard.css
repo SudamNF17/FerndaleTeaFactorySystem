@@ -1,15 +1,22 @@
-/* src/Components/HRDashboard.css */
-
 .dashboard-container {
-  background: white;
+  background: #f0f4f8;
   min-height: 100vh;
-  padding: 2rem;
+  padding: 1rem 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
 }
 
+/* Header */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: linear-gradient(90deg, #4caf50, #66bb6a);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  margin-bottom: 1rem;
 }
 
 .logout-button {
@@ -18,11 +25,262 @@
   border: none;
   padding: 10px 20px;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .logout-button:hover {
   background-color: #c9302c;
+  transform: translateY(-2px);
 }
+
+/* Container for the Factory Card */
+.factory-card-containerr {
+ display: flex;
+  justify-content: center;
+  margin: 2rem 0;       /* add side padding for small screens */
+}
+
+/* Factory Card */
+.factory-cardd {
+  background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  width: 90%;
+  max-width: 800px;
+  min-width: 400px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.factory-logoo img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+}
+
+.factory-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+
+.factory-card h3 {
+  margin-bottom: 10px;
+  color: #2e7d32;
+  text-align: center;
+}
+
+
+/* Users Table */
+.view-users-btn {
+  margin-top: 2rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-users-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.users-section {
+  margin-top: 1rem;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.user-table th, .user-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.user-table th {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+}
+
+.user-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.user-table tr:hover {
+  background-color: #e0f2f1;
+}
+
+.user-table button {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-table button:first-child {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.user-table button:first-child:hover {
+  background-color: #e0a800;
+}
+
+.user-table button:last-child {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.user-table button:last-child:hover {
+  background-color: #c82333;
+}
+
+/* Edit Modal */
+.edit-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.edit-modal form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.edit-modal h3 {
+  margin-bottom: 1rem;
+  color: #4caf50;
+  text-align: center;
+}
+
+.edit-modal input,
+.edit-modal select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons button {
+  width: 48%;
+  padding: 10px 0;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-buttons button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.modal-buttons button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.modal-buttons button[type="button"] {
+  background-color: #6c757d;
+  color: white;
+}
+
+.modal-buttons button[type="button"]:hover {
+  background-color: #5a6268;
+}
+
+/* Time & Calendar Section */
+.footer-time-calendar {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 3rem;
+}
+
+.time-card, .calendar-card {
+  background: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  text-align: center;
+  flex: 1;
+  margin: 0 0.5rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.time-card:hover, .calendar-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+
+/* Footer */
+/* === Dashboard Footer === */
+.dashboard-footer {
+  margin-top: 40px;
+  padding: 20px 40px;
+  background: #1f2937; /* dark slate background */
+  color: #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* responsive */
+  border-top: 3px solid #4facfe;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+  font-size: 0.9rem;
+}
+
+.dashboard-footer p {
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+.footer-left p:first-child {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.footer-right {
+  text-align: right;
+}
+
+.footer-right p:first-child {
+  font-weight: 500;
+  color: #4facfe; /* highlight system name */
+}
+
+
