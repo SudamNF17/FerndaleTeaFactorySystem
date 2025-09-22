@@ -99,7 +99,7 @@
 }
 
 /* Common card style */
-.chart-card {
+.chart-cardd {
   padding: 20px;
   background: linear-gradient(to bottom right, #e8f5e9, #c8e6c9);
   border-radius: 15px;
@@ -107,12 +107,12 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.chart-card:hover {
+.chart-cardd:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
-.chart-card h4 {
+.chart-cardd h4 {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
@@ -123,26 +123,57 @@
 /* Individual sizes */
 .pie-chart { flex: 1; max-width: 300px; }
 .bar-chart { flex: 2; max-width: 450px; }
-.calendar-card { flex: 1; max-width: 300px; }
+.calendar-cardd { flex: 1; max-width: 300px; }
 
 /* Calendar styles */
-.calendar-card .react-calendar {
+/* Calendar styles */
+.calendar-cardd .react-calendar {
   border-radius: 12px;
   padding: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #fff;
+  font-family: Arial, sans-serif;
 }
 
-.calendar-card .react-calendar__tile--now {
-  background: #90caf9; /* today highlight */
-  color: white;
+/* Ensure all date tiles are visible and aligned */
+.calendar-cardd .react-calendar__tile {
+  min-height: 40px;          /* enough space for numbers */
+  line-height: 40px;         /* center numbers vertically */
+  text-align: center;        /* center numbers horizontally */
+  padding: 5px;
+  color: #000;               /* default number color */
+  box-sizing: border-box;
+  transition: background 0.2s ease;
+}
+
+/* Hover effect */
+.calendar-cardd .react-calendar__tile:hover {
+  background: #e3f2fd;       /* light blue on hover */
   border-radius: 8px;
 }
 
-.calendar-card .react-calendar__tile--active {
-  background: #42a5f5; /* selected date */
-  color: white;
+/* Highlight today */
+.calendar-cardd .react-calendar__tile--now {
+  background: #90caf9;
+  color: #fff;
+  font-weight: bold;
   border-radius: 8px;
 }
+
+/* Highlight selected date */
+.calendar-cardd .react-calendar__tile--active {
+  background: #42a5f5;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+/* Fix layout for month view */
+.calendar-cardd .react-calendar__month-view__days {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr);
+}
+
 
 /* Responsive: stack vertically on small screens */
 @media (max-width: 900px) {
