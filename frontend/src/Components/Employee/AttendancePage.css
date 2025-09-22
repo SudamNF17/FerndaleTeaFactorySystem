@@ -1,79 +1,95 @@
-.container {
+.attendance-container {
+  max-width: 900px;
+  margin: 20px auto;
   padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
 }
 
-h2 {
+h2, h3 {
+  text-align: center;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-form {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+/* Forms */
+.register-form,
+.mark-section {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #f9f9f9;
 }
 
-form input,
-form select {
-  padding: 8px;
+.register-form input,
+.mark-section input {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
 }
 
-form button {
-  background-color: #4caf50;
+button {
+  display: inline-block;
+  padding: 10px 16px;
+  background-color: #007bff;
   color: white;
+  font-weight: bold;
   border: none;
-  padding: 8px 15px;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.2s ease-in-out;
 }
 
-form button:hover {
-  background-color: #45a049;
+button:hover {
+  background-color: #0056b3;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Messages */
+.message {
   margin-top: 10px;
-}
-
-table th,
-table td {
-  border: 1px solid #ddd;
   padding: 10px;
   text-align: center;
+  background: #e9f7ef;
+  border: 1px solid #c1e1c5;
+  border-radius: 6px;
+  color: #2d7a36;
+  font-weight: bold;
+}
+
+/* Table */
+table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 10px;
 }
 
 table th {
-  background-color: #f4f4f4;
+  background-color: #f1f1f1;
+  font-weight: bold;
 }
 
-.action-btn {
-  margin: 0 5px;
-  padding: 5px 10px;
-  border: none;
+table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+table img {
   border-radius: 6px;
-  cursor: pointer;
-  color: white;
-}
-
-.edit-btn {
-  background-color: #2196f3;
-}
-
-.edit-btn:hover {
-  background-color: #1976d2;
-}
-
-.delete-btn {
-  background-color: #f44336;
-}
-
-.delete-btn:hover {
-  background-color: #d32f2f;
+  object-fit: cover;
 }

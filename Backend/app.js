@@ -8,23 +8,26 @@ const userRoutes = require("./Routes/UserRoutes");
 const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes");
 const employeeRoutes = require("./Routes/EmployeeRoutes");
 const attendanceRoutes = require("./Routes/AttendanceRoutes");
-const departmentRoutes = require("./Routes/departmentRoutes"); 
+const departmentRoutes = require("./Routes/departmentRoutes");
 
 const app = express();
 
 // ================= Middleware =================
+// Allow large payloads (base64 images for face recognition)
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "12mb" }));
+app.use(express.urlencoded({ limit: "12mb", extended: true }));
 app.use(morgan("dev")); // logs requests
 
 // ================= MongoDB Connection =================
-mongoose.connect(
-  "mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.net/teafactory",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-)
+mongoose
+  .connect(
+    "mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.net/teafactory",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
@@ -34,6 +37,9 @@ app.use("/api/delivery-vans", deliveryVanRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/departments", departmentRoutes);
+// serve uploaded images
+app.use("/uploads", express.static("uploads"));
+
 
 // ================= Test Root Route =================
 app.get("/", (req, res) => {

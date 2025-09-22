@@ -1,116 +1,97 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import "./AttendancePage.css"; // <-- Import CSS
+import "./AttendancePage.css";
 
-const API_URL = "http://localhost:5000/api/attendance";
+const BACKEND_URL = "http://localhost:5000";
 
 const AttendancePage = () => {
-  const [records, setRecords] = useState([]);
-  const [formData, setFormData] = useState({ empId: "", date: "", status: "Present" });
-  const [editingId, setEditingId] = useState(null);
+  const [attendance, setAttendance] = useState([]);
+  const [message, setMessage] = useState("");
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
-  // Fetch attendance records
-  const fetchRecords = async () => {
-    try {
-      const res = await axios.get(API_URL);
-      setRecords(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const [empId, setEmpId] = useState("");
+  const [name, setName] = useState("");
 
   useEffect(() => {
-    fetchRecords();
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => videoRef.current.srcObject = stream)
+      .catch(err => console.error(err));
+
+    fetchAttendance();
   }, []);
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const fetchAttendance = async () => {
     try {
-      if (editingId) {
-        await axios.put(`${API_URL}/${editingId}`, formData);
-        setEditingId(null);
-      } else {
-        await axios.post(API_URL, formData);
-      }
-      setFormData({ empId: "", date: "", status: "Present" });
-      fetchRecords();
+      const res = await axios.get(`${BACKEND_URL}/api/attendance`);
+      setAttendance(res.data);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleEdit = (record) => {
-    setFormData({
-      empId: record.empId,
-      date: record.date.split("T")[0],
-      status: record.status,
-    });
-    setEditingId(record._id);
+  const captureImage = () => {
+    const context = canvasRef.current.getContext("2d");
+    context.drawImage(videoRef.current, 0, 0, 300, 300);
+    return canvasRef.current.toDataURL("image/jpeg").split(",")[1];
   };
 
-  const handleDelete = async (id) => {
+  const handleRegister = async () => {
+    if (!empId || !name) { setMessage("Enter ID & Name"); return; }
+    const image = captureImage();
     try {
-      await axios.delete(`${API_URL}/${id}`);
-      fetchRecords();
+      const res = await axios.post(`${BACKEND_URL}/api/attendance/register-face`, { empId, name, image });
+      setMessage(res.data.message);
+      setEmpId(""); setName("");
+      fetchAttendance();
     } catch (err) {
-      console.error(err);
+      setMessage(err.response?.data?.message || "Error registering face");
+    }
+  };
+
+  const handleMarkAttendance = async () => {
+    const image = captureImage();
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/attendance/mark-attendance`, { image });
+      setMessage(res.data.message);
+      fetchAttendance();
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Error marking attendance");
     }
   };
 
   return (
-    <div className="container">
-      <h2>Employee Attendance Management</h2>
+    <div className="attendance-container">
+      <h2>Face Attendance System</h2>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="empId"
-          placeholder="Employee ID"
-          value={formData.empId}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          required
-        />
-        <select name="status" value={formData.status} onChange={handleChange} required>
-          <option value="Present">Present</option>
-          <option value="Absent">Absent</option>
-        </select>
-        <button type="submit">{editingId ? "Update" : "Add"}</button>
-      </form>
+      <video ref={videoRef} width="300" height="300" autoPlay />
+      <canvas ref={canvasRef} width="300" height="300" style={{ display: "none" }} />
 
-      {/* Table */}
+      <div className="form-section">
+        <h3>Register Employee</h3>
+        <input placeholder="Employee ID" value={empId} onChange={e => setEmpId(e.target.value)} />
+        <input placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
+        <button onClick={handleRegister}>Register Face</button>
+      </div>
+
+      <div className="form-section">
+        <h3>Mark Attendance</h3>
+        <button onClick={handleMarkAttendance}>Mark via Face</button>
+      </div>
+
+      {message && <p className="message">{message}</p>}
+
+      <h3>Attendance Records</h3>
       <table>
         <thead>
-          <tr>
-            <th>Employee ID</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
+          <tr><th>Emp ID</th><th>Name</th><th>Logs</th></tr>
         </thead>
         <tbody>
-          {records.map((rec) => (
-            <tr key={rec._id}>
-              <td>{rec.empId}</td>
-              <td>{new Date(rec.date).toLocaleDateString()}</td>
-              <td>{rec.status}</td>
-              <td>
-                <button className="action-btn edit-btn" onClick={() => handleEdit(rec)}>
-                  Edit
-                </button>
-                <button className="action-btn delete-btn" onClick={() => handleDelete(rec._id)}>
-                  Delete
-                </button>
-              </td>
+          {attendance.map(a => (
+            <tr key={a._id}>
+              <td>{a.empId}</td>
+              <td>{a.name}</td>
+              <td>{a.logs.map((log,i) => (<div key={i}>{log.status} - {new Date(log.date).toLocaleString()}</div>))}</td>
             </tr>
           ))}
         </tbody>

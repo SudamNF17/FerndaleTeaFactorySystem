@@ -1,16 +1,14 @@
-const router = require("express").Router();
-const {
-  getAttendanceRecords,
-  getAttendanceById,
-  addAttendanceRecord,
-  updateAttendanceRecord,
-  deleteAttendanceRecord,
-} = require("../Controllers/AttendanceController");
+const express = require("express");
+const router = express.Router();
+const AttendanceController = require("../Controllers/AttendanceController");
 
-router.get("/", getAttendanceRecords);
-router.get("/:id", getAttendanceById);
-router.post("/", addAttendanceRecord);
-router.put("/:id", updateAttendanceRecord);
-router.delete("/:id", deleteAttendanceRecord);
+// register employee
+router.post("/register-face", AttendanceController.registerFace);
+
+// mark attendance
+router.post("/mark-attendance", AttendanceController.markAttendance);
+
+// get all logs
+router.get("/", AttendanceController.getAttendance);
 
 module.exports = router;
