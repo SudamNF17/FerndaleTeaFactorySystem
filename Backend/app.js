@@ -5,6 +5,10 @@ const cors = require("cors");
 // Import routes
 const userRoutes = require("./Routes/UserRoutes");
 const deliveryVanRoutes = require("./Routes/DeliveryVanRoutes");
+const addProductRoutes = require("./Routes/addproductRoute");
+const rawMaterialRoutes = require("./Routes/addRawMaterialRoutes");
+const teaLeavesRoutes = require("./Routes/addFreshTeaLeavesRoutes");
+
 
 const freshRoutes = require("./Routes/fresh"); // Fresh supplier routes
 const rawRoutes = require("./Routes/raw"); // Raw supplier routes
@@ -16,6 +20,26 @@ const orderRoutes = require("./Routes/OrderRoutes");
 const app = express();
 
 // Middleware
+app.use(cors());
+app.use(express.json());
+
+// MongoDB Connection
+mongoose.connect(
+  "mongodb+srv://admin:ENNGswYJaHT1PtH9@cluster0.mjltbxo.mongodb.net/teafactory",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+)
+.then(() => console.log("✅ MongoDB connected"))
+.catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// Routes
+app.use("/api/users", userRoutes);
+app.use("/api/delivery-vans", deliveryVanRoutes);
+app.use("/api/products", addProductRoutes);
+app.use("/api/raw-materials", rawMaterialRoutes); // Updated raw material routes
+app.use("/api/tea-leaves", teaLeavesRoutes);
 app.use(cors({ origin: "http://localhost:3000" })); // Allow frontend requests
 app.use(express.json()); // Parse JSON requests
 
@@ -49,5 +73,5 @@ app.get("/", (req, res) => {
 });
 
 // Start the server
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

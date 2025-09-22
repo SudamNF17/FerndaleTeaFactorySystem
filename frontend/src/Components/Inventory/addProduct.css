@@ -1,0 +1,118 @@
+/* Main container */
+.add-product-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #000;
+}
+
+/* Headings */
+h1, h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Centered search input */
+.search-input {
+  font-size: 14px;
+  padding: 10px;
+  width: 50%;
+  max-width: 400px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Form styling */
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.product-form input {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.product-form button {
+  padding: 10px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  background-color: #0088FE;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.product-form button:hover {
+  background-color: #005bb5;
+}
+
+/* Pie chart */
+.recharts-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+/* Table styling */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 25px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.product-table th, .product-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.product-table th {
+  background-color: #0088FE;
+  color: #fff;
+}
+
+.product-table td button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.product-table td button:first-child {
+  background-color: #00C49F;
+  color: #fff;
+}
+
+.product-table td button:first-child:hover {
+  background-color: #00997b;
+}
+
+.product-table td button:last-child {
+  background-color: #FF4444;
+  color: #fff;
+}
+
+.product-table td button:last-child:hover {
+  background-color: #cc0000;
+}

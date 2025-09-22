@@ -1,8 +1,10 @@
 // src/App.js
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
+
+
+
 
 import Register from "./Components/Register/Register";
 import Login from "./Components/Login/Login";
@@ -14,6 +16,13 @@ import Delivery from "./Components/Delivery/Delivery";
 import Schedule from "./Components/Delivery/Schedule";
 import Supplier from "./Components/Supplier/Supplier";
 
+// Inventory Components
+import Inventory from "./Components/Inventory/inventory";
+import AddSupply from "./Components/Inventory/addsupply";
+import AddProduct from "./Components/Inventory/addproduct";
+
+import AddRawMaterial from "./Components/Inventory/AddRawMaterial";
+import AddFreshTeaLeaves from "./Components/Inventory/AddFreshTeaLeaves";
 
 import Cart from "./Components/Order/Cart";
 import Payment from "./Components/Order/Payment";
@@ -46,6 +55,23 @@ function App() {
 
     <div>
       <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/hr-dashboard" element={<HRDashboard />} />
+        <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
+        <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
+        <Route path="/delivery-vans" element={<Delivery />} />
+        <Route path="/supplier" element={<Supplier />} />
+
+        {/* Inventory routes */}
+        <Route path="/inventory" element={<Inventory />} />
+        <Route path="/inventory/add-supply" element={<AddSupply />} />
+
+        <Route path="/inventory/add-supply/raw-materials" element={<AddRawMaterial />} />
+        <Route path="/inventory/add-supply/fresh-tea-leaves" element={<AddFreshTeaLeaves />} />
+
+        <Route path="/inventory/add-product" element={<AddProduct />} />
         {/* Public routes */}
         <Route path="/" element={<Welcome />} />
         <Route path="/register" element={<Register />} />

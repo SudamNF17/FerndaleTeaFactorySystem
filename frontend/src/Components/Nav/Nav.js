@@ -8,7 +8,8 @@ const NavigationBar = () => {
   return (
     <nav className="nav-bar">
       <ul className="nav-list">
-       
+        
+
         
 
         <li>

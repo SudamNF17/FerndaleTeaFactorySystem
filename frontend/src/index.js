@@ -6,11 +6,10 @@ import "./index.css";
 import "leaflet/dist/leaflet.css";
 
 
-// Import Leaflet CSS for the map
-import "leaflet/dist/leaflet.css";
 
-// Import Leaflet CSS for the map
-import "leaflet/dist/leaflet.css";
+
+
+
 
 // Create the root element
 const root = ReactDOM.createRoot(document.getElementById("root"));
