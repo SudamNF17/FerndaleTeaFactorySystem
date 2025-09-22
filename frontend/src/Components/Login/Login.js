@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './login.css'; 
-import logo from '../../assets/tea-logo.png'; 
+import logo from '../../assets/logo.jpeg'; 
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -18,19 +18,22 @@ function Login() {
         password,
       });
 
-      const { role, fullName } = res.data;
+      const { role, fullName, token } = res.data; // <-- Get token too
+
+      console.log("Login response:", res.data); // Debug
 
       // Save to localStorage (for session)
       localStorage.setItem("userName", fullName);
       localStorage.setItem("userRole", role);
+      localStorage.setItem("userToken", token); // <-- Add this line
 
       // Redirect based on role
       if (role === "HRManager") {
         navigate("/hr-dashboard");
       } else if (role === "Supplier") {
-        navigate("/Supplier-dashboard");
+        navigate("/supplier-dashboard");
       } else if (role === "Wholesaler") {
-        navigate("/wholesaler-dashboard");
+        navigate("/cart");
       } else {
         alert("Unknown user role.");
       }

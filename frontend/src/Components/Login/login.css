@@ -2,20 +2,27 @@ body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
 
-  background-size: cover;
+  /* Background image */
+ 
+  overflow-x: hidden;
 }
 
+/* Blur + overlay effect */
 .login-page {
   display: flex;
   height: 100vh;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(6px);
+  background: url("../../assets/bcg.jpeg") no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
+/* Left panel (branding/info) */
 .login-left {
   flex: 1;
   color: white;
   padding: 40px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,17 +32,20 @@ body {
 }
 
 .login-left:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .login-left h1 {
-  font-size: 32px;
+  font-size: 34px;
   margin: 20px 0 10px;
+  font-weight: 700;
 }
 
 .login-left p {
   font-size: 16px;
-  max-width: 300px;
+  max-width: 320px;
+  line-height: 1.5;
+  opacity: 0.9;
 }
 
 .login-logo {
@@ -45,16 +55,19 @@ body {
 }
 
 .login-logo:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
+/* Right panel (login form) */
 .login-right {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 }
 
+/* Login card */
 .login-card {
   background: #ffffffee;
   padding: 40px;
@@ -74,8 +87,11 @@ body {
   color: #2e7d32;
   margin-bottom: 20px;
   text-align: center;
+  font-size: 26px;
+  font-weight: 600;
 }
 
+/* Form styling */
 .login-form .form-group {
   margin-bottom: 15px;
 }
@@ -84,11 +100,12 @@ body {
   display: block;
   font-weight: 500;
   margin-bottom: 6px;
+  color: #333;
 }
 
 .login-form input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 15px;
@@ -98,13 +115,14 @@ body {
 .login-form input:focus {
   border-color: #4caf50;
   outline: none;
-  box-shadow: 0 0 5px #81c784;
+  box-shadow: 0 0 6px #81c784;
 }
 
 .login-form input:hover {
   border-color: #66bb6a;
 }
 
+/* Button */
 .login-btn {
   width: 100%;
   background-color: #388e3c;
@@ -123,6 +141,7 @@ body {
   transform: translateY(-2px);
 }
 
+/* Register link */
 .register-link {
   margin-top: 20px;
   font-size: 14px;
@@ -131,6 +150,7 @@ body {
 
 .register-link a {
   color: #388e3c;
+  font-weight: 500;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -138,4 +158,20 @@ body {
 .register-link a:hover {
   text-decoration: underline;
   color: #2e7d32;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-left {
+    padding: 20px;
+  }
+
+  .login-card {
+    margin-top: 20px;
+    padding: 30px;
+  }
 }
