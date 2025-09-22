@@ -1,0 +1,121 @@
+/* EmployeeProfile.css */
+
+/* General Container */
+.employee-container {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 25px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.employee-container h1 {
+  color: #004080;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Form Inputs & Textarea */
+.employee-container input,
+.employee-container select,
+.employee-container textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.employee-container input:focus,
+.employee-container select:focus,
+.employee-container textarea:focus {
+  border-color: #0088fe;
+  box-shadow: 0 0 5px rgba(0, 136, 254, 0.3);
+}
+
+/* Textarea */
+.employee-container textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Buttons */
+.employee-container button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+/* Specific Button Colors */
+.employee-container button.bg-blue-500 {
+  background: linear-gradient(135deg, #0088fe, #005bb5);
+  color: #fff;
+}
+
+.employee-container button.bg-blue-500:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 91, 181, 0.3);
+}
+
+.employee-container button.bg-green-500 {
+  background: linear-gradient(135deg, #00c853, #007e33);
+  color: #fff;
+}
+
+.employee-container button.bg-green-500:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 126, 51, 0.3);
+}
+
+.employee-container button.bg-red-500 {
+  background: linear-gradient(135deg, #ff5252, #c62828);
+  color: #fff;
+}
+
+.employee-container button.bg-red-500:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.3);
+}
+
+.employee-container button.bg-gray-400 {
+  background: linear-gradient(135deg, #b0b0b0, #7a7a7a);
+  color: #fff;
+}
+
+.employee-container button.bg-gray-400:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(122, 122, 122, 0.3);
+}
+
+/* Button Container */
+.employee-container .flex {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .employee-container {
+    padding: 20px;
+  }
+
+  .employee-container .flex {
+    flex-direction: column;
+  }
+}

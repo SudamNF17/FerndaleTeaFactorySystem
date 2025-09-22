@@ -12,6 +12,11 @@ import WholesalerDashboard from "./Components/Dashboards/WholesalerDashboard";
 import Delivery from "./Components/Delivery/Delivery";
 import Schedule from "./Components/Delivery/Schedule";
 import Supplier from "./Components/Supplier/Supplier";
+import EmployeeDashboard from "./Components/Employee/Dashboard";
+import EmployeeList from "./Components/Employee/EmployeeList";
+import EmployeeProfile from "./Components/Employee/EmployeeProfile";
+import AttendancePage from "./Components/Employee/AttendancePage";
+import DepartmentsPage from "./Components/Employee/DepartmentDashboard"
 
 // Inventory Components
 import Inventory from "./Components/Inventory/inventory";
@@ -42,6 +47,25 @@ function App() {
 
   return (
     <div>
+      <React.Fragment>
+        <Routes>
+          <Route path="/" element={<Welcome />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/hr-dashboard" element={<HRDashboard />} />
+          <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
+          <Route path="/wholesaler-dashboard" element={<WholesalerDashboard />} />
+          <Route path="/delivery-vans" element={<Delivery />} />
+          <Route path="/supplier" element={<Supplier />} />
+          <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+                  <Route path="/employees" element={<EmployeeList />} />
+          <Route path="/employees/:id" element={<EmployeeProfile />} />
+          <Route path="/attendance" element={<AttendancePage/>}/>
+          <Route path="/departments" element={<DepartmentsPage />} />
+
+          
+        </Routes>
+      </React.Fragment>
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Welcome />} />

@@ -1,0 +1,95 @@
+.attendance-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+h2, h3 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Forms */
+.register-form,
+.mark-section {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #f9f9f9;
+}
+
+.register-form input,
+.mark-section input {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  display: inline-block;
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Messages */
+.message {
+  margin-top: 10px;
+  padding: 10px;
+  text-align: center;
+  background: #e9f7ef;
+  border: 1px solid #c1e1c5;
+  border-radius: 6px;
+  color: #2d7a36;
+  font-weight: bold;
+}
+
+/* Table */
+table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+table th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+table img {
+  border-radius: 6px;
+  object-fit: cover;
+}
