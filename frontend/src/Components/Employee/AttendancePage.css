@@ -1,95 +1,94 @@
+/* AttendancePage.css */
+
 .attendance-container {
   max-width: 900px;
   margin: 20px auto;
   padding: 20px;
-  background: #ffffff;
+  background: #f9f9f9;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   font-family: Arial, sans-serif;
 }
 
-h2, h3 {
+.attendance-container h2 {
   text-align: center;
+  margin-bottom: 20px;
   color: #333;
-  margin-bottom: 15px;
 }
 
-/* Forms */
-.register-form,
-.mark-section {
-  margin: 20px 0;
+.video-canvas-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+video {
+  border: 2px solid #ccc;
+  border-radius: 8px;
+}
+
+.form-section {
+  margin-bottom: 25px;
   padding: 15px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  background: #f9f9f9;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
 }
 
-.register-form input,
-.mark-section input {
+.form-section h3 {
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.form-section input {
   display: block;
   width: 100%;
-  margin: 8px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
+  max-width: 300px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
   border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
-button {
-  display: inline-block;
-  padding: 10px 16px;
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
+.form-section button {
+  padding: 8px 16px;
   border: none;
   border-radius: 6px;
+  background-color: #4caf50;
+  color: white;
   cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  transition: 0.2s;
 }
 
-button:hover {
-  background-color: #0056b3;
+.form-section button:hover {
+  background-color: #45a049;
 }
 
-button:disabled {
-  background-color: #aaa;
-  cursor: not-allowed;
-}
-
-/* Messages */
 .message {
-  margin-top: 10px;
-  padding: 10px;
   text-align: center;
-  background: #e9f7ef;
-  border: 1px solid #c1e1c5;
-  border-radius: 6px;
-  color: #2d7a36;
+  margin: 15px 0;
   font-weight: bold;
+  color: #ff4d4f;
 }
 
-/* Table */
 table {
   width: 100%;
-  margin-top: 15px;
   border-collapse: collapse;
-  text-align: left;
+  margin-top: 15px;
 }
 
 table th, table td {
-  border: 1px solid #ddd;
-  padding: 10px;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
 }
 
 table th {
-  background-color: #f1f1f1;
-  font-weight: bold;
+  background-color: #f0f0f0;
 }
 
-table tr:nth-child(even) {
-  background-color: #fafafa;
-}
-
-table img {
-  border-radius: 6px;
-  object-fit: cover;
+table td div {
+  margin-bottom: 4px;
+  font-size: 0.9em;
 }

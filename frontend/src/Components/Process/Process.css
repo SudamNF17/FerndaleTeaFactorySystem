@@ -1,8 +1,9 @@
 .process-container {
-  padding: 30px;
-  max-width: 1200px;
+  padding: 20px;
   margin: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   position: relative; /* needed for absolute child positioning */
+  text-align: center;
 }
 
 .process-container h1 {

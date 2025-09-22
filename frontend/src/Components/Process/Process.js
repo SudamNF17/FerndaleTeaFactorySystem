@@ -2,8 +2,23 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Process.css";
 import printLogo from "../../assets/printlogo.png";
+import { useNavigate } from "react-router-dom";
+import Nav from "../Nav/Nav";
+
 
 function Process() {
+
+  const navigate = useNavigate();
+  const userName = localStorage.getItem("userName");
+
+
+
+  
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+
   const [processes, setProcesses] = useState([]);
   const [formData, setFormData] = useState({
     processName: "",
@@ -160,6 +175,27 @@ function Process() {
 
   return (
     <div className="process-container">
+      {/* Header */}
+      <div className="dashboard-header">
+        <h2>Welcome Manager, {userName}</h2>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
+       
+      </div>
+     <Nav />
+      
+      <div className="scroll-header">
+        <h3>Process Management</h3>
+        <div className="marquee">
+          <div className="marquee-content">
+            <span>
+              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+            </span>
+            <span>
+              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+            </span>
+          </div>
+        </div>
+      </div>
       <h1>Process Management</h1>
 
       <form onSubmit={handleSubmit} className="process-form">

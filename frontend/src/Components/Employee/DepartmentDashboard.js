@@ -5,6 +5,9 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import "./DepartmentDashboard.css";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
+import Nav from "../Nav/Nav";
+
 
 
 const COLORS = ["#0088FE", "#FF8042"];
@@ -15,6 +18,14 @@ const DepartmentDashboard = () => {
   const [newDept, setNewDept] = useState({ name: "", employees: 0, performanceThisMonth: 50, performanceLastMonth: 30 });
   const [editingDept, setEditingDept] = useState(null);
 
+  const navigate = useNavigate();
+  const userName = localStorage.getItem("userName");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+  
   // Fetch departments
   useEffect(() => {
     fetchDepartments();
@@ -118,6 +129,12 @@ const DepartmentDashboard = () => {
 
   return (
     <div className="dept-container">
+       {/* Header */}
+      <div className="dashboard-header">
+        <h2>Welcome Manager, {userName}</h2>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
+        </div>
+        <Nav />
       <div className="dept-header">
         <h1>Departments</h1>
 <button className="pdf-btn" onClick={exportPDF}>

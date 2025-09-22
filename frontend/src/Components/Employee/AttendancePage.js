@@ -1,10 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./AttendancePage.css";
+import { useNavigate } from "react-router-dom";
 
 const BACKEND_URL = "http://localhost:5000";
 
 const AttendancePage = () => {
+
+const navigate = useNavigate();
+  const userName = localStorage.getItem("userName");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+
+
   const [attendance, setAttendance] = useState([]);
   const [message, setMessage] = useState("");
   const videoRef = useRef(null);
@@ -62,6 +73,28 @@ const AttendancePage = () => {
 
   return (
     <div className="attendance-container">
+
+       {/* Header */}
+      <div className="dashboard-header">
+        <h2>Welcome Manager, {userName}</h2>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+
+      <div className="scroll-header">
+        <h3>Employee Dashboard</h3>
+        <div className="marquee">
+          <div className="marquee-content">
+            <span>
+              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+            </span>
+            <span>
+              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+            </span>
+          </div>
+        </div>
+      </div>
       <h2>Face Attendance System</h2>
 
       <video ref={videoRef} width="300" height="300" autoPlay />
