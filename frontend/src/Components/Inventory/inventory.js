@@ -29,10 +29,10 @@ const Inventory = () => {
         <div className="marquee">
           <div className="marquee-content">
             <span>
-              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+              🗃️Manage inventory records. &nbsp;&nbsp;&nbsp;
             </span>
             <span>
-              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+              🗃️Manage inventory records. &nbsp;&nbsp;&nbsp;
             </span>
           </div>
         </div>

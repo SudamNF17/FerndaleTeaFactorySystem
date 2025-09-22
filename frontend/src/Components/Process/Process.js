@@ -188,10 +188,10 @@ function Process() {
         <div className="marquee">
           <div className="marquee-content">
             <span>
-              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+              ⚙️Manage prossessing details. &nbsp;&nbsp;&nbsp;
             </span>
             <span>
-              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+              ⚙️Manage prossessing details. &nbsp;&nbsp;&nbsp;
             </span>
           </div>
         </div>

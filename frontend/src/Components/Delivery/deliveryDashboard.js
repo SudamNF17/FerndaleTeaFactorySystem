@@ -189,16 +189,13 @@ const DeliveryDashboard = () => {
           </div>
           <div className="factory-card">
             <h4>Location</h4>
-            <p>Balangoda, Sri Lanka</p>
+            <p>Ragala, Sri Lanka</p>
           </div>
           <div className="factory-card">
             <h4>Established</h4>
             <p>1965</p>
           </div>
-          <div className="factory-card">
-            <h4>Total Employees</h4>
-            <p>100</p>
-          </div>
+          
           <div className="factory-card">
             <h4>Active Vans</h4>
             <p>
