@@ -6,6 +6,7 @@ import "./delivery.css";
 import { useNavigate } from "react-router-dom";
 import VanTracker from "./VanTracker";
 
+
 const API_URL = "http://localhost:5000/api/delivery-vans"; // change if needed
 
 function Delivery() {
@@ -152,6 +153,8 @@ function Delivery() {
 
     doc.save("delivery_vans_report.pdf");
   };
+
+  
 
   if (loading) return <p>Loading vans...</p>;
   if (error) return <p>{error}</p>;
