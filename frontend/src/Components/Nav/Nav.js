@@ -31,7 +31,7 @@ const NavigationBar = () => {
         </li>
         <li>
           <NavLink
-            to="/stock"
+            to="/inventory"
             className={({ isActive }) => (isActive ? "active-link" : "")}
           >
             Inventory Tea Stock
@@ -45,14 +45,7 @@ const NavigationBar = () => {
             Orders
           </NavLink>
         </li>
-        <li>
-          <NavLink
-            to="/supply"
-            className={({ isActive }) => (isActive ? "active-link" : "")}
-          >
-            Supply Tea Leaves
-          </NavLink>
-        </li>
+        
         <li>
           <NavLink
             to="/deliveryDashboard"
