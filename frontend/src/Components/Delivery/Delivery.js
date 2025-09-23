@@ -6,7 +6,6 @@ import "./delivery.css";
 import { useNavigate } from "react-router-dom";
 import VanTracker from "./VanTracker";
 
-
 const API_URL = "http://localhost:5000/api/delivery-vans"; // change if needed
 
 function Delivery() {
@@ -42,6 +41,45 @@ function Delivery() {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
 
+  //  errors state
+  const [errors, setErrors] = useState({});
+
+  // validation function
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.delivery_person_id || formData.delivery_person_id <= 0) {
+      newErrors.delivery_person_id =
+        "Delivery Person ID must be a positive number.";
+    }
+
+    if (!/^[a-zA-Z\s]{2,100}$/.test(formData.name)) {
+      newErrors.name =
+        "Name must be 2-100 characters, letters and spaces only.";
+    }
+
+    if (!/^\+?[0-9]{10}$/.test(formData.phone_number)) {
+      newErrors.phone_number =
+        "Phone number must be 10 digits, optional leading +.";
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+
+   if (!/^[a-zA-Z0-9-]{1,20}$/.test(formData.van_number)) {
+  newErrors.van_number = "Van Number must be alphanumeric (max 20 chars).";
+}
+
+
+    if (formData.notes && formData.notes.length > 500) {
+      newErrors.notes = "Notes cannot exceed 500 characters.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // true if no errors
+  };
+
   // Fetch vans
   const fetchVans = async () => {
     try {
@@ -67,6 +105,7 @@ function Delivery() {
   // Add new van
   const handleAdd = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; //  validation check
     try {
       await axios.post(API_URL, {
         ...formData,
@@ -97,6 +136,7 @@ function Delivery() {
   // Update van
   const handleUpdate = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; //  validation check
     try {
       await axios.put(`${API_URL}/${editId}`, {
         ...formData,
@@ -153,8 +193,6 @@ function Delivery() {
 
     doc.save("delivery_vans_report.pdf");
   };
-
-  
 
   if (loading) return <p>Loading vans...</p>;
   if (error) return <p>{error}</p>;
@@ -240,6 +278,9 @@ function Delivery() {
             onChange={handleChange}
             required
           />
+          {errors.delivery_person_id && (
+            <p style={{ color: "red" }}>{errors.delivery_person_id}</p>
+          )}
         </div>
 
         <div>
@@ -252,6 +293,7 @@ function Delivery() {
             maxLength={100}
             required
           />
+          {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
         </div>
 
         <div>
@@ -265,6 +307,9 @@ function Delivery() {
             title="Phone number must be 7 to 15 digits, optional leading +"
             required
           />
+          {errors.phone_number && (
+            <p style={{ color: "red" }}>{errors.phone_number}</p>
+          )}
         </div>
 
         <div>
@@ -276,6 +321,7 @@ function Delivery() {
             onChange={handleChange}
             required
           />
+          {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
         </div>
 
         <div>
@@ -288,6 +334,9 @@ function Delivery() {
             maxLength={20}
             required
           />
+          {errors.van_number && (
+            <p style={{ color: "red" }}>{errors.van_number}</p>
+          )}
         </div>
 
         <div>
@@ -311,6 +360,7 @@ function Delivery() {
             onChange={handleChange}
             rows={3}
           />
+          {errors.notes && <p style={{ color: "red" }}>{errors.notes}</p>}
         </div>
 
         <button type="submit">{isEditing ? "Update Van" : "Add Van"}</button>
