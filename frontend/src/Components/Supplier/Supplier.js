@@ -1,10 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
-import "./Supplier.css"; 
-
-import "./Supplier.css"; // ✅ make sure this path is correct
-
+import "./Supplier.css";
 
 function Supplier() {
   const navigate = useNavigate();
