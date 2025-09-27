@@ -1,54 +1,54 @@
-/* Container for the dashboard */
+/* Supplier.css */
+
 .supplier-container {
-  padding: 24px;
-  font-family: Arial, sans-serif;
+  background-image: url('../../assets/suppler.jpg'); /* path relative to CSS file */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: black;
 }
 
-/* Dashboard title */
 .supplier-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+  font-size: 2.5rem;
+  margin-bottom: 50px;
 }
 
-/* Button container */
 .supplier-buttons {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* Raw Material Supply Button */
-.raw-btn {
-  padding: 12px 20px;
-  background-color: #2563eb; /* blue */
-  color: white;
+/* Base button styles */
+.raw-btn, .fresh-btn {
+  padding: 20px 40px;
+  font-size: 18px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.raw-btn:hover {
-  background-color: #1e40af; /* darker blue */
-  transform: translateY(-2px);
-}
-
-/* Fresh Tea Leaves Supply Button */
-.fresh-btn {
-  padding: 12px 20px;
-  background-color: #16a34a; /* green */
+  background-color: #007bff;
   color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
-  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+  animation: pulse 2s infinite; /* subtle pulsing */
 }
 
-.fresh-btn:hover {
-  background-color: #166534; /* darker green */
-  transform: translateY(-2px);
+/* Hover effect */
+.raw-btn:hover, .fresh-btn:hover {
+  transform: scale(1.1) rotate(-1deg);
+  background-color: #0056b3;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }

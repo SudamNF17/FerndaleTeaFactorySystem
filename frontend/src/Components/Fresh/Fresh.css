@@ -78,18 +78,29 @@ button {
   margin-right: 5px;
 }
 
+button:hover {
+  opacity: 0.9;
+}
+
+/* 🌱 Submit Button Animation */
 .submit-btn {
   background: #27ae60;
   color: white;
+  animation: pulse 2s infinite; /* gentle pulse */
+  transition: all 0.3s ease;
 }
 
 .submit-btn:hover {
   background: #219150;
-  transform: scale(1.05);
+  transform: scale(1.08) rotate(-1deg); /* slight scale + rotation */
+  box-shadow: 0 6px 15px rgba(39, 174, 96, 0.4);
 }
 
-button:hover {
-  opacity: 0.9;
+/* 🌱 Pulse keyframes */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 /* 🌱 Map */
@@ -146,6 +157,9 @@ button:hover {
   font-size: 12px;
   border-radius: 5px;
   font-weight: 600;
+  transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+  cursor: pointer;
+  animation: btnPulse 2.5s infinite;
 }
 
 .submitted-data button:nth-child(1) {
@@ -154,6 +168,8 @@ button:hover {
 }
 .submitted-data button:nth-child(1):hover {
   background: #1f6690;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(41, 128, 185, 0.4);
 }
 
 .submitted-data button:nth-child(2) {
@@ -162,6 +178,8 @@ button:hover {
 }
 .submitted-data button:nth-child(2):hover {
   background: #c0392b;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
 }
 
 .submitted-data button:nth-child(3) {
@@ -170,6 +188,8 @@ button:hover {
 }
 .submitted-data button:nth-child(3):hover {
   background: #6d318a;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(142, 68, 173, 0.4);
 }
 
 .submitted-data button:nth-child(4) {
@@ -178,4 +198,22 @@ button:hover {
 }
 .submitted-data button:nth-child(4):hover {
   background: #d68910;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
 }
+
+/* 🌱 Button Pulse Animation for Table Buttons */
+@keyframes btnPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+body {
+  background: linear-gradient(135deg, #e9f7ef, #d4efdf);
+  background-attachment: fixed;
+  background-size: cover;
+  margin: 0;
+}
+
+
+
