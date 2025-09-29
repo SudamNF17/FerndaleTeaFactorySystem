@@ -1,12 +1,10 @@
-// src/components/VanTracker.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// Example lorry icon (replace with your image path)
 const lorryIcon = new L.Icon({
-  iconUrl: require("../../assets/lorry.png"), // correct relative path
+  iconUrl: require("../../assets/lorry.png"),
   iconSize: [40, 40],
   iconAnchor: [20, 40],
   popupAnchor: [0, -35],
@@ -16,11 +14,30 @@ const lorryIcon = new L.Icon({
 });
 
 function VanTracker({ van }) {
-  if (!van) {
-    return <p style={{ marginTop: "20px", textAlign: "center" }}>🚐 Select a van to track its location</p>;
-  }
+  // Default starting position (Colombo)
+  const [position, setPosition] = useState(van?.location || [6.9271, 79.8612]);
 
-  const position = van.location || [6.9271, 79.8612]; // Default: Colombo
+  // Simulate movement when van is selected
+  useEffect(() => {
+    if (!van) return;
+
+    const interval = setInterval(() => {
+      setPosition((prev) => [
+        prev[0] + (Math.random() - 0.5) * 0.001, // simulate latitude change
+        prev[1] + (Math.random() - 0.5) * 0.001, // simulate longitude change
+      ]);
+    }, 3000); // update every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [van]);
+
+  if (!van) {
+    return (
+      <p style={{ marginTop: "20px", textAlign: "center" }}>
+        🚐 Select a van to track its location
+      </p>
+    );
+  }
 
   const mapStyle = {
     height: "400px",
@@ -32,22 +49,13 @@ function VanTracker({ van }) {
     overflow: "hidden",
   };
 
-  const headerStyle = {
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: "18px",
-    marginTop: "20px",
-  };
-
   return (
     <div>
-      {/* Display van number and delivery person name above the map */}
-      <div style={headerStyle}>
+      <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "18px", marginTop: "20px" }}>
         🚐 Tracking Van: {van.van_number} <br />
-        👤 Delivery Person: {van.name || "N/A"}
+        👤 Delivery Person: {van.name}
       </div>
 
-      {/* Map */}
       <div style={mapStyle}>
         <MapContainer center={position} zoom={13} style={{ height: "100%", width: "100%" }}>
           <TileLayer
@@ -58,8 +66,7 @@ function VanTracker({ van }) {
             <Popup>
               🚐 <b>{van.name}</b> <br />
               Van: {van.van_number} <br />
-              Status: {van.availability_status} <br />
-              👤 Delivery Person: {van.name}
+              Status: {van.availability_status}
             </Popup>
           </Marker>
         </MapContainer>
