@@ -31,38 +31,52 @@ function VanTracker({ van }) {
   const [currentVan, setCurrentVan] = useState(van);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [errMsg, setErrMsg] = useState("");
+  const [isTracking, setIsTracking] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState("disconnected");
+  const [mapType, setMapType] = useState("street"); // street, satellite, hybrid
 
   useEffect(() => {
     if (!van) return;
 
     // Immediate fetch
     setErrMsg("");
+    setConnectionStatus("connecting");
     axios
       .get(`${API_URL}/${van._id}?t=${Date.now()}`)
       .then((res) => {
         setCurrentVan(res.data);
         setLastUpdated(new Date());
+        setConnectionStatus("connected");
+        setIsTracking(true);
       })
       .catch((err) => {
         console.log('Fetch error', err);
         setErrMsg('Failed to fetch van location');
+        setConnectionStatus("error");
       });
 
-    // Poll every 5 seconds
+    // Poll every 3 seconds for real-time updates
     const interval = setInterval(() => {
       axios
         .get(`${API_URL}/${van._id}?t=${Date.now()}`)
         .then((res) => {
           setCurrentVan(res.data);
           setLastUpdated(new Date());
+          setConnectionStatus("connected");
+          setIsTracking(true);
         })
         .catch((err) => {
           console.log('Poll error', err);
           setErrMsg('Failed to refresh van location');
+          setConnectionStatus("error");
         });
-    }, 5000);
+    }, 3000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      setIsTracking(false);
+      setConnectionStatus("disconnected");
+    };
   }, [van]);
 
   if (!currentVan) {
@@ -107,6 +121,44 @@ function VanTracker({ van }) {
     }
   };
 
+  const getStatusColor = () => {
+    switch (connectionStatus) {
+      case "connected": return "#28a745";
+      case "connecting": return "#ffc107";
+      case "error": return "#dc3545";
+      default: return "#6c757d";
+    }
+  };
+
+  const getStatusIcon = () => {
+    switch (connectionStatus) {
+      case "connected": return "🟢";
+      case "connecting": return "🟡";
+      case "error": return "🔴";
+      default: return "⚪";
+    }
+  };
+
+  const getMapLayer = () => {
+    switch (mapType) {
+      case "satellite":
+        return {
+          url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+          attribution: "&copy; Esri"
+        };
+      case "hybrid":
+        return {
+          url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+          attribution: "&copy; Esri"
+        };
+      default: // street
+        return {
+          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          attribution: "&copy; OpenStreetMap contributors"
+        };
+    }
+  };
+
   return (
     <div>
       <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "18px", marginTop: "20px" }}>
@@ -121,32 +173,101 @@ function VanTracker({ van }) {
         )}
       </div>
 
+      <div style={{ textAlign: "center", marginTop: "8px", color: getStatusColor(), fontSize: "14px", fontWeight: "bold" }}>
+        {getStatusIcon()} {connectionStatus.toUpperCase()} {isTracking && "• LIVE TRACKING"}
+      </div>
+
       <div style={{ textAlign: "center", marginTop: "8px", color: "#777", fontSize: "12px" }}>
-        id: {currentVan._id || '—'}
+        Van ID: {currentVan._id || '—'} • Driver ID: {currentVan.delivery_person_id || '—'}
       </div>
 
       <div style={{ textAlign: "center", marginTop: "10px" }}>
-        <button onClick={handleTestMove}>Test Move</button>
+        <button onClick={handleTestMove} style={{ 
+          padding: "8px 16px", 
+          backgroundColor: "#007bff", 
+          color: "white", 
+          border: "none", 
+          borderRadius: "4px",
+          cursor: "pointer",
+          marginRight: "10px"
+        }}>
+          Test Move Van
+        </button>
+      </div>
+
+      <div style={{ textAlign: "center", marginTop: "10px" }}>
+        <h4 style={{ margin: "10px 0", color: "#333" }}>🗺️ Map Type:</h4>
+        <button 
+          onClick={() => setMapType("street")} 
+          style={{ 
+            padding: "6px 12px", 
+            backgroundColor: mapType === "street" ? "#28a745" : "#6c757d", 
+            color: "white", 
+            border: "none", 
+            borderRadius: "4px",
+            cursor: "pointer",
+            margin: "0 5px"
+          }}
+        >
+          🏘️ Street
+        </button>
+        <button 
+          onClick={() => setMapType("satellite")} 
+          style={{ 
+            padding: "6px 12px", 
+            backgroundColor: mapType === "satellite" ? "#28a745" : "#6c757d", 
+            color: "white", 
+            border: "none", 
+            borderRadius: "4px",
+            cursor: "pointer",
+            margin: "0 5px"
+          }}
+        >
+          🛰️ Satellite
+        </button>
+        <button 
+          onClick={() => setMapType("hybrid")} 
+          style={{ 
+            padding: "6px 12px", 
+            backgroundColor: mapType === "hybrid" ? "#28a745" : "#6c757d", 
+            color: "white", 
+            border: "none", 
+            borderRadius: "4px",
+            cursor: "pointer",
+            margin: "0 5px"
+          }}
+        >
+          🗺️ Hybrid
+        </button>
       </div>
 
       {errMsg && (
-        <div style={{ textAlign: "center", marginTop: "8px", color: "#c00" }}>
-          {errMsg}
+        <div style={{ textAlign: "center", marginTop: "8px", color: "#c00", backgroundColor: "#f8d7da", padding: "8px", borderRadius: "4px" }}>
+          ⚠️ {errMsg}
         </div>
       )}
 
       <div style={mapStyle}>
         <MapContainer center={position} zoom={13} style={{ height: "100%", width: "100%" }}>
           <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; OpenStreetMap contributors"
+            url={getMapLayer().url}
+            attribution={getMapLayer().attribution}
           />
+          {mapType === "hybrid" && (
+            <TileLayer
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
+              attribution="&copy; Esri"
+              opacity={0.7}
+            />
+          )}
           <Marker position={position} icon={lorryIcon}>
             <Popup>
               🚐 <b>{currentVan.name}</b> <br />
               Van: {currentVan.van_number} <br />
               Status: {currentVan.availability_status} <br />
-              👤 Delivery Person: {currentVan.name}
+              👤 Delivery Person: {currentVan.name} <br />
+              📍 Lat: {currentVan.latitude?.toFixed(6)} <br />
+              📍 Lng: {currentVan.longitude?.toFixed(6)}
             </Popup>
           </Marker>
 

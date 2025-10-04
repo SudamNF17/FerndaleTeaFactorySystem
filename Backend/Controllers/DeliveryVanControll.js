@@ -166,6 +166,77 @@ exports.updateLocationByDriverId = async (req, res) => {
   }
 };
 
+// UPDATE location by van_number (for mobile apps using van_number as ID)
+exports.updateLocationByVanNumber = async (req, res) => {
+  const { vanNumber } = req.params;
+  const { latitude, longitude } = req.body;
+  try {
+    const van = await DeliveryVan.findOneAndUpdate(
+      { van_number: vanNumber },
+      { latitude, longitude },
+      { new: true }
+    );
+    if (!van) {
+      return res.status(404).json({ message: 'Delivery van not found' });
+    }
+    notifySubscribersByVanId(String(van._id));
+    return res.json(van);
+  } catch (err) {
+    console.error('Error updating location by van number:', err);
+    return res.status(500).json({ message: 'Failed to update location' });
+  }
+};
+
+// CREATE demo van for testing (van ID 1111)
+exports.createDemoVan = async (req, res) => {
+  try {
+    // Check if demo van already exists
+    let van = await DeliveryVan.findOne({ van_number: "1111" });
+    
+    if (!van) {
+      // Create demo van
+      van = new DeliveryVan({
+        delivery_person_id: 1111,
+        name: "Demo Driver",
+        phone_number: "+94123456789",
+        email: "demo@teafactory.com",
+        van_number: "1111",
+        availability_status: "Available",
+        notes: "Demo van for GPS tracking testing",
+        latitude: 9.6615, // Default Jaffna coordinates
+        longitude: 80.0255
+      });
+      await van.save();
+      return res.status(201).json({ 
+        message: 'Demo van created successfully', 
+        van,
+        instructions: {
+          mobileApp: `Use MongoDB ObjectId ${van._id} in your mobile app`,
+          frontend: "Track this van using the Track button",
+          apiEndpoint: `PUT /api/delivery-vans/${van._id}/location`,
+          vanNumber: "1111",
+          mongoId: van._id
+        }
+      });
+    } else {
+      return res.status(200).json({ 
+        message: 'Demo van already exists', 
+        van,
+        instructions: {
+          mobileApp: `Use MongoDB ObjectId ${van._id} in your mobile app`,
+          frontend: "Track this van using the Track button",
+          apiEndpoint: `PUT /api/delivery-vans/${van._id}/location`,
+          vanNumber: "1111",
+          mongoId: van._id
+        }
+      });
+    }
+  } catch (err) {
+    console.error('Error creating demo van:', err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 // ================ SSE Streams ================
 exports.streamById = async (req, res) => {
   const vanId = String(req.params.id);

@@ -221,9 +221,11 @@ function Delivery() {
       </div>
       <h2>Delivery Vans List</h2>
 
-      <button onClick={generatePDF} style={{ marginBottom: "10px" }}>
-        Generate PDF Report
-      </button>
+      <div style={{ marginBottom: "20px" }}>
+        <button onClick={generatePDF}>
+          Generate PDF Report
+        </button>
+      </div>
 
       <table
         border="1"

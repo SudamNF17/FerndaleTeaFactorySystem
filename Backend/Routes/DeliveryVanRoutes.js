@@ -24,6 +24,9 @@ router.put("/:id/location", deliveryVanController.updateLocation);
 router.put('/by-van-number/:van_number/location', deliveryVanController.updateLocationByVanNumber);
 router.put('/by-driver-id/:driverId/location', deliveryVanController.updateLocationByDriverId);
 
+// Demo van creation endpoint for testing (must be before /:id route)
+router.get('/demo', deliveryVanController.createDemoVan);
+
 // Server-Sent Events streams for live tracking
 router.get('/:id/stream', deliveryVanController.streamById);
 router.get('/by-van-number/:van_number/stream', deliveryVanController.streamByVanNumber);
