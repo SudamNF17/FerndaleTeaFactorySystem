@@ -1,9 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const Order = require("../Model/Order");
+const nodemailer = require("nodemailer");
 
+// ==================== EMAIL SERVICE ====================
+async function sendEmail(to, subject, text) {
+  // Create Ethereal test account
+  let testAccount = await nodemailer.createTestAccount();
 
-// ----------------- CREATE ORDER -----------------
+  // Setup transporter
+  let transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+
+  // Send mail
+  let info = await transporter.sendMail({
+    from: '"Ferndale Tea Factory" <no-reply@teafactory.com>',
+    to,
+    subject,
+    text,
+  });
+
+  console.log("✅ Email sent:", info.messageId);
+  console.log("🔗 Preview URL:", nodemailer.getTestMessageUrl(info));
+}
+
+// ==================== ROUTES ====================
+
+// CREATE ORDER
 router.post("/", async (req, res) => {
   try {
     const order = new Order(req.body);
@@ -14,8 +43,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-
-// ----------------- GET ALL ORDERS -----------------
+// GET ALL ORDERS
 router.get("/", async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 });
@@ -25,8 +53,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-
-// ----------------- GET SINGLE ORDER -----------------
+// GET SINGLE ORDER
 router.get("/:id", async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -39,8 +66,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-
-// ----------------- UPDATE ORDER STATUS -----------------
+// UPDATE ORDER STATUS + SEND EMAILS
 router.put("/:id/status", async (req, res) => {
   try {
     const { status } = req.body;
@@ -59,14 +85,27 @@ router.put("/:id/status", async (req, res) => {
       return res.status(404).json({ message: "❌ Order not found" });
     }
 
-    res.json({ message: "✅ Status updated", order: updatedOrder });
+    // 📧 Send email to customer
+    await sendEmail(
+      updatedOrder.buyer.email,
+      `Your order has been ${status}`,
+      `Hello ${updatedOrder.buyer.name},\n\nYour order is now marked as ${status}.\n\nThank you for shopping with Ferndale Tea Factory 🍃`
+    );
+
+    // 📧 Send email to inventory manager
+    await sendEmail(
+      `${updatedOrder.buyer.email}`,
+      `Your Order #${updatedOrder._id} is now ${status}`,
+      `Order #${updatedOrder._id} by ${updatedOrder.buyer.name} (${updatedOrder.buyer.email}) has been updated to status: ${status}.`
+    );
+
+    res.json({ message: "✅ Status updated & emails sent", order: updatedOrder });
   } catch (err) {
     res.status(500).json({ message: "❌ Failed to update status", error: err.message });
   }
 });
 
-
-// ----------------- UPDATE FULL ORDER -----------------
+// UPDATE FULL ORDER
 router.put("/:id", async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
@@ -85,8 +124,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
-// ----------------- DELETE ORDER -----------------
+// DELETE ORDER
 router.delete("/:id", async (req, res) => {
   try {
     const deletedOrder = await Order.findByIdAndDelete(req.params.id);
@@ -100,6 +138,5 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "❌ Failed to delete order", error: err.message });
   }
 });
-
 
 module.exports = router;
