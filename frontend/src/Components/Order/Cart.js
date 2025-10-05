@@ -4,25 +4,32 @@ import Header from "./Header";
 import Footer from "./Footer";
 import "./Cart.css";
 
+// ✅ Import local images from assets folder
+import greenTea from "../../assets/images/greentea.jpg";
+import blackTea from "../../assets/images/blacktea.jpg";
+import oolongTea from "../../assets/images/oolongtea.jpg";
+import sencha from "../../assets/images/senchatea.jpg";
+import matcha from "../../assets/images/matchatea.jpg";
+import dragonWell from "../../assets/images/dragonwelltea.jpg";
+
+// ✅ Product list with local image imports
 const products = [
-  { id: 1, name: "Green Tea", price: 10, image: "https://placehold.co/400x300?text=Green+T" },
-  { id: 2, name: "Black Tea", price: 12, image: "https://placehold.co/400x300?text=Black+Tea" },
-  { id: 3, name: "Oolong Tea", price: 15, image: "https://placehold.co/400x300?text=Oolong+Tea" },
-  { id: 4, name: "Sencha", price: 14, image: "https://placehold.co/400x300?text=Sencha" },
-  { id: 5, name: "Matcha", price: 20, image: "https://placehold.co/400x300?text=Matcha" },
-  { id: 6, name: "Dragon Well", price: 18, image: "https://placehold.co/400x300?text=Dragon+Well" }
+  { id: 1, name: "Green Tea", price: 10, image: greenTea },
+  { id: 2, name: "Black Tea", price: 12, image: blackTea },
+  { id: 3, name: "Oolong Tea", price: 15, image: oolongTea },
+  { id: 4, name: "Sencha", price: 14, image: sencha },
+  { id: 5, name: "Matcha", price: 20, image: matcha },
+  { id: 6, name: "Dragon Well", price: 18, image: dragonWell },
 ];
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false); // ✅ controls slider
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
+    if (savedCart) setCart(JSON.parse(savedCart));
   }, []);
 
   const saveCart = (updatedCart) => {
@@ -41,24 +48,21 @@ export default function Cart() {
       updatedCart = [...cart, { ...product, qty: 1 }];
     }
     saveCart(updatedCart);
-    setIsCartOpen(true); // ✅ open slider when item is added
+    setIsCartOpen(true);
   };
 
   const removeFromCart = (id) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
-    saveCart(updatedCart);
+    saveCart(cart.filter((item) => item.id !== id));
   };
 
   const updateQuantity = (id, newQty) => {
-    let updatedCart;
     if (newQty <= 0) {
-      updatedCart = cart.filter((item) => item.id !== id);
+      saveCart(cart.filter((item) => item.id !== id));
     } else {
-      updatedCart = cart.map((item) =>
+      saveCart(cart.map((item) =>
         item.id === id ? { ...item, qty: newQty } : item
-      );
+      ));
     }
-    saveCart(updatedCart);
   };
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.qty, 0);
@@ -94,10 +98,10 @@ export default function Cart() {
         </section>
       </div>
 
-      {/* ✅ Sliding Cart Drawer */}
       <div className={`cart-slider ${isCartOpen ? "open" : ""}`}>
         <button className="close-cart" onClick={() => setIsCartOpen(false)}>×</button>
         <h2>Your Cart</h2>
+
         {cart.length === 0 ? (
           <div className="empty-cart">
             <p>Your cart is empty</p>
