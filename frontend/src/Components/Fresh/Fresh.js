@@ -372,21 +372,7 @@ function Fresh() {
     />
   </label>
 
- <label>
-  Number:
-  <input
-    type="number"
-    name="someNumber"
-    value={formData.someNumber || ""}
-    onChange={(e) => {
-      const val = e.target.value;
-      if (/^\d*$/.test(val)) {
-        setFormData(prev => ({ ...prev, someNumber: val }));
-      }
-    }}
-    placeholder="Enter an integer"
-  />
-</label>
+ 
 
 
 
