@@ -397,6 +397,12 @@ const AddRawMaterial = () => {
               <td>{m.certification}</td>
               <td>{m.factoryLocation}</td>
               <td>{m.collectedLocationName}</td>
+              <td>
+                <button onClick={() => handleEdit(m)}>Edit</button>
+                <button onClick={() => handleDelete(m._id)}>Delete</button>
+                <button onClick={() => generateAttractivePDF(m)}>
+                  Download PDF
+                </button>
               <td style={{ whiteSpace: "nowrap" }}>
                 
               <button style={{ marginRight: "5px" }} onClick={() => handleEdit(m)}>

@@ -162,17 +162,17 @@ const DeliveryDashboard = () => {
         <h3>📊 Delivery Analytics & Schedule</h3>
 
         <div className="charts-row">
-          <div className="chart-card pie-chart">
+          <div className="chart-cardd pie-chart">
             <h4>Status Distribution</h4>
             <Pie data={pieData} />
           </div>
 
-          <div className="chart-card bar-chart">
+          <div className="chart-cardd bar-chart">
             <h4>Deliveries per Person</h4>
             <Bar data={barData} />
           </div>
 
-          <div className="chart-card calendar-card">
+          <div className="chart-cardd calendar-cardd">
             <h4>📅 Delivery Calendar</h4>
             <Calendar />
           </div>
@@ -189,16 +189,13 @@ const DeliveryDashboard = () => {
           </div>
           <div className="factory-card">
             <h4>Location</h4>
-            <p>Balangoda, Sri Lanka</p>
+            <p>Ragala, Sri Lanka</p>
           </div>
           <div className="factory-card">
             <h4>Established</h4>
             <p>1965</p>
           </div>
-          <div className="factory-card">
-            <h4>Total Employees</h4>
-            <p>100</p>
-          </div>
+          
           <div className="factory-card">
             <h4>Active Vans</h4>
             <p>

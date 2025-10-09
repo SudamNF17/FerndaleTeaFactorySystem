@@ -99,7 +99,9 @@
 }
 
 /* Common card style */
-.chart-card {
+/* Common card style for all analytics cards */
+.chart-cardd, 
+.calendar-cardd {
   padding: 20px;
   background: linear-gradient(to bottom right, #e8f5e9, #c8e6c9);
   border-radius: 15px;
@@ -107,12 +109,14 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.chart-card:hover {
+.chart-cardd:hover,
+.calendar-cardd:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
-.chart-card h4 {
+.chart-cardd h4,
+.calendar-cardd h4 {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
@@ -123,26 +127,17 @@
 /* Individual sizes */
 .pie-chart { flex: 1; max-width: 300px; }
 .bar-chart { flex: 2; max-width: 450px; }
-.calendar-card { flex: 1; max-width: 300px; }
+.calendar-cardd { flex: 1; max-width: 300px; }
 
-/* Calendar styles */
-.calendar-card .react-calendar {
-  border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* Calendar container */
+.calendar-cardd .react-calendar {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: Arial, sans-serif;
 }
 
-.calendar-card .react-calendar__tile--now {
-  background: #90caf9; /* today highlight */
-  color: white;
-  border-radius: 8px;
-}
 
-.calendar-card .react-calendar__tile--active {
-  background: #42a5f5; /* selected date */
-  color: white;
-  border-radius: 8px;
-}
 
 /* Responsive: stack vertically on small screens */
 @media (max-width: 900px) {
@@ -152,7 +147,7 @@
   }
   .pie-chart,
   .bar-chart,
-  .calendar-card {
+  .calendar-cardd {
     max-width: 90%;
   }
 }
@@ -239,7 +234,7 @@
 .marquee-content {
   display: flex;
   width: max-content;
-  animation: scroll 20s linear infinite;
+  animation: scroll 1s linear infinite;
   color: #007BFF;
   font-weight: 400;
 }
@@ -260,3 +255,17 @@
   }
 }
 
+.calendar-cardd .react-calendar__navigation button {
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+/* Weekday numbers (Mon–Fri) → black */
+.calendar-cardd .react-calendar__month-view__days__day {
+  color: #000;
+}
+
+/* Weekend numbers → red */
+.calendar-cardd .react-calendar__month-view__days__day--weekend {
+  color: red;
+}

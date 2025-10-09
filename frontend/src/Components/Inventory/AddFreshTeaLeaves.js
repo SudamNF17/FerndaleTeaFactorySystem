@@ -8,6 +8,9 @@ import "./AddFreshTeaLeaves.css";
 const AddFreshTeaLeaves = () => {
   const API_URL = "http://localhost:5000/api/tea-leaves";
 
+  //const EMAIL_API_URL = "http://localhost:5000/api/send-email"; // your backend email route
+
+
   const [leaves, setLeaves] = useState([]);
   const [formData, setFormData] = useState({
     id: "",
@@ -140,6 +143,22 @@ const AddFreshTeaLeaves = () => {
 
     doc.save(`TeaLeaves_${leaf.supplierName}.pdf`);
   };
+
+  // ✅ Send Email
+  /*const sendEmail = async (leaf) => {
+    try {
+      await axios.post(EMAIL_API_URL, {
+        to: leaf.email,
+        subject: "Fresh Tea Leaves Order",
+        message: `Hello ${leaf.supplierName}, your tea leaves order details:\nWeight: ${leaf.weight} kg\nPrice: ${leaf.pricePerKg}/kg\nTotal: ${leaf.totalPrice}`,
+      });
+      alert("Email sent successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send email");
+    }
+  }; */
+
 
   return (
     <div className="fresh-leaves-container">

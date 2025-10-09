@@ -1,10 +1,22 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUsers, FaBuilding, FaEnvelope, FaCalendarCheck } from "react-icons/fa";
+import {
+  FaUsers,
+  FaBuilding,
+  FaEnvelope,
+  FaCalendarCheck,
+} from "react-icons/fa";
 import "./EmployeeDashboard.css";
+import Nav from "../Nav/Nav";
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
+  const userName = localStorage.getItem("userName");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   const sections = [
     {
@@ -39,6 +51,28 @@ const EmployeeDashboard = () => {
 
   return (
     <div className="dashboard-container">
+      {/* Header */}
+      <div className="dashboard-header">
+        <h2>Welcome Manager, {userName}</h2>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+
+      <Nav />
+      <div className="scroll-header">
+        <h3>Employee Dashboard</h3>
+        <div className="marquee">
+          <div className="marquee-content">
+            <span>
+              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+            </span>
+            <span>
+              👩‍💼Manage employee records and attendance. &nbsp;&nbsp;&nbsp;
+            </span>
+          </div>
+        </div>
+      </div>
       <h1 className="dashboard-title">Employee Management</h1>
 
       <div className="dashboard-grid">
@@ -46,7 +80,9 @@ const EmployeeDashboard = () => {
           <div
             key={section.title}
             className={`dashboard-card bg-${section.color}`}
-            onClick={() => section.path ? navigate(section.path) : section.action()}
+            onClick={() =>
+              section.path ? navigate(section.path) : section.action()
+            }
           >
             <div className="icon-wrapper">{section.icon}</div>
             <h2>{section.title}</h2>
@@ -54,6 +90,16 @@ const EmployeeDashboard = () => {
           </div>
         ))}
       </div>
+           {/* Footer */}
+<footer className="dashboard-footer">
+  <div className="footer-left">
+    <p>© 2025 <strong>Ferndale Tea Factory</strong></p>
+    <p>All rights reserved.</p>
+  </div>
+  <div className="footer-right">
+    <p>🍃 Tea Factory Management System</p>
+  </div>
+</footer>
     </div>
   );
 };

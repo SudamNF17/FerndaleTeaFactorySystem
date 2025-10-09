@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./EmployeeList.css"; // Make sure you include the CSS provided earlier
+import Nav from "../Nav/Nav";
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -18,6 +19,15 @@ const EmployeeList = () => {
     description: "",
   });
   const navigate = useNavigate();
+    const userName = localStorage.getItem("userName");
+  
+  
+  
+    
+    const handleLogout = () => {
+      localStorage.clear();
+      navigate("/login");
+    };
 
   // Fetch all employees
   const fetchEmployees = () => {
@@ -74,6 +84,13 @@ const EmployeeList = () => {
 
   return (
     <div className="employee-container">
+       {/* Header */}
+         
+      <div className="dashboard-header">
+        <h2>Welcome Manager, {userName}</h2>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
+      </div>
+      <Nav />
       <h1>Employees</h1>
 
       {/* Toggle Add Employee Form */}
