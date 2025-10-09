@@ -101,51 +101,31 @@ const DepartmentDashboard = () => {
     }
   };
 
-  // Export PDF
   const exportPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text("Department Report", 20, 15);
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text("Department Report", 20, 15);
 
-    doc.autoTable({
-      startY: 25,
-      head: [["Name", "Employees", "This Month", "Last Month"]],
-      body: departments.map((d) => [
-        d.name,
-        d.employees,
-        `${d.performanceThisMonth}%`,
-        `${d.performanceLastMonth}%`,
-      ]),
-      headStyles: {
-        fillColor: [0, 102, 204],
-        textColor: 255,
-        fontStyle: "bold",
-      },
-      alternateRowStyles: { fillColor: [240, 240, 240] },
-      styles: { fontSize: 11 },
-      didDrawCell: (data) => {
-        if (data.column.index === 2 && data.cell.section === "body") {
-          const dept = departments[data.row.index];
-          const trend =
-            dept.performanceThisMonth - dept.performanceLastMonth;
+  doc.autoTable({
+    startY: 25,
+    head: [["Name", "Employees", "This Month", "Last Month"]],
+    body: departments.map((d) => [
+      d.name,
+      d.employees,
+      `${d.performanceThisMonth}%`,
+      `${d.performanceLastMonth}%`,
+    ]),
+    headStyles: {
+      fillColor: [0, 102, 204],
+      textColor: 255,
+      fontStyle: "bold",
+    },
+    alternateRowStyles: { fillColor: [240, 240, 240] },
+    styles: { fontSize: 11 },
+  });
 
-          const arrow = trend > 0 ? "^" : trend < 0 ? "v" : "-";
-          const color =
-            trend > 0 ? [0, 128, 0] : trend < 0 ? [255, 0, 0] : [0, 0, 0];
-
-          doc.setTextColor(...color);
-          doc.text(
-            arrow,
-            data.cell.x + data.cell.width - 10,
-            data.cell.y + data.cell.height / 1.8
-          );
-          doc.setTextColor(0, 0, 0);
-        }
-      },
-    });
-
-    doc.save("departments.pdf");
-  };
+  doc.save("departments.pdf");
+};
 
   return (
     <div className="dept-container">
