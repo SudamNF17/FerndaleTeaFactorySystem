@@ -39,6 +39,8 @@ const Inventory = () => {
       </div>
       <h2>Inventory Dashboard</h2>
 
+      <h1>Inventory Dashboard</h1>
+
       {/* Image */}
       <div style={{ position: "relative", display: "inline-block" }}>
         <img

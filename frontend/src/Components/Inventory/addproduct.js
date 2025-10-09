@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './addProduct.css';
 import { PieChart, Pie, Tooltip, Cell } from 'recharts';
+import sas1 from "../../assets/sas1.png"; // your logo as background
 
 const AddProduct = () => {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,7 @@ const AddProduct = () => {
     price: 0,
     description: "",
   });
-  const [search, setSearch] = useState(""); // search state
+  const [search, setSearch] = useState("");
 
   const API_URL = "http://localhost:5000/api/products";
 
@@ -97,65 +98,88 @@ const AddProduct = () => {
   );
 
   return (
-    <div className="add-product-container">
-      <h1>Tea Packet Management</h1>
+    <div
+      className="page-background"
+      style={{
+        backgroundImage: `url(${sas1})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
+      <div
+        className="add-product-container"
+        style={{
+          backgroundColor: "rgba(255,255,255,0.85)",
+          borderRadius: "15px",
+          padding: "20px",
+          maxWidth: "900px",
+          margin: "0 auto",
+        }}
+      >
+        <h1>Tea Packet Management</h1>
 
-      {/* Centered search input */}
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="search-input"
-        />
-      </div>
+        {/* Centered search input */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
+          <input
+            type="text"
+            placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
+          />
+        </div>
 
-      <form className="product-form" onSubmit={handleSubmit}>
-        <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
-        <input name="type" placeholder="Type" value={formData.type} onChange={handleChange} required />
-        <input name="quantity" type="number" placeholder="Quantity" value={formData.quantity} onChange={handleChange} />
-        <input name="price" type="number" step="0.01" placeholder="Price" value={formData.price} onChange={handleChange} />
-        <input name="description" placeholder="Description" value={formData.description} onChange={handleChange} />
-        <button type="submit">{formData.id ? "Update" : "Add"}</button>
-      </form>
+        {/* Form */}
+        <form className="product-form" onSubmit={handleSubmit}>
+          <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+          <input name="type" placeholder="Type" value={formData.type} onChange={handleChange} required />
+          <input name="quantity" type="number" placeholder="Quantity" value={formData.quantity} onChange={handleChange} />
+          <input name="price" type="number" step="0.01" placeholder="Price" value={formData.price} onChange={handleChange} />
+          <input name="description" placeholder="Description" value={formData.description} onChange={handleChange} />
+          <button type="submit">{formData.id ? "Update" : "Add"}</button>
+        </form>
 
-      <h3 style={{ marginTop: "30px" }}>Stock by Tea Type</h3>
-      <PieChart width={400} height={300}>
-        <Pie
-          data={typeData}
-          dataKey="value"
-          nameKey="name"
-          cx="50%"
-          cy="50%"
-          outerRadius={100}
-          label
-        >
-          {typeData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip formatter={(value, name) => [`${value} packets`, `${name}`]} />
-      </PieChart>
+        {/* Pie Chart */}
+        <h3 style={{ marginTop: "30px" }}>Stock by Tea Type</h3>
+        <PieChart width={400} height={300}>
+          <Pie
+            data={typeData}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            label
+          >
+            {typeData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value, name) => [`${value} packets`, `${name}`]} />
+        </PieChart>
 
-      <table className="product-table">
-        <thead>
-          <tr>
-            <th>Name</th><th>Type</th><th>Qty</th><th>Price</th><th>Description</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredProducts.map(p => (
-            <tr key={p._id}>
-              <td>{p.name}</td><td>{p.type}</td><td>{p.quantity}</td><td>{p.price}</td><td>{p.description}</td>
-              <td>
-                <button onClick={() => handleEdit(p)}>Edit</button>
-                <button onClick={() => handleDelete(p._id)}>Delete</button>
-              </td>
+        {/* Product Table */}
+        <table className="product-table">
+          <thead>
+            <tr>
+              <th>Name</th><th>Type</th><th>Qty</th><th>Price</th><th>Description</th><th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredProducts.map(p => (
+              <tr key={p._id}>
+                <td>{p.name}</td><td>{p.type}</td><td>{p.quantity}</td><td>{p.price}</td><td>{p.description}</td>
+                <td>
+                  <button onClick={() => handleEdit(p)}>Edit</button>
+                  <button onClick={() => handleDelete(p._id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

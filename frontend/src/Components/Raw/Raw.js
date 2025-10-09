@@ -6,6 +6,7 @@ import axios from "axios";
 import "./Raw.css";
 import printLogo from "../../assets/printlogo.png";
 
+
 // Configure default Leaflet marker icon
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -235,45 +236,136 @@ function Raw() {
       <h1>Raw Material Supplier Form</h1>
 
       <form className="raw-form" onSubmit={handleSubmit}>
-        <label>Supplier Name:
-          <input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange} required />
-        </label>
-        <label>Contact Person:
-          <input type="text" name="contactPerson" value={formData.contactPerson} onChange={handleChange} required />
-        </label>
-        <label>Phone:
-          <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
-        </label>
-        <label>Email:
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-        </label>
-        <label>Company/Organization:
-          <input type="text" name="company" value={formData.company} onChange={handleChange} />
-        </label>
-        <label>Material Type:
-          <input type="text" name="materialType" value={formData.materialType} onChange={handleChange} required />
-        </label>
-        <label>Quantity Available:
-          <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} />
-        </label>
-        <label>Price per Unit:
-          <input type="number" name="pricePerUnit" value={formData.pricePerUnit} onChange={handleChange} />
-        </label>
-        <label>Delivery Lead Time:
-          <input type="text" name="leadTime" value={formData.leadTime} onChange={handleChange} />
-        </label>
-        <label>Certification/Quality Standard:
-          <input type="text" name="certification" value={formData.certification} onChange={handleChange} />
-        </label>
-        <label>Location Name:
-          <input type="text" name="locationName" value={formData.locationName} onChange={handleChange} placeholder="Enter or drag marker on map"/>
-        </label>
+  <label>Supplier Name:
+    <input
+      type="text"
+      name="supplierName"
+      value={formData.supplierName}
+      onChange={handleChange}
+      required
+      minLength={3}
+      placeholder="Enter supplier name"
+    />
+  </label>
 
-        <div className="button-row">
-          <button type="button" onClick={handleLocation}>Get Live Location</button>
-          <button type="submit" className="submit-btn">{editIndex !== null ? "Update" : "Submit"}</button>
-        </div>
-      </form>
+  <label>Contact Person:
+    <input
+      type="text"
+      name="contactPerson"
+      value={formData.contactPerson}
+      onChange={handleChange}
+      required
+      minLength={3}
+      placeholder="Full name"
+    />
+  </label>
+
+  <label>Phone:
+    <input
+      type="tel"
+      name="phone"
+      value={formData.phone}
+      onChange={handleChange}
+      required
+      pattern="^\+?[0-9]{7,15}$"
+      placeholder="e.g. +94771234567"
+    />
+  </label>
+
+  <label>Email:
+    <input
+      type="email"
+      name="email"
+      value={formData.email}
+      onChange={handleChange}
+      required
+      placeholder="example@email.com"
+    />
+  </label>
+
+  <label>Company/Organization:
+    <input
+      type="text"
+      name="company"
+      value={formData.company}
+      onChange={handleChange}
+      placeholder="Optional"
+    />
+  </label>
+
+  <label>Material Type:
+    <input
+      type="text"
+      name="materialType"
+      value={formData.materialType}
+      onChange={handleChange}
+      required
+      placeholder="e.g. Tea Leaves"
+    />
+  </label>
+
+  <label>Quantity Available:
+    <input
+      type="number"
+      name="quantity"
+      value={formData.quantity}
+      onChange={handleChange}
+      min="1"
+      placeholder="Enter quantity"
+    />
+  </label>
+
+  <label>Price per Unit:
+    <input
+      type="number"
+      name="pricePerUnit"
+      value={formData.pricePerUnit}
+      onChange={handleChange}
+      min="0"
+      step="0.01"
+      placeholder="Enter price"
+    />
+  </label>
+
+  <label>Delivery Lead Time:
+    <input
+      type="text"
+      name="leadTime"
+      value={formData.leadTime}
+      onChange={handleChange}
+      placeholder="e.g. 5 days"
+    />
+  </label>
+
+  <label>Certification/Quality Standard:
+    <input
+      type="text"
+      name="certification"
+      value={formData.certification}
+      onChange={handleChange}
+      placeholder="ISO, Organic, etc."
+    />
+  </label>
+
+  <label>Location Name:
+    <input
+      type="text"
+      name="locationName"
+      value={formData.locationName}
+      onChange={handleChange}
+      placeholder="Enter or drag marker on map"
+      required
+    />
+  </label>
+
+  <div className="button-row">
+    <button type="button" onClick={handleLocation}>Get Live Location</button>
+    <button type="submit" className="submit-btn">
+      {editIndex !== null ? "Update" : "Submit"}
+    </button>
+  </div>
+</form>
+
 
       <div className="map-container">
         <MapContainer center={[formData.latitude, formData.longitude]} zoom={7} style={{ height: "320px", width: "100%" }}>

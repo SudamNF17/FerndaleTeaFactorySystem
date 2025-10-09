@@ -7,7 +7,9 @@ import "./AddFreshTeaLeaves.css";
 
 const AddFreshTeaLeaves = () => {
   const API_URL = "http://localhost:5000/api/tea-leaves";
+
   //const EMAIL_API_URL = "http://localhost:5000/api/send-email"; // your backend email route
+
 
   const [leaves, setLeaves] = useState([]);
   const [formData, setFormData] = useState({
@@ -18,6 +20,7 @@ const AddFreshTeaLeaves = () => {
     pricePerKg: 0,
   });
 
+  // Fetch all tea leaves
   const fetchLeaves = async () => {
     try {
       const res = await axios.get(API_URL);
@@ -31,17 +34,21 @@ const AddFreshTeaLeaves = () => {
     fetchLeaves();
   }, []);
 
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const data = {
       supplierName: formData.supplierName,
       email: formData.email,
       weight: Number(formData.weight),
       pricePerKg: Number(formData.pricePerKg),
+      totalPrice: Number(formData.weight) * Number(formData.pricePerKg),
     };
 
     try {
@@ -50,6 +57,7 @@ const AddFreshTeaLeaves = () => {
       } else {
         await axios.post(API_URL, data);
       }
+
       setFormData({ id: "", supplierName: "", email: "", weight: 0, pricePerKg: 0 });
       fetchLeaves();
     } catch (err) {
@@ -58,6 +66,7 @@ const AddFreshTeaLeaves = () => {
     }
   };
 
+  // Edit existing record
   const handleEdit = (leaf) => {
     setFormData({
       id: leaf._id,
@@ -68,6 +77,7 @@ const AddFreshTeaLeaves = () => {
     });
   };
 
+  // Delete record
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure?")) return;
     try {
@@ -78,18 +88,17 @@ const AddFreshTeaLeaves = () => {
     }
   };
 
+  // Open default email client
   const handleOpenEmail = (leaf) => {
-  const email = "recipient@example.com"; // or dynamic
-  const subject = encodeURIComponent(`Fresh Tea Leaves Info - ${leaf.supplierName}`);
-  const body = encodeURIComponent(
-    `Hello,\n\nHere is the tea leaves info:\nSupplier: ${leaf.supplierName}\nWeight: ${leaf.weight} kg\nPrice per Kg: ${leaf.pricePerKg}\nTotal Price: ${leaf.totalPrice}\n\nThanks.`
-  );
+    const email = leaf.email || "recipient@example.com";
+    const subject = encodeURIComponent(`Fresh Tea Leaves Info - ${leaf.supplierName}`);
+    const body = encodeURIComponent(
+      `Hello,\n\nHere is the tea leaves info:\nSupplier: ${leaf.supplierName}\nEmail: ${leaf.email}\nWeight: ${leaf.weight} kg\nPrice per Kg: ${leaf.pricePerKg}\nTotal Price: ${leaf.totalPrice}\n\nThanks.`
+    );
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  };
 
-  window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-};
-
-
-  // ✅ Generate PDF for one record
+  // Generate PDF
   const generatePDF = (leaf) => {
     const doc = new jsPDF("p", "pt", "a4");
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -104,9 +113,7 @@ const AddFreshTeaLeaves = () => {
     doc.text("Fresh Tea Leaves Report", pageWidth / 2, 120, { align: "center" });
 
     doc.setFontSize(12);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - 50, 140, {
-      align: "right",
-    });
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - 50, 140, { align: "right" });
 
     const rows = [
       ["Supplier Name", leaf.supplierName],
@@ -125,7 +132,7 @@ const AddFreshTeaLeaves = () => {
       alternateRowStyles: { fillColor: "#f2f2f2" },
     });
 
-    // Signature area
+    // Signature
     const finalY = doc.lastAutoTable.finalY + 40;
     doc.text("Authorized Signature:", 40, finalY);
     doc.line(180, finalY, 400, finalY);
@@ -151,6 +158,7 @@ const AddFreshTeaLeaves = () => {
       alert("Failed to send email");
     }
   }; */
+
 
   return (
     <div className="fresh-leaves-container">
@@ -215,22 +223,10 @@ const AddFreshTeaLeaves = () => {
                   <td>{l.pricePerKg}</td>
                   <td>{l.totalPrice}</td>
                   <td>
-                    <button className="edit-btn" onClick={() => handleEdit(l)}>
-                      Edit
-                    </button>
-                    <button className="delete-btn" onClick={() => handleDelete(l._id)}>
-                      Delete
-                    </button>
-                    <button className="pdf-btn" onClick={() => generatePDF(l)}>
-                      PDF
-                    </button>
-                    {/* Email button */}
-  <button
-    className="email-btn"
-    onClick={() => handleOpenEmail(l)}
-  >
-    Email
-  </button>
+                    <button className="edit-btn" onClick={() => handleEdit(l)}>Edit</button>
+                    <button className="delete-btn" onClick={() => handleDelete(l._id)}>Delete</button>
+                    <button className="pdf-btn" onClick={() => generatePDF(l)}>PDF</button>
+                    <button className="email-btn" onClick={() => handleOpenEmail(l)}>Email</button>
                   </td>
                 </tr>
               ))}

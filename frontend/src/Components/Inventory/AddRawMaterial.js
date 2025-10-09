@@ -30,8 +30,8 @@ const AddRawMaterial = () => {
     mobile: "",
     email: "",
     materialType: "",
-    quantity: 0,
-    pricePerUnit: 0,
+    quantity: "",
+    pricePerUnit: "",
     certification: "",
     factoryLocation: "",
     collectedLocationName: "",
@@ -403,7 +403,17 @@ const AddRawMaterial = () => {
                 <button onClick={() => generateAttractivePDF(m)}>
                   Download PDF
                 </button>
+              <td style={{ whiteSpace: "nowrap" }}>
+                
+              <button style={{ marginRight: "5px" }} onClick={() => handleEdit(m)}>
+               Edit
+              </button>
+              <button style={{ marginRight: "5px" }} onClick={() => handleDelete(m._id)}>
+              Delete
+              </button>
+              <button onClick={() => generateAttractivePDF(m)}>Download PDF</button>
               </td>
+
             </tr>
           ))}
         </tbody>

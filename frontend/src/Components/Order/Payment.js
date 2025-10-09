@@ -233,55 +233,92 @@ export default function Payment() {
         </section>
 
         {/* Right: User details + Actions */}
-        <section className="cart-section">
-          <h2>Buyer Details</h2>
-          <div className="product-info">
-            <label style={{ display: 'block', marginBottom: 8 }}>
+        <section 
+          className="cart-section"
+          style={{
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "12px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            marginBottom: "1.5rem"
+          }}
+        >
+          <h2 style={{ marginBottom: "1rem", fontSize: "1.3rem", color: "#2c3e50" }}>
+            Buyer Details
+          </h2>
+
+          <div className="product-info" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <label style={{ display: "flex", flexDirection: "column", fontSize: "0.95rem", color: "#444" }}>
               Name
               <input
                 type="text"
                 value={user.name}
-                onChange={e => setUser({ ...user, name: e.target.value })}
-                className="input"
+                onChange={e => setUser({ ...user, name: e.target.value.trimStart() })}
+                style={{
+                  marginTop: "6px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                  fontSize: "0.95rem"
+                }}
                 placeholder="Your name"
               />
             </label>
 
-            <label style={{ display: 'block', marginBottom: 8 }}>
+            <label style={{ display: "flex", flexDirection: "column", fontSize: "0.95rem", color: "#444" }}>
               Phone
               <input
                 type="text"
                 value={user.phone || ""}
-                onChange={e => setUser({ ...user, phone: e.target.value })}
-                className="input"
+                onChange={e => setUser({ ...user, phone: e.target.value.trim() })}
+                style={{
+                  marginTop: "6px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                  fontSize: "0.95rem"
+                }}
                 placeholder="10-digit phone number"
               />
             </label>
 
-            <label style={{ display: 'block', marginBottom: 8 }}>
+            <label style={{ display: "flex", flexDirection: "column", fontSize: "0.95rem", color: "#444" }}>
               Email
               <input
                 type="email"
                 value={user.email}
-                onChange={e => setUser({ ...user, email: e.target.value })}
-                className="input"
+                onChange={e => setUser({ ...user, email: e.target.value.trim() })}
+                style={{
+                  marginTop: "6px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                  fontSize: "0.95rem"
+                }}
                 placeholder="you@example.com"
               />
             </label>
 
-            <label style={{ display: 'block', marginBottom: 8 }}>
+            <label style={{ display: "flex", flexDirection: "column", fontSize: "0.95rem", color: "#444" }}>
               Address
               <textarea
                 value={user.address}
                 onChange={e => setUser({ ...user, address: e.target.value })}
-                className="input"
+                style={{
+                  marginTop: "6px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                  fontSize: "0.95rem",
+                  resize: "vertical"
+                }}
                 rows={3}
                 placeholder="Street, city"
               />
             </label>
           </div>
 
-          <button className="checkout-btn" onClick={handlePay}>
+          <button className="checkout-btn" onClick={handlePay} style={{ marginTop: "1rem" }}>
             Set Order
           </button>
           <button className="clear-cart-btn" onClick={handleUpdateCart} style={{ marginTop: 8 }}>

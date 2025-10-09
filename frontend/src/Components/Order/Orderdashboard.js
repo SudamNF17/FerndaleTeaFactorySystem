@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import axios from "axios";
 import "./Orderdashboard.css"; // Import external CSS
 import Nav from "../Nav/Nav";
@@ -98,16 +98,48 @@ export default function Orderdashboard() {
     }
   };
 
-  const updateOrderStatus = async (id, status) => {
-    try {
-      await axios.put(`http://localhost:5000/api/orders/${id}/status`, {
-        status,
-      });
-      fetchOrders();
-    } catch (err) {
-      console.error(`❌ Failed to update order status to ${status}:`, err);
-    }
-  };
+  // ✅ Update order status + send email to Inventory Manager
+const updateOrderStatus = async (id, status, buyer) => {
+  try {
+    await axios.put(`http://localhost:5000/api/orders/${id}/status`, {
+      status,
+    });
+    fetchOrders();
+
+    // --- Send email to inventory manager ---
+    const managerEmail = "inventory.manager@ferndaletea.com"; // replace with actual manager email
+
+    // include order ID clearly in subject
+    const subject = `Order Status Updated - ${buyer.name} | Order ID: ${id}`;
+
+    // include order ID in body (on its own line)
+    const body = `
+Hello Inventory Manager,
+
+An order has been updated.  
+
+🆔 Order ID: ${id}  
+📌 Buyer: ${buyer.name}  
+📦 Status: ${status.toUpperCase()}  
+☎️ Phone: ${buyer.phone}  
+🏠 Address: ${buyer.address}  
+
+Please check the system for full details.
+
+Best regards,  
+Ferndale Tea Factory System 🍃
+    `;
+
+    // ✅ make sure ID doesn’t get stripped by mailto encoding
+    window.location.href = `mailto:${managerEmail}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+  } catch (err) {
+    console.error(`❌ Failed to update order status to ${status}:`, err);
+  }
+};
+
+
 
   // Generate CSV Report
   const generateReport = () => {
@@ -230,14 +262,16 @@ export default function Orderdashboard() {
                       {activeTab === "pending" && (
                         <>
                           <button
-                            onClick={() => updateOrderStatus(o._id, "accepted")}
+                            onClick={() =>
+                              updateOrderStatus(o._id, "accepted", o.buyer)
+                            }
                             className="btn btn-accept"
                           >
                             Accept
                           </button>
                           <button
                             onClick={() =>
-                              updateOrderStatus(o._id, "cancelled")
+                              updateOrderStatus(o._id, "cancelled", o.buyer)
                             }
                             className="btn btn-cancel"
                           >
@@ -247,7 +281,9 @@ export default function Orderdashboard() {
                       )}
                       {activeTab === "accepted" && (
                         <button
-                          onClick={() => updateOrderStatus(o._id, "cancelled")}
+                          onClick={() =>
+                            updateOrderStatus(o._id, "cancelled", o.buyer)
+                          }
                           className="btn btn-cancel"
                         >
                           Cancel
