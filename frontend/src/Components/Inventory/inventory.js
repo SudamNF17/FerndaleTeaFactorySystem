@@ -10,7 +10,7 @@ const Inventory = () => {
   return (
     <div className="inventory-container">
       <Nav />
-      <h2>Inventory Dashboard</h2>
+      <h1>Inventory Dashboard</h1>
 
       {/* Image */}
       <div style={{ position: "relative", display: "inline-block" }}>

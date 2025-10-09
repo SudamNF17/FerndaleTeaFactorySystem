@@ -149,3 +149,29 @@ body, html {
   color: red;
   font-size: 12px;
 }
+
+/* style buttons in actions cell */
+.raw-material-table td button {
+  display: inline-block;       /* side-by-side */
+  margin: 0 4px;               /* space between */
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* optional: color per action */
+.raw-material-table td button:nth-child(1) {
+  background-color: #3498db; /* Edit */
+  color: #fff;
+}
+
+.raw-material-table td button:nth-child(2) {
+  background-color: #e74c3c; /* Delete */
+  color: #fff;
+}
+
+.raw-material-table td button:nth-child(3) {
+  background-color: #2ecc71; /* PDF */
+  color: #fff;
+}
