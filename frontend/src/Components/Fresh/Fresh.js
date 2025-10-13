@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import axios from "axios"; // ✅ Axios
+import axios from "axios";
 import "./Fresh.css";
 import printLogo from "../../assets/printlogo.png";
 
@@ -117,31 +117,12 @@ function Fresh() {
     );
   };
 
-
-//validation function 1123444
-
-  function IntegerInput({ value, onChange }) {
-  const handleKeyDown = (event) => {
-    if (!/[0-9]/.test(event.key)) event.preventDefault();
-  };
-  return (
-    <label>
-      Number:
-      <input type="number" value={value} onChange={onChange} onKeyDown={handleKeyDown} />
-    </label>
-  );
-}
-
-// In Fresh render
-<IntegerInput value={formData.someNumber} onChange={handleChange} />
-
-
-  // ✅ Fetch existing suppliers from MongoDB on component mount
+  // ✅ Fetch existing suppliers
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/fresh-suppliers");
-        setSubmittedData(res.data.suppliers); // assuming backend returns { suppliers: [...] }
+        setSubmittedData(res.data.suppliers);
       } catch (err) {
         console.error("Error fetching suppliers:", err);
       }
@@ -150,14 +131,14 @@ function Fresh() {
     fetchSuppliers();
   }, []);
 
+  // ✅ Submit (Add / Update)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      if (editIndex !== null) {
-        // Update existing supplier
+      if (editIndex !== null && formData._id) {
         const updated = await axios.put(
-          `http://localhost:5000/api/fresh-suppliers/${submittedData[editIndex]._id}`,
+          `http://localhost:5000/api/fresh-suppliers/${formData._id}`,
           formData
         );
         const newData = [...submittedData];
@@ -165,7 +146,6 @@ function Fresh() {
         setSubmittedData(newData);
         setEditIndex(null);
       } else {
-        // Add new supplier
         const res = await axios.post("http://localhost:5000/api/fresh-suppliers", formData);
         setSubmittedData([...submittedData, res.data.supplier]);
       }
@@ -177,13 +157,40 @@ function Fresh() {
     }
   };
 
+  // ✅ Fixed handleEdit (safe field mapping)
   const handleEdit = (index) => {
-    setFormData(submittedData[index]);
+    const selected = submittedData[index];
+    const filtered = {
+      supplierName: selected.supplierName || "",
+      contactPerson: selected.contactPerson || "",
+      phone: selected.phone || "",
+      email: selected.email || "",
+      farmLocation: selected.farmLocation || "",
+      teaType: selected.teaType || "",
+      organicCertified: selected.organicCertified || false,
+      harvestSeason: selected.harvestSeason || "",
+      pricePerKg: selected.pricePerKg || "",
+      latitude: selected.latitude || 7.8731,
+      longitude: selected.longitude || 80.7718,
+      locationName: selected.locationName || "",
+      _id: selected._id || null,
+    };
+    setFormData(filtered);
     setEditIndex(index);
   };
 
-  const handleDelete = (index) => {
-    setSubmittedData(submittedData.filter((_, i) => i !== index));
+  // ✅ Optional backend delete support
+  const handleDelete = async (index) => {
+    const supplier = submittedData[index];
+    try {
+      if (supplier._id) {
+        await axios.delete(`http://localhost:5000/api/fresh-suppliers/${supplier._id}`);
+      }
+      const updated = submittedData.filter((_, i) => i !== index);
+      setSubmittedData(updated);
+    } catch (err) {
+      console.error("Error deleting supplier:", err);
+    }
   };
 
   const handlePrint = (row) => {
@@ -258,139 +265,151 @@ function Fresh() {
     <div className="fresh-container">
       <h1>Fresh Tea Supplier Form</h1>
 
-     <form className="fresh-form" onSubmit={handleSubmit}>
-  <label>Supplier Name:
-    <input
-      type="text"
-      name="supplierName"
-      value={formData.supplierName}
-      onChange={handleChange}
-      required
-      minLength={3}
-      placeholder="Enter supplier name"
-    />
-  </label>
+      <form className="fresh-form" onSubmit={handleSubmit}>
+        <label>
+          Supplier Name:
+          <input
+            type="text"
+            name="supplierName"
+            value={formData.supplierName}
+            onChange={handleChange}
+            required
+            minLength={3}
+            placeholder="Enter supplier name"
+          />
+        </label>
 
-  <label>Contact Person:
-    <input
-      type="text"
-      name="contactPerson"
-      value={formData.contactPerson}
-      onChange={handleChange}
-      required
-      minLength={3}
-      placeholder="Full name"
-    />
-  </label>
+        <label>
+          Contact Person:
+          <input
+            type="text"
+            name="contactPerson"
+            value={formData.contactPerson}
+            onChange={handleChange}
+            required
+            minLength={3}
+            placeholder="Full name"
+          />
+        </label>
 
-  <label>Phone:
-    <input
-      type="tel"
-      name="phone"
-      value={formData.phone}
-      onChange={handleChange}
-      required
-      pattern="^\+?[0-9]{7,15}$"
-      placeholder="e.g. +94771234567"
-    />
-    </label>
-  
+        <label>
+          Phone:
+          <input
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+            pattern="^\\+?[0-9]{7,15}$"
+            placeholder="e.g. +94771234567"
+          />
+        </label>
 
-  <label>Email:
-    <input
-      type="email"
-      name="email"
-      value={formData.email}
-      onChange={handleChange}
-      required
-      placeholder="example@email.com"
-    />
-  </label>
+        <label>
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder="example@email.com"
+          />
+        </label>
 
-  <label>Farm Location:
-    <input
-      type="text"
-      name="farmLocation"
-      value={formData.farmLocation}
-      onChange={handleChange}
-      required
-      minLength={3}
-      placeholder="Village / Town"
-    />
-  </label>
+        <label>
+          Farm Location:
+          <input
+            type="text"
+            name="farmLocation"
+            value={formData.farmLocation}
+            onChange={handleChange}
+            required
+            minLength={3}
+            placeholder="Village / Town"
+          />
+        </label>
 
-  <label>Tea Type:
-    <input
-      type="text"
-      name="teaType"
-      value={formData.teaType}
-      onChange={handleChange}
-      required
-      placeholder="Green / Black / White"
-    />
-  </label>
+        <label>
+          Tea Type:
+          <input
+            type="text"
+            name="teaType"
+            value={formData.teaType}
+            onChange={handleChange}
+            required
+            placeholder="Green / Black / White"
+          />
+        </label>
 
-  <label className="checkbox-label">Organic Certified
-    <input
-      type="checkbox"
-      name="organicCertified"
-      checked={formData.organicCertified}
-      onChange={handleChange}
-    />
-  </label>
+        <label className="checkbox-label">
+          Organic Certified
+          <input
+            type="checkbox"
+            name="organicCertified"
+            checked={formData.organicCertified}
+            onChange={handleChange}
+          />
+        </label>
 
-  <label>Harvest Season:
-    <input
-      type="text"
-      name="harvestSeason"
-      value={formData.harvestSeason}
-      onChange={handleChange}
-      placeholder="e.g. April - June"
-    />
-  </label>
+        <label>
+          Harvest Season:
+          <input
+            type="text"
+            name="harvestSeason"
+            value={formData.harvestSeason}
+            onChange={handleChange}
+            placeholder="e.g. April - June"
+          />
+        </label>
 
-  <label>Price per Kg:
-    <input
-      type="number"
-      name="pricePerKg"
-      value={formData.pricePerKg}
-      onChange={handleChange}
-      min="1"
-      step="0.01"
-      placeholder="Enter price"
-    />
-  </label>
+        <label>
+          Price per Kg:
+          <input
+            type="number"
+            name="pricePerKg"
+            value={formData.pricePerKg}
+            onChange={handleChange}
+            min="1"
+            step="0.01"
+            placeholder="Enter price"
+          />
+        </label>
 
-  <label>Location Name:
-    <input
-      type="text"
-      name="locationName"
-      value={formData.locationName}
-      onChange={handleChange}
-      required
-      placeholder="Enter or drag marker on map"
-    />
-  </label>
+        <label>
+          Location Name:
+          <input
+            type="text"
+            name="locationName"
+            value={formData.locationName}
+            onChange={handleChange}
+            required
+            placeholder="Enter or drag marker on map"
+          />
+        </label>
 
- 
-
-
-
-  <div className="button-row">
-    <button type="button" onClick={handleLocation}>Get Live Location</button>
-    <button type="submit" className="submit-btn">
-      {editIndex !== null ? "Update" : "Submit"}
-    </button>
-  </div>
-  
-</form>
-
+        <div className="button-row">
+          <button type="button" onClick={handleLocation}>
+            Get Live Location
+          </button>
+          <button type="submit" className="submit-btn">
+            {editIndex !== null ? "Update" : "Submit"}
+          </button>
+        </div>
+      </form>
 
       <div className="map-container">
-        <MapContainer center={[formData.latitude, formData.longitude]} zoom={7} style={{ height: "300px", width: "100%" }}>
+        <MapContainer
+          center={[formData.latitude, formData.longitude]}
+          zoom={7}
+          style={{ height: "300px", width: "100%" }}
+        >
           <RecenterMap center={[formData.latitude, formData.longitude]} />
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <DraggableMarker position={[formData.latitude, formData.longitude]} setFormData={setFormData} />
+          <DraggableMarker
+            position={[formData.latitude, formData.longitude]}
+            setFormData={setFormData}
+          />
         </MapContainer>
       </div>
 

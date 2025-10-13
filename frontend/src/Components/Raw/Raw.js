@@ -6,7 +6,6 @@ import axios from "axios";
 import "./Raw.css";
 import printLogo from "../../assets/printlogo.png";
 
-
 // Configure default Leaflet marker icon
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -47,7 +46,8 @@ function DraggableMarker({ position, setFormData }) {
       );
       const data = await response.json();
       const placeName =
-        (data && data.display_name) || `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+        (data && data.display_name) ||
+        `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
 
       setFormData((prev) => ({
         ...prev,
@@ -90,6 +90,7 @@ function Raw() {
     latitude: 7.8731,
     longitude: 80.7718,
     locationName: "",
+    _id: null,
   };
 
   const [formData, setFormData] = useState(initial);
@@ -102,7 +103,8 @@ function Raw() {
   };
 
   const handleLocation = () => {
-    if (!navigator || !navigator.geolocation) return alert("Geolocation not available.");
+    if (!navigator || !navigator.geolocation)
+      return alert("Geolocation not available.");
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const lat = pos.coords.latitude;
@@ -123,7 +125,7 @@ function Raw() {
     const fetchSuppliers = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/raw-suppliers");
-        setSubmittedData(res.data.suppliers); // assuming backend returns { suppliers: [...] }
+        setSubmittedData(res.data.suppliers);
       } catch (err) {
         console.error("Error fetching suppliers:", err);
       }
@@ -132,13 +134,14 @@ function Raw() {
     fetchSuppliers();
   }, []);
 
+  // ✅ Fixed submit handler (PUT/POST)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      if (editIndex !== null) {
+      if (editIndex !== null && formData._id) {
         const updated = await axios.put(
-          `http://localhost:5000/api/raw-suppliers/${submittedData[editIndex]._id}`,
+          `http://localhost:5000/api/raw-suppliers/${formData._id}`,
           formData
         );
         const newData = [...submittedData];
@@ -146,7 +149,10 @@ function Raw() {
         setSubmittedData(newData);
         setEditIndex(null);
       } else {
-        const res = await axios.post("http://localhost:5000/api/raw-suppliers", formData);
+        const res = await axios.post(
+          "http://localhost:5000/api/raw-suppliers",
+          formData
+        );
         setSubmittedData([...submittedData, res.data.supplier]);
       }
 
@@ -157,12 +163,43 @@ function Raw() {
     }
   };
 
+  // ✅ Fixed edit handler
   const handleEdit = (index) => {
-    setFormData(submittedData[index]);
+    const selected = submittedData[index];
+
+    const filtered = {
+      supplierName: selected.supplierName || "",
+      contactPerson: selected.contactPerson || "",
+      phone: selected.phone || "",
+      email: selected.email || "",
+      company: selected.company || "",
+      materialType: selected.materialType || "",
+      quantity: selected.quantity || "",
+      pricePerUnit: selected.pricePerUnit || "",
+      leadTime: selected.leadTime || "",
+      certification: selected.certification || "",
+      latitude: selected.latitude || 7.8731,
+      longitude: selected.longitude || 80.7718,
+      locationName: selected.locationName || "",
+      _id: selected._id || null,
+    };
+
+    setFormData(filtered);
     setEditIndex(index);
   };
 
-  const handleDelete = (index) => {
+  // ✅ Delete synced with backend
+  const handleDelete = async (index) => {
+    const supplier = submittedData[index];
+    if (supplier._id) {
+      try {
+        await axios.delete(
+          `http://localhost:5000/api/raw-suppliers/${supplier._id}`
+        );
+      } catch (err) {
+        console.error("Delete failed:", err);
+      }
+    }
     const updated = submittedData.filter((_, i) => i !== index);
     setSubmittedData(updated);
   };
@@ -200,7 +237,12 @@ function Raw() {
             </div>
             <div class="data">
               ${Object.entries(row)
-                .map(([key, value]) => `<p><strong>${key}:</strong> ${value == null ? "" : value}</p>`)
+                .map(
+                  ([key, value]) =>
+                    `<p><strong>${key}:</strong> ${
+                      value == null ? "" : value
+                    }</p>`
+                )
                 .join("")}
             </div>
             <div class="sign">
@@ -236,142 +278,161 @@ function Raw() {
       <h1>Raw Material Supplier Form</h1>
 
       <form className="raw-form" onSubmit={handleSubmit}>
-  <label>Supplier Name:
-    <input
-      type="text"
-      name="supplierName"
-      value={formData.supplierName}
-      onChange={handleChange}
-      required
-      minLength={3}
-      placeholder="Enter supplier name"
-    />
-  </label>
+        <label>
+          Supplier Name:
+          <input
+            type="text"
+            name="supplierName"
+            value={formData.supplierName}
+            onChange={handleChange}
+            required
+            minLength={3}
+            placeholder="Enter supplier name"
+          />
+        </label>
 
-  <label>Contact Person:
-    <input
-      type="text"
-      name="contactPerson"
-      value={formData.contactPerson}
-      onChange={handleChange}
-      required
-      minLength={3}
-      placeholder="Full name"
-    />
-  </label>
+        <label>
+          Contact Person:
+          <input
+            type="text"
+            name="contactPerson"
+            value={formData.contactPerson}
+            onChange={handleChange}
+            required
+            minLength={3}
+            placeholder="Full name"
+          />
+        </label>
 
-  <label>Phone:
-    <input
-      type="tel"
-      name="phone"
-      value={formData.phone}
-      onChange={handleChange}
-      required
-      pattern="^\+?[0-9]{7,15}$"
-      placeholder="e.g. +94771234567"
-    />
-  </label>
+        <label>
+          Phone:
+          <input
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+            pattern="^\\+?[0-9]{7,15}$"
+            placeholder="e.g. +94771234567"
+          />
+        </label>
 
-  <label>Email:
-    <input
-      type="email"
-      name="email"
-      value={formData.email}
-      onChange={handleChange}
-      required
-      placeholder="example@email.com"
-    />
-  </label>
+        <label>
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder="example@email.com"
+          />
+        </label>
 
-  <label>Company/Organization:
-    <input
-      type="text"
-      name="company"
-      value={formData.company}
-      onChange={handleChange}
-      placeholder="Optional"
-    />
-  </label>
+        <label>
+          Company/Organization:
+          <input
+            type="text"
+            name="company"
+            value={formData.company}
+            onChange={handleChange}
+            placeholder="Optional"
+          />
+        </label>
 
-  <label>Material Type:
-    <input
-      type="text"
-      name="materialType"
-      value={formData.materialType}
-      onChange={handleChange}
-      required
-      placeholder="e.g. Tea Leaves"
-    />
-  </label>
+        <label>
+          Material Type:
+          <input
+            type="text"
+            name="materialType"
+            value={formData.materialType}
+            onChange={handleChange}
+            required
+            placeholder="e.g. Tea Leaves"
+          />
+        </label>
 
-  <label>Quantity Available:
-    <input
-      type="number"
-      name="quantity"
-      value={formData.quantity}
-      onChange={handleChange}
-      min="1"
-      placeholder="Enter quantity"
-    />
-  </label>
+        <label>
+          Quantity Available:
+          <input
+            type="number"
+            name="quantity"
+            value={formData.quantity}
+            onChange={handleChange}
+            min="1"
+            placeholder="Enter quantity"
+          />
+        </label>
 
-  <label>Price per Unit:
-    <input
-      type="number"
-      name="pricePerUnit"
-      value={formData.pricePerUnit}
-      onChange={handleChange}
-      min="0"
-      step="0.01"
-      placeholder="Enter price"
-    />
-  </label>
+        <label>
+          Price per Unit:
+          <input
+            type="number"
+            name="pricePerUnit"
+            value={formData.pricePerUnit}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+            placeholder="Enter price"
+          />
+        </label>
 
-  <label>Delivery Lead Time:
-    <input
-      type="text"
-      name="leadTime"
-      value={formData.leadTime}
-      onChange={handleChange}
-      placeholder="e.g. 5 days"
-    />
-  </label>
+        <label>
+          Delivery Lead Time:
+          <input
+            type="text"
+            name="leadTime"
+            value={formData.leadTime}
+            onChange={handleChange}
+            placeholder="e.g. 5 days"
+          />
+        </label>
 
-  <label>Certification/Quality Standard:
-    <input
-      type="text"
-      name="certification"
-      value={formData.certification}
-      onChange={handleChange}
-      placeholder="ISO, Organic, etc."
-    />
-  </label>
+        <label>
+          Certification/Quality Standard:
+          <input
+            type="text"
+            name="certification"
+            value={formData.certification}
+            onChange={handleChange}
+            placeholder="ISO, Organic, etc."
+          />
+        </label>
 
-  <label>Location Name:
-    <input
-      type="text"
-      name="locationName"
-      value={formData.locationName}
-      onChange={handleChange}
-      placeholder="Enter or drag marker on map"
-      required
-    />
-  </label>
+        <label>
+          Location Name:
+          <input
+            type="text"
+            name="locationName"
+            value={formData.locationName}
+            onChange={handleChange}
+            placeholder="Enter or drag marker on map"
+            required
+          />
+        </label>
 
-  <div className="button-row">
-    <button type="button" onClick={handleLocation}>Get Live Location</button>
-    <button type="submit" className="submit-btn">
-      {editIndex !== null ? "Update" : "Submit"}
-    </button>
-  </div>
-</form>
-
+        <div className="button-row">
+          <button type="button" onClick={handleLocation}>
+            Get Live Location
+          </button>
+          <button type="submit" className="submit-btn">
+            {editIndex !== null ? "Update" : "Submit"}
+          </button>
+        </div>
+      </form>
 
       <div className="map-container">
-        <MapContainer center={[formData.latitude, formData.longitude]} zoom={7} style={{ height: "320px", width: "100%" }}>
+        <MapContainer
+          center={[formData.latitude, formData.longitude]}
+          zoom={7}
+          style={{ height: "320px", width: "100%" }}
+        >
           <RecenterMap center={[formData.latitude, formData.longitude]} />
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <DraggableMarker position={[formData.latitude, formData.longitude]} setFormData={setFormData} />
+          <DraggableMarker
+            position={[formData.latitude, formData.longitude]}
+            setFormData={setFormData}
+          />
         </MapContainer>
       </div>
 
