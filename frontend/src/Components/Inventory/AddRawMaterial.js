@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./AddRawMaterial.css";
@@ -16,6 +16,23 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
+// Component to update map center dynamically
+function MapUpdater({ center, zoom }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    console.log("MapUpdater - Updating map center to:", center, "zoom:", zoom); // Debug log
+    if (map && center && center.length === 2 && !isNaN(center[0]) && !isNaN(center[1])) {
+      map.setView(center, zoom, {
+        animate: true,
+        duration: 1
+      });
+    }
+  }, [center, zoom, map]);
+  
+  return null;
+}
+
 const AddRawMaterial = () => {
   const API_URL = "http://localhost:5000/api/raw-materials";
 
@@ -23,6 +40,9 @@ const AddRawMaterial = () => {
   const [emailError, setEmailError] = useState("");
   const [mobileError, setMobileError] = useState("");
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [citySuggestions, setCitySuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchingCities, setSearchingCities] = useState(false);
 
   const [formData, setFormData] = useState({
     id: "",
@@ -86,6 +106,86 @@ const AddRawMaterial = () => {
     } finally {
       setLoadingLocation(false);
     }
+  };
+
+  // Search for cities as user types
+  const searchCities = async (query) => {
+    if (!query || query.length < 2) {
+      setCitySuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      setSearchingCities(true);
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          query
+        )},Sri Lanka&format=json&limit=5&addressdetails=1`
+      );
+      const data = await res.json();
+      
+      // Filter and format suggestions
+      const suggestions = data.map((item) => ({
+        name: item.display_name,
+        lat: parseFloat(item.lat),
+        lng: parseFloat(item.lon),
+        city: item.address?.city || item.address?.town || item.address?.village || item.address?.county || item.name,
+      }));
+      
+      setCitySuggestions(suggestions);
+      setShowSuggestions(suggestions.length > 0);
+    } catch (err) {
+      console.error("Error searching cities:", err);
+      setCitySuggestions([]);
+    } finally {
+      setSearchingCities(false);
+    }
+  };
+
+  // Handle city selection from dropdown
+  const handleCitySelect = (suggestion) => {
+    console.log("Selected city:", suggestion); // Debug log
+    console.log("Coordinates - Lat:", suggestion.lat, "Lng:", suggestion.lng); // Debug log
+    
+    // Ensure coordinates are valid numbers
+    const newLat = parseFloat(suggestion.lat);
+    const newLng = parseFloat(suggestion.lng);
+    
+    if (isNaN(newLat) || isNaN(newLng)) {
+      console.error("Invalid coordinates:", suggestion);
+      alert("Invalid location coordinates. Please try another city.");
+      return;
+    }
+    
+    setFormData((prev) => ({
+      ...prev,
+      collectedLocationName: suggestion.name,
+      collectedLocation: { lat: newLat, lng: newLng },
+    }));
+    
+    setShowSuggestions(false);
+    setCitySuggestions([]);
+    
+    console.log("Updated location:", { lat: newLat, lng: newLng }); // Debug log
+  };
+
+  // Handle location input change with debounce
+  const handleLocationChange = (e) => {
+    const value = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      collectedLocationName: value,
+    }));
+    
+    // Debounce the search
+    if (window.locationSearchTimeout) {
+      clearTimeout(window.locationSearchTimeout);
+    }
+    
+    window.locationSearchTimeout = setTimeout(() => {
+      searchCities(value);
+    }, 300);
   };
 
   const handleMarkerDrag = (e) => {
@@ -289,21 +389,56 @@ const AddRawMaterial = () => {
           <option value="Warehouse 3">Warehouse 3</option>
         </select>
 
-        <input
-          name="collectedLocationName"
-          placeholder="Collected Location Name"
-          value={loadingLocation ? "Loading location name..." : formData.collectedLocationName}
-          onChange={handleChange}
-          required
-        />
+        {/* Location Input with Autocomplete */}
+        <div className="location-input-wrapper">
+          <input
+            name="collectedLocationName"
+            placeholder="Collected Location Name (Start typing city name...)"
+            value={loadingLocation ? "Loading location name..." : formData.collectedLocationName}
+            onChange={handleLocationChange}
+            onFocus={() => setShowSuggestions(citySuggestions.length > 0)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            autoComplete="off"
+            required
+          />
+          
+          {/* City Suggestions Dropdown */}
+          {showSuggestions && (
+            <div className="city-suggestions-dropdown">
+              {searchingCities ? (
+                <div className="suggestion-item loading">Searching cities...</div>
+              ) : (
+                citySuggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="suggestion-item"
+                    onClick={() => handleCitySelect(suggestion)}
+                  >
+                    <strong>{suggestion.city}</strong>
+                    <br />
+                    <small>{suggestion.name}</small>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
 
         <div className="map-container">
           <MapContainer
             center={[formData.collectedLocation.lat, formData.collectedLocation.lng]}
             zoom={10}
             style={{ height: "300px", width: "100%" }}
+            scrollWheelZoom={true}
           >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <TileLayer 
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <MapUpdater 
+              center={[formData.collectedLocation.lat, formData.collectedLocation.lng]} 
+              zoom={13} 
+            />
             <Marker
               draggable={true}
               position={[formData.collectedLocation.lat, formData.collectedLocation.lng]}

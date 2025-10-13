@@ -8,9 +8,6 @@ import "./AddFreshTeaLeaves.css";
 const AddFreshTeaLeaves = () => {
   const API_URL = "http://localhost:5000/api/tea-leaves";
 
-  //const EMAIL_API_URL = "http://localhost:5000/api/send-email"; // your backend email route
-
-
   const [leaves, setLeaves] = useState([]);
   const [formData, setFormData] = useState({
     id: "",
@@ -88,14 +85,27 @@ const AddFreshTeaLeaves = () => {
     }
   };
 
-  // Open default email client
-  const handleOpenEmail = (leaf) => {
-    const email = leaf.email || "recipient@example.com";
-    const subject = encodeURIComponent(`Fresh Tea Leaves Info - ${leaf.supplierName}`);
-    const body = encodeURIComponent(
-      `Hello,\n\nHere is the tea leaves info:\nSupplier: ${leaf.supplierName}\nEmail: ${leaf.email}\nWeight: ${leaf.weight} kg\nPrice per Kg: ${leaf.pricePerKg}\nTotal Price: ${leaf.totalPrice}\n\nThanks.`
-    );
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  // Send email via backend API
+  const handleSendEmail = async (leaf) => {
+    if (!leaf.email) {
+      alert("No email address found for this supplier");
+      return;
+    }
+
+    if (!window.confirm(`Send inventory email to ${leaf.email}?`)) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API_URL}/${leaf._id}/send-email`);
+      
+      if (response.data.message) {
+        alert(`✅ Email sent successfully to ${leaf.email}!`);
+      }
+    } catch (err) {
+      console.error("Failed to send email:", err);
+      alert(`❌ Failed to send email: ${err.response?.data?.message || err.message}`);
+    }
   };
 
   // Generate PDF
@@ -226,7 +236,7 @@ const AddFreshTeaLeaves = () => {
                     <button className="edit-btn" onClick={() => handleEdit(l)}>Edit</button>
                     <button className="delete-btn" onClick={() => handleDelete(l._id)}>Delete</button>
                     <button className="pdf-btn" onClick={() => generatePDF(l)}>PDF</button>
-                    <button className="email-btn" onClick={() => handleOpenEmail(l)}>Email</button>
+                    <button className="email-btn" onClick={() => handleSendEmail(l)}>📧 Email</button>
                   </td>
                 </tr>
               ))}
